@@ -1,0 +1,15 @@
+.wards {
+  cursor: pointer;
+}
+
+.wards:hover {
+  opacity: 0.5;
+}
+
+.place-label {
+  pointer-events:none;
+}
+
+.selected {
+  fill: green;
+}
