@@ -1,0 +1,27 @@
+.wards {
+  cursor: pointer;
+}
+
+.wards:hover {
+  opacity: 0.5;
+}
+
+.place-label {
+  pointer-events:none;
+}
+
+.selected {
+  fill: #529838;
+}
+
+h1 {
+  text-align: center;
+}
+
+#map {
+  text-align: center;
+}
+
+#map svg {
+  max-height: 85vh;
+}

@@ -1,15 +1,7 @@
-.wards {
-  cursor: pointer;
+.navbar {
+  background-color: #0009 !important;
 }
 
-.wards:hover {
-  opacity: 0.5;
-}
-
-.place-label {
-  pointer-events:none;
-}
-
-.selected {
-  fill: green;
+.navbar .navbar-brand {
+  color: rgb(255,255,255);
 }
