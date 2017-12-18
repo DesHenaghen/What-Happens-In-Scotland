@@ -24,4 +24,38 @@ h1 {
 
 #map svg {
   max-height: 85vh;
+  left: 0;
+  position: absolute;
+}
+
+#glasgow-boundary {
+  fill: none;
+  stroke: #777;
+  stroke-linejoin: round;
+  stroke-width: 1vh;
+  cursor: pointer;
+}
+
+#glasgow-boundary.selected {
+  stroke: #529838;
+}
+
+.map.col {
+  left: 0;
+  position: absolute;
+}
+
+.hidden {
+  display: none;
+}
+
+div.tooltip {
+  color: #222;
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0px 0px 2px 0px #a6a6a6;
+  padding: .2em;
+  text-shadow: #f5f5f5 0 1px 0;
+  opacity: 0.9;
+  position: absolute;
 }

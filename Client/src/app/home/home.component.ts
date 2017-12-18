@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 
 import * as d3 from 'd3';
+import * as topojson from 'topojson';
 
 @Component({
   templateUrl: './home.component.html',
@@ -9,7 +10,7 @@ import * as d3 from 'd3';
 
 })
 export class HomeComponent implements OnInit {
-  ward = 'Glasgow';
+  public ward = 'Glasgow';
   private wards = {};
 
   private margin = {top: 20, right: 20, bottom: 0, left: 50};
@@ -20,6 +21,9 @@ export class HomeComponent implements OnInit {
   private colour: any;
   private projection;
   private path: number;
+  private tooltip: any;
+  private offsetL: number;
+  private offsetT: number;
 
   constructor() {
     this.width = 1000 - this.margin.left - this.margin.right;
@@ -48,9 +52,17 @@ export class HomeComponent implements OnInit {
     this.svg = d3.select('#map')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', '0 0 ' + this.width + ' ' + this.height);
+      .attr('viewBox', '0 0 ' + this.width + ' ' + this.height)
+      .attr('id', 'mapp');
+
+    this.offsetL = document.getElementById('map').offsetLeft + 10;
+    this.offsetT = document.getElementById('map').offsetTop + 10;
 
     this.path = d3.geoPath().projection(this.projection);
+
+    this.tooltip = d3.select('#map')
+      .append('div')
+      .attr('class', 'tooltip hidden');
 
     this.g = this.svg.append('g');
   }
@@ -67,10 +79,7 @@ export class HomeComponent implements OnInit {
         // Draw each ward polygon
         this.drawWards(topology);
 
-        // Place labels over each ward
-        // this.drawWardLabels(topology);
-
-        this.attachClickListeners(topology);
+        this.drawGlasgowOutline(topology);
       }
     });
   }
@@ -79,6 +88,8 @@ export class HomeComponent implements OnInit {
     topology.features.forEach(feature => {
       this.wards[feature.properties.WD13CD] = feature.properties.WD13NM;
     });
+
+    this.wards['glasgow-boundary'] = 'Glasgow';
   }
 
   private drawWards = (topology: any): void => {
@@ -92,49 +103,53 @@ export class HomeComponent implements OnInit {
       .attr('d', this.path)
       // Fill the polygon in with a colour from a range
       .attr('fill', (d, i) => this.colour(i))
-      .attr('id', d => d.properties.WD13CD);
+      .attr('id', d => d.properties.WD13CD)
+        .on('click', this.setWards)
+        .on('mousemove', this.showTooltip)
+        .on('mouseout', () => {
+          this.tooltip.classed('hidden', true);
+        });
   }
 
-  private drawWardLabels = (topology: any): void => {
-    this.g.selectAll('.place-label')
-      .data(topology.features) // Read in the array of features from the topology data
-      .enter().append('text') // Add a text element
-      .attr('class', 'place-label')
-      // Start the text at the centre of the polygon
-      .attr('transform', d => 'translate(' + this.projection(d3.polygonCentroid(d.geometry.coordinates[0])) + ')')
-      // Text size
-      .attr('dy', '.35em')
-      // Text value
-      .text(d => d.properties.WD13NM);
+  private drawGlasgowOutline = (t: any): void => {
+    const topology = topojson.topology([t], null);
+    this.svg.append('path')
+      // Only returns the arcs that aren't shared by wards i.e the outer bounds
+      .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b ))
+      .attr('d', this.path)
+      .attr('id', 'glasgow-boundary')
+      .attr('class', 'selected')
+        .on('click', this.setWards)
+        .on('mousemove', this.showTooltip)
+        .on('mouseout', () => {
+          this.tooltip.classed('hidden', true);
+        });
   }
 
-
-  private attachClickListeners = (topology: any): void => {
-    topology.features.forEach(f =>
-      document.getElementById(f.properties.WD13CD)
-        .addEventListener('click', this.setWards)
-    );
-
-    document.getElementById('map-background')
-      .addEventListener('click', this.setWards);
-    // document.getElementById('').addEventListener("click", function (f) {alert('xss')});
-  }
-
-  private setWards = (e: Event): void => {
+  /**
+   * Sets the target of the click event to be active. Sets active area on the map.
+   * @param {Event} e
+   */
+  private setWards = (e: any): void => {
     this.clearSelectedClass();
-    const target: any = e.target;
-    if (target.id) {
-      this.ward = this.wards[target.id];
-      document.getElementById(target.id).classList.add('selected');
-    } else {
-      this.ward = 'Glasgow';
-    }
+    const id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
+    this.ward = this.wards[id];
+    document.getElementById(id).classList.add('selected');
   }
 
   private clearSelectedClass = (): void => {
     for (const [key] of Object.entries(this.wards)) {
       document.getElementById(key).classList.remove('selected');
     }
+  }
+
+  private showTooltip = (d: any): void => {
+    const label = d.properties ? d.properties.WD13NM : 'Glasgow';
+    const mouse = d3.mouse(this.svg.node());
+    console.log(mouse, this.offsetL, this.offsetT);
+    this.tooltip.classed('hidden', false)
+      .attr('style', 'left:' + (mouse[0] + this.offsetL) + 'px;top:' + (mouse[1] + this.offsetT) + 'px')
+      .html(label);
   }
 }
 
