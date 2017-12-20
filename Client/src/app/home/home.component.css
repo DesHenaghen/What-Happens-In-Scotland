@@ -3,7 +3,11 @@
 }
 
 .wards:hover {
-  opacity: 0.5;
+  fill: #a2a2a2;
+}
+
+#glasgow-boundary:hover {
+  stroke: #a2a2a2;
 }
 
 .place-label {
@@ -12,6 +16,14 @@
 
 .selected {
   fill: #529838;
+}
+
+.selected:hover {
+  fill: #809583;
+}
+
+#glasgow-boundary.selected:hover {
+  stroke: #809583;
 }
 
 h1 {
@@ -32,7 +44,7 @@ h1 {
   fill: none;
   stroke: #777;
   stroke-linejoin: round;
-  stroke-width: 1vh;
+  stroke-width: 4vh;
   cursor: pointer;
 }
 

@@ -55,8 +55,8 @@ export class HomeComponent implements OnInit {
       .attr('viewBox', '0 0 ' + this.width + ' ' + this.height)
       .attr('id', 'mapp');
 
-    this.offsetL = document.getElementById('map').offsetLeft + 10;
-    this.offsetT = document.getElementById('map').offsetTop + 10;
+    this.offsetL = document.getElementById('map').offsetLeft + 20;
+    this.offsetT = document.getElementById('map').offsetTop + 20;
 
     this.path = d3.geoPath().projection(this.projection);
 
@@ -64,7 +64,6 @@ export class HomeComponent implements OnInit {
       .append('div')
       .attr('class', 'tooltip hidden');
 
-    this.g = this.svg.append('g');
   }
 
   private drawMap = (): void => {
@@ -76,10 +75,10 @@ export class HomeComponent implements OnInit {
 
         this.loadWards(topology);
 
+        this.drawGlasgowOutline(topology);
+
         // Draw each ward polygon
         this.drawWards(topology);
-
-        this.drawGlasgowOutline(topology);
       }
     });
   }
@@ -93,7 +92,7 @@ export class HomeComponent implements OnInit {
   }
 
   private drawWards = (topology: any): void => {
-    this.g.selectAll('path')
+    this.svg.append('g').selectAll('path')
       .data(topology.features) // Read in the array of features from the topology data
       .enter()
       .append('path') // Add a path element
