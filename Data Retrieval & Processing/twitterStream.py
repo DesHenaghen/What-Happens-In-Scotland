@@ -1,12 +1,14 @@
 import sys
 import logging
 import sqlalchemy
+from urllib3.exceptions import ProtocolError
 from sqlalchemy import Column, Text
 from sqlalchemy.dialects.postgresql import JSONB
 
 from TwitterAPI import TwitterAPI
 
 # Set up logger
+
 logger = logging.getLogger('twitter_stream')
 handler = logging.FileHandler('twitter_stream.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -85,7 +87,13 @@ def main():
                 logger.info("added to glasgow_tweets")
 
             engine.execute(statement)
-    except Exception:
+    except ProtocolError as e:
+        print("Killing myself now as a PROTOCOLERROR occured")
+        print(e)
+        sys.exit(0)
+    except Exception as e:
+        print("Killing myself now as an error occured")
+        print(e)
         sys.exit(0)
 
 
