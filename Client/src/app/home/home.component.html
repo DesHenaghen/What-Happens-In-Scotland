@@ -6,7 +6,9 @@
     <div class="col">
       <div class="chart-box">
         <h1>{{ward}}</h1>
-        <nvd3 [options]="lineOptions" [data]="lineData"></nvd3>
+        <div id="happinessChartContainer">
+          <nvd3 id="happinessChart" [options]="lineOptions" [data]="lineData"></nvd3>
+        </div>
       </div>
     </div>
   </div>

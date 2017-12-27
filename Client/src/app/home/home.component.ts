@@ -45,7 +45,6 @@ export class HomeComponent implements OnInit {
     this.lineOptions = {
       chart: {
         type: 'lineChart',
-        height: 450,
         yDomain: [0, 1],
         margin : {
           top: 20,
@@ -53,8 +52,6 @@ export class HomeComponent implements OnInit {
           bottom: 40,
           left: 55
         },
-        x: d => d.x,
-        y: d => d.y,
         useInteractiveGuideline: true,
         xAxis: {
           axisLabel: 'Date',
@@ -117,9 +114,10 @@ export class HomeComponent implements OnInit {
     // Create svg for graph to be drawn in
     this.svg = d3.select('#map')
       .append('svg')
+      .attr('id', 'mapp')
+      // Makes map resizeable
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', '0 0 ' + this.width + ' ' + this.height)
-      .attr('id', 'mapp');
+      .attr('viewBox', '0 0 ' + this.width + ' ' + this.height);
 
     this.offsetL = document.getElementById('map').offsetLeft + 20;
     this.offsetT = document.getElementById('map').offsetTop + 20;

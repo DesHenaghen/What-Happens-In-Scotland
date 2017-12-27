@@ -93,3 +93,12 @@ html, body {
 .row {
   height: 100%;
 }
+
+#happinessChart {
+  height: 100%;
+  width: 100%;
+}
+
+#happinessChartContainer {
+  height: 40vh;
+}
