@@ -5,3 +5,7 @@
 .navbar .navbar-brand {
   color: rgb(255,255,255);
 }
+
+.nav-link.disabled {
+  cursor: default;
+}

@@ -1,11 +1,17 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 
-import * as d3 from 'd3';
+declare let d3: any;
+import 'nvd3';
 import * as topojson from 'topojson';
+import * as moment from 'moment';
 
 @Component({
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrls: [
+    './home.component.css',
+    // include original nvd3 styles
+    '../../../node_modules/nvd3/build/nv.d3.css'
+  ],
   encapsulation: ViewEncapsulation.None
 
 })
@@ -17,13 +23,15 @@ export class HomeComponent implements OnInit {
   private height: number;
   private width: number;
   private svg: any;
-  private g: any;
   private colour: any;
   private projection;
   private path: number;
   private tooltip: any;
   private offsetL: number;
   private offsetT: number;
+
+  public lineOptions;
+  public lineData;
 
   constructor() {
     this.width = 1000 - this.margin.left - this.margin.right;
@@ -33,18 +41,76 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.initVariables();
     this.drawMap();
+
+    this.lineOptions = {
+      chart: {
+        type: 'lineChart',
+        height: 450,
+        yDomain: [0, 1],
+        margin : {
+          top: 20,
+          right: 20,
+          bottom: 40,
+          left: 55
+        },
+        x: d => d.x,
+        y: d => d.y,
+        useInteractiveGuideline: true,
+        xAxis: {
+          axisLabel: 'Date',
+          tickFormat: d => d3.time.format('%b %d')(new Date(d))
+        },
+        yAxis: {
+          axisLabel: 'Happiness',
+          tickFormat: d => Math.trunc(d * 100) + '%',
+          axisLabelDistance: -10
+        }
+      }
+    };
+  }
+
+  private generateData = (selectedArea?: string): any[] => {
+    const area = selectedArea || 'glasgow-boundary';
+    const values = [];
+    const date: moment.Moment = moment().month(11).date(1);
+    for (let i = 0; i < 30; i++) {
+        values.push({
+          x: date.valueOf(),
+          y: Math.random()
+        });
+
+        date.add(1, 'day');
+    }
+
+    this.wards[area].values = values;
+
+    return values;
+  }
+
+  private setData = (selectedArea?: string): void => {
+    const area = selectedArea || 'glasgow-boundary';
+
+    // Line chart data should be sent as an array of series objects.
+    this.lineData = [
+      {
+        values: (this.wards[area].values) ? this.wards[area].values : this.generateData(area),
+        key: 'Happiness',
+        color: '#7e91ff',
+        area: true      // area - set to true if you want this line to turn into a filled area chart.
+      }
+    ];
   }
 
   private initVariables = (): void => {
 
-    this.projection = d3.geoAlbers()
+    this.projection = d3.geo.albers()
       .center([-0.15, 55.8642])
       .rotate([4.1, 0])
       .parallels([50, 60])
       .scale(250000)
       .translate([this.width / 2, this.height / 2]);
 
-    this.colour = d3.scaleLinear()
+    this.colour = d3.scale.linear()
       .domain([0, 6])
       .range(['#5b5858', '#4f4d4d', '#454444', '#323131']);
 
@@ -58,7 +124,7 @@ export class HomeComponent implements OnInit {
     this.offsetL = document.getElementById('map').offsetLeft + 20;
     this.offsetT = document.getElementById('map').offsetTop + 20;
 
-    this.path = d3.geoPath().projection(this.projection);
+    this.path = d3.geo.path().projection(this.projection);
 
     this.tooltip = d3.select('#map')
       .append('div')
@@ -85,10 +151,12 @@ export class HomeComponent implements OnInit {
 
   private loadWards = (topology: any): void => {
     topology.features.forEach(feature => {
-      this.wards[feature.properties.WD13CD] = feature.properties.WD13NM;
+      this.wards[feature.properties.WD13CD] = { name: feature.properties.WD13NM };
     });
 
-    this.wards['glasgow-boundary'] = 'Glasgow';
+    this.wards['glasgow-boundary'] = { name: 'Glasgow' };
+
+    this.setData();
   }
 
   private drawWards = (topology: any): void => {
@@ -132,7 +200,8 @@ export class HomeComponent implements OnInit {
   private setWards = (e: any): void => {
     this.clearSelectedClass();
     const id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
-    this.ward = this.wards[id];
+    this.ward = this.wards[id].name;
+    this.setData(id);
     document.getElementById(id).classList.add('selected');
   }
 

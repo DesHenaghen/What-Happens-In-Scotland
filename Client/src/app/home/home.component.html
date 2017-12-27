@@ -1,10 +1,13 @@
-<div id="map-background" class="container">
+<div id="map-background">
   <div class="row">
-    <div class="map col">
+    <div class="col">
       <div id="map" class="map"></div>
     </div>
     <div class="col">
-      <h1>{{ward}}</h1>
+      <div class="chart-box">
+        <h1>{{ward}}</h1>
+        <nvd3 [options]="lineOptions" [data]="lineData"></nvd3>
+      </div>
     </div>
   </div>
 </div>
