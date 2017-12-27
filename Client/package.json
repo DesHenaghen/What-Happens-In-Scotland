@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
     "@types/topojson": "^3.0.2",
+    "bootstrap": "^4.0.0-beta.2",
     "core-js": "^2.5.3",
     "d3": "^3.5.17",
     "moment": "^2.20.1",
