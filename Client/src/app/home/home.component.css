@@ -1,5 +1,6 @@
 .wards {
   cursor: pointer;
+  stroke: #000;
 }
 
 .wards:hover {

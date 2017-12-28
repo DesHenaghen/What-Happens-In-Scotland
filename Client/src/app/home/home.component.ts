@@ -169,7 +169,7 @@ export class HomeComponent implements OnInit {
       // Define the outline of the shape based on the defined projection and polygon shape
       .attr('d', this.path)
       // Fill the polygon in with a colour from a range
-      .attr('fill', (d, i) => this.colour((i === 4) ? 1 : this.wards[d.properties.WD13CD].average))
+      .attr('fill', d => this.colour(this.wards[d.properties.WD13CD].average))
       .attr('id', d => d.properties.WD13CD)
         .on('click', this.setWards)
         .on('mousemove', this.showTooltip)
@@ -184,6 +184,7 @@ export class HomeComponent implements OnInit {
       // Only returns the arcs that aren't shared by wards i.e the outer bounds
       .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b ))
       .attr('d', this.path)
+      .attr('stroke', () => this.colour(this.wards['glasgow-boundary'].average))
       .attr('id', 'glasgow-boundary')
       .attr('class', 'selected')
         .on('click', this.setWards)
@@ -213,7 +214,7 @@ export class HomeComponent implements OnInit {
 
   private showTooltip = (d: any): void => {
     const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
-      '\n ' + Math.trunc(this.wards[d.properties.WD13CD].average * 100) + '%';
+      '<br> ' + Math.trunc(this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].average * 100) + '% Happy';
     const mouse = d3.mouse(this.svg.node());
     console.log(mouse, this.offsetL, this.offsetT);
     this.tooltip.classed('hidden', false)
