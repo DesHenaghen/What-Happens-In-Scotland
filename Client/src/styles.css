@@ -1,2 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/dist/css/bootstrap.css';
+
+/* Fonts */
+@font-face {
+  font-family: 'Alfa Slab One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Alfa Slab One'), local('AlfaSlabOne-Regular'), url('./assets/fonts/AlfaSlabOne-Regular.ttf') format('truetype');
+}

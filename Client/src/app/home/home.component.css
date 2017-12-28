@@ -1,3 +1,7 @@
+html * {
+  font-family: 'Open Sans', sans-serif;
+}
+
 .wards {
   cursor: pointer;
   stroke: #000;
@@ -25,11 +29,6 @@
 
 #glasgow-boundary.selected:hover {
   stroke: #809583;
-}
-
-h1,
-h2 {
-  text-align: center;
 }
 
 #map {
@@ -102,4 +101,16 @@ html, body {
 
 #happinessChartContainer {
   height: 40vh;
+}
+
+.alfa {
+  font-family: "Alfa Slab One", cursive;
+}
+
+.yuge {
+  font-size: 5rem;
+}
+
+.centre {
+  text-align: center;
 }

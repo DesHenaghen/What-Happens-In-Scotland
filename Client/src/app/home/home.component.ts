@@ -115,8 +115,8 @@ export class HomeComponent implements OnInit {
       .translate([this.width / 2, this.height / 2]);
 
     this.colour = d3.scale.linear()
-      .domain([0, 0.47, 0.53, 1])
-      .range(['#ff000c', '#b2b2b2', '#8f8f8f', '#0500ff']);
+      .domain([0, 0.48, 0.52, 1])
+      .range(['#ff000c', '#8f8f8f', '#b2b2b2', '#0500ff']);
 
     // Create svg for graph to be drawn in
     this.svg = d3.select('#map')
