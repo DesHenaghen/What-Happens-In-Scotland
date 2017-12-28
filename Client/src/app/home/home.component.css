@@ -42,7 +42,6 @@ h1 {
 
 #glasgow-boundary {
   fill: none;
-  stroke: #777;
   stroke-linejoin: round;
   stroke-width: 4vh;
   cursor: pointer;

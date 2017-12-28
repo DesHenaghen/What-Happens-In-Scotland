@@ -80,6 +80,7 @@ export class HomeComponent implements OnInit {
     }
 
     this.wards[area].values = values;
+    this.wards[area].average = (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length);
 
     return values;
   }
@@ -108,8 +109,8 @@ export class HomeComponent implements OnInit {
       .translate([this.width / 2, this.height / 2]);
 
     this.colour = d3.scale.linear()
-      .domain([0, 6])
-      .range(['#5b5858', '#4f4d4d', '#454444', '#323131']);
+      .domain([0, 0.5, 1])
+      .range(['#ff000c', '#b2b2b2', '#0500ff']);
 
     // Create svg for graph to be drawn in
     this.svg = d3.select('#map')
@@ -150,6 +151,7 @@ export class HomeComponent implements OnInit {
   private loadWards = (topology: any): void => {
     topology.features.forEach(feature => {
       this.wards[feature.properties.WD13CD] = { name: feature.properties.WD13NM };
+      this.generateData(feature.properties.WD13CD);
     });
 
     this.wards['glasgow-boundary'] = { name: 'Glasgow' };
@@ -167,7 +169,7 @@ export class HomeComponent implements OnInit {
       // Define the outline of the shape based on the defined projection and polygon shape
       .attr('d', this.path)
       // Fill the polygon in with a colour from a range
-      .attr('fill', (d, i) => this.colour(i))
+      .attr('fill', (d, i) => this.colour((i === 4) ? 1 : this.wards[d.properties.WD13CD].average))
       .attr('id', d => d.properties.WD13CD)
         .on('click', this.setWards)
         .on('mousemove', this.showTooltip)
@@ -210,7 +212,8 @@ export class HomeComponent implements OnInit {
   }
 
   private showTooltip = (d: any): void => {
-    const label = d.properties ? d.properties.WD13NM : 'Glasgow';
+    const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
+      '\n ' + Math.trunc(this.wards[d.properties.WD13CD].average * 100) + '%';
     const mouse = d3.mouse(this.svg.node());
     console.log(mouse, this.offsetL, this.offsetT);
     this.tooltip.classed('hidden', false)
