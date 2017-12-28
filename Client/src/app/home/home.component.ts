@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit {
       {
         values: (this.wards[area].values) ? this.wards[area].values : this.generateData(area),
         key: 'Happiness',
-        color: '#7e91ff',
+        color: '#7cff6c',
         area: true      // area - set to true if you want this line to turn into a filled area chart.
       }
     ];
