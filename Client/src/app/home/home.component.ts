@@ -16,7 +16,7 @@ import * as moment from 'moment';
 
 })
 export class HomeComponent implements OnInit {
-  public ward = 'Glasgow';
+  public ward = {};
   private wards = {};
 
   private margin = {top: 20, right: 20, bottom: 0, left: 50};
@@ -81,12 +81,16 @@ export class HomeComponent implements OnInit {
 
     this.wards[area].values = values;
     this.wards[area].average = (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length);
+    this.wards[area].prettyAverage = Math.round(this.wards[area].average * 100);
 
     return values;
   }
 
   private setData = (selectedArea?: string): void => {
     const area = selectedArea || 'glasgow-boundary';
+
+    // Set current ward
+    this.ward = this.wards[area];
 
     // Line chart data should be sent as an array of series objects.
     this.lineData = [
@@ -97,6 +101,8 @@ export class HomeComponent implements OnInit {
         area: true      // area - set to true if you want this line to turn into a filled area chart.
       }
     ];
+
+    document.getElementById('chart-box').style.backgroundColor = this.colour(this.wards[area].average);
   }
 
   private initVariables = (): void => {
@@ -109,8 +115,8 @@ export class HomeComponent implements OnInit {
       .translate([this.width / 2, this.height / 2]);
 
     this.colour = d3.scale.linear()
-      .domain([0, 0.5, 1])
-      .range(['#ff000c', '#b2b2b2', '#0500ff']);
+      .domain([0, 0.47, 0.53, 1])
+      .range(['#ff000c', '#b2b2b2', '#8f8f8f', '#0500ff']);
 
     // Create svg for graph to be drawn in
     this.svg = d3.select('#map')
@@ -214,7 +220,7 @@ export class HomeComponent implements OnInit {
 
   private showTooltip = (d: any): void => {
     const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
-      '<br> ' + Math.trunc(this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].average * 100) + '% Happy';
+      '<br> ' + this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].prettyAverage + '% Happy';
     const mouse = d3.mouse(this.svg.node());
     console.log(mouse, this.offsetL, this.offsetT);
     this.tooltip.classed('hidden', false)

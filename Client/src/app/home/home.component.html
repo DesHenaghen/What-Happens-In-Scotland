@@ -4,8 +4,9 @@
       <div id="map" class="map"></div>
     </div>
     <div class="col">
-      <div class="chart-box">
-        <h1>{{ward}}</h1>
+      <div id="chart-box">
+        <h1>{{ward.name}}</h1>
+        <h2>{{ward.prettyAverage}}% Happy</h2>
         <div id="happinessChartContainer">
           <nvd3 id="happinessChart" [options]="lineOptions" [data]="lineData"></nvd3>
         </div>

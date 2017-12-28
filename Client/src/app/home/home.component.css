@@ -27,7 +27,8 @@
   stroke: #809583;
 }
 
-h1 {
+h1,
+h2 {
   text-align: center;
 }
 
@@ -76,7 +77,7 @@ html, body {
   height: 100%;
 }
 
-.chart-box {
+#chart-box {
   border-color: #686666;
   border-style: solid;
   border-radius: 2vh;
