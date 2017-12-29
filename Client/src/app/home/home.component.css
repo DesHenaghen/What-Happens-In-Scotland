@@ -2,6 +2,10 @@ html * {
   font-family: 'Open Sans', sans-serif;
 }
 
+body {
+  overflow: hidden;
+}
+
 .wards {
   cursor: pointer;
   stroke: #000;
@@ -84,6 +88,8 @@ html, body {
   height: 80%;
   width: 80%;
   margin: 4vh auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 #map-background {

@@ -8,3 +8,47 @@
   font-weight: 400;
   src: local('Alfa Slab One'), local('AlfaSlabOne-Regular'), url('./assets/fonts/AlfaSlabOne-Regular.ttf') format('truetype');
 }
+
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-button {
+  width: 20px;
+  height: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #313131;
+  border: 5px none #313131;
+  border-radius: 28px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #747474;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #454545;
+}
+
+::-webkit-scrollbar-track {
+  background: #666666;
+  border: 5px none #838383;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+
+::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
