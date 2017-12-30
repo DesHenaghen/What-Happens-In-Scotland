@@ -1,15 +1,13 @@
 <div id="map-background">
   <div class="row">
     <div class="col">
-      <div id="map" class="map"></div>
+      <app-glasgow-map (wardSelected)="setWard($event)"></app-glasgow-map>
     </div>
     <div class="col">
       <div id="chart-box">
         <h1 class="centre alfa">{{ward.name}}</h1>
         <h2 class="centre">{{ward.prettyAverage}}% Happy</h2>
-        <div id="happinessChartContainer">
-          <nvd3 id="happinessChart" [options]="lineOptions" [data]="lineData"></nvd3>
-        </div>
+        <app-happy-timeline [ward]="ward"></app-happy-timeline>
         <div class="row">
           <div class="col">
             <h2 class="centre"><b>Most Common Terms</b></h2>
@@ -22,6 +20,9 @@
             <div class="centre yuge alfa">212</div>
             <h3 class="centre alfa">tweets</h3>
           </div>
+        </div>
+        <div class="row">
+          <app-happy-rank [ward]="ward"></app-happy-rank>
         </div>
       </div>
     </div>

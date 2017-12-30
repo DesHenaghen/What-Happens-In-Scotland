@@ -5,11 +5,17 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NvD3Module } from 'ng2-nvd3';
+import { HappyRankComponent } from './happy-rank/happy-rank.component';
+import { HappyTimelineComponent } from './happy-timeline/happy-timeline.component';
+import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    HappyRankComponent,
+    HappyTimelineComponent,
+    GlasgowMapComponent
   ],
   imports: [
     BrowserModule,

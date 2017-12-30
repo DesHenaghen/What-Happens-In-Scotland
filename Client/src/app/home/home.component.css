@@ -6,74 +6,8 @@ body {
   overflow: hidden;
 }
 
-.wards {
-  cursor: pointer;
-  stroke: #000;
-}
-
-.wards:hover {
-  fill: #a2a2a2;
-}
-
-#glasgow-boundary:hover {
-  stroke: #a2a2a2;
-}
-
-.place-label {
-  pointer-events:none;
-}
-
-.selected {
-  fill: #529838;
-}
-
-.selected:hover {
-  fill: #809583;
-}
-
-#glasgow-boundary.selected:hover {
-  stroke: #809583;
-}
-
-#map {
-  text-align: center;
-}
-
-#map svg {
-  max-height: 85vh;
-  left: 0;
-  position: absolute;
-}
-
-#glasgow-boundary {
-  fill: none;
-  stroke-linejoin: round;
-  stroke-width: 4vh;
-  cursor: pointer;
-}
-
-#glasgow-boundary.selected {
-  stroke: #529838;
-}
-
-#glasgow-boundary-background {
-  fill: white;
-  stroke: none;
-}
-
 .hidden {
   display: none;
-}
-
-div.tooltip {
-  color: #222;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 0 0 2px 0 #a6a6a6;
-  padding: .2em;
-  text-shadow: #f5f5f5 0 1px 0;
-  opacity: 0.9;
-  position: absolute;
 }
 
 html, body {
@@ -98,15 +32,6 @@ html, body {
 
 .row {
   height: 100%;
-}
-
-#happinessChart {
-  height: 100%;
-  width: 100%;
-}
-
-#happinessChartContainer {
-  height: 40vh;
 }
 
 .alfa {
