@@ -1,8 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
 
-declare let d3: any;
-import 'nvd3';
-
 @Component({
   selector: 'app-happy-rank',
   templateUrl: './happy-rank.component.html',
@@ -15,10 +12,11 @@ import 'nvd3';
 })
 export class HappyRankComponent implements OnInit, OnChanges {
 
-  @Input() ward;
+  @Input() ward: any;
+  @Input() wards: any;
 
-  public lineOptions;
-  public lineData;
+  public lineOptions: any;
+  public lineData: any[];
 
   constructor() { }
 
@@ -32,43 +30,57 @@ export class HappyRankComponent implements OnInit, OnChanges {
     }
   }
 
-  private setOptions = (): void => {
+  private setOptions(): void {
     this.lineOptions = {
       chart: {
-        type: 'lineChart',
-        yDomain: [0, 1],
+        type: 'discreteBarChart',
+        height: 450,
         margin : {
           top: 20,
           right: 20,
-          bottom: 40,
+          bottom: 50,
           left: 55
         },
-        useInteractiveGuideline: true,
+        x: d => d.label,
+        y: d => d.value * 100,
+        showValues: false,
+        valueFormat: d => (d * 100).toFixed() + '%',
+        duration: 500,
         xAxis: {
-          axisLabel: 'Date',
-          tickFormat: d => d3.time.format('%b %d')(new Date(d))
+          axisLabel: 'Wards (Ranked)',
+          tickFormat: (d, i) => (i === 0 || i === 20) ? d : ''
         },
         yAxis: {
           axisLabel: 'Happiness',
-          tickFormat: d => Math.trunc(d * 100) + '%',
           axisLabelDistance: -10
         }
       }
     };
   }
 
-  private setData = (): void => {
-    if (this.ward.values) {
-      // Line chart data should be sent as an array of series objects.
-      this.lineData = [
-        {
-          values: this.ward.values,
-          key: 'Happiness',
-          color: '#7cff6c',
-          area: true      // area - set to true if you want this line to turn into a filled area chart.
-        }
-      ];
+  private setData(): void {
+    const barData = [
+      {
+        key: 'Wards',
+        values: []
+      }
+    ];
+    for (const [key, ward] of Object.entries(this.wards)) {
+      if (ward.average) {
+        console.log(ward);
+        // Line chart data should be sent as an array of series objects.
+        barData[0].values.push(
+          {
+            value: ward.average,
+            label: ward.name,
+            color: (this.ward === ward) ? '#7cff6c' : '#ffffff'
+          }
+        );
+      }
     }
+
+    barData[0].values.sort((a, b) => b.value - a.value);
+    this.lineData = barData;
   }
 
 }

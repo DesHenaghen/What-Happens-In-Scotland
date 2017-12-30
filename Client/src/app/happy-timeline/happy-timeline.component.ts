@@ -15,10 +15,10 @@ import 'nvd3';
 })
 export class HappyTimelineComponent implements OnInit, OnChanges {
 
-  @Input() ward;
+  @Input() ward: any;
 
-  public lineOptions;
-  public lineData;
+  public lineOptions: any;
+  public lineData: any[];
 
   constructor() { }
 
@@ -32,7 +32,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     }
   }
 
-  private setOptions = (): void => {
+  private setOptions(): void {
     this.lineOptions = {
       chart: {
         type: 'lineChart',
@@ -57,7 +57,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     };
   }
 
-  private setData = (): void => {
+  private setData (): void {
     if (this.ward.values) {
       // Line chart data should be sent as an array of series objects.
       this.lineData = [

@@ -3,6 +3,9 @@ import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angul
 declare let d3: any;
 import * as topojson from 'topojson';
 
+/**
+ *
+ */
 @Component({
   selector: 'app-glasgow-map',
   templateUrl: './glasgow-map.component.html',
@@ -11,6 +14,7 @@ import * as topojson from 'topojson';
 })
 export class GlasgowMapComponent implements OnInit {
 
+  // Emits the id of the ward selected on the map to parent components
   @Output() wardSelected = new EventEmitter<string>();
 
   public wards = {};
@@ -35,7 +39,7 @@ export class GlasgowMapComponent implements OnInit {
     this.initVariables();
   }
 
-  private initVariables = (): void => {
+  private initVariables (): void {
 
     this.projection = d3.geo.albers()
       .center([-0.15, 55.8642])
@@ -71,7 +75,7 @@ export class GlasgowMapComponent implements OnInit {
    * Draws map when topology has been parsed
    * @param topology
    */
-  public drawMap = (topology: any): void => {
+  public drawMap (topology: any): void {
       // Draw map outline
       this.drawGlasgowOutline(topology);
 
@@ -79,7 +83,7 @@ export class GlasgowMapComponent implements OnInit {
       this.drawWards(topology);
   }
 
-  private drawWards = (topology: any): void => {
+  private drawWards (topology: any): void {
     this.svg.append('g').selectAll('path')
       .data(topology.features) // Read in the array of features from the topology data
       .enter()
@@ -98,7 +102,7 @@ export class GlasgowMapComponent implements OnInit {
       });
   }
 
-  private drawGlasgowOutline = (t: any): void => {
+  private drawGlasgowOutline (t: any): void  {
     const topology = topojson.topology([t], null);
     this.svg.append('path')
     // Only returns the arcs that aren't shared by wards i.e the outer bounds
