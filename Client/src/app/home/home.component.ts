@@ -1,11 +1,12 @@
 import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {GlasgowMapComponent} from '../glasgow-map/glasgow-map.component';
 
 declare let d3: any;
 import * as moment from 'moment';
-import {GlasgowMapComponent} from '../glasgow-map/glasgow-map.component';
 
 /**
- *
+ * The base component for the home screen. Manages the styling of the page as well as the loading and modification
+ * of wards data.
  */
 @Component({
   templateUrl: './home.component.html',
@@ -92,14 +93,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   /**
    * Sets the css styling based on which ward is selected.
-   * @param {string} area
+   * @param {string} area - id of the selected ward
    */
   private setStyling(area: string): void {
-    document.getElementById('chart-box').style.backgroundColor = this.map.colour(this.wards[area].average);
     this.clearSelectedClass();
+    document.getElementById('chart-box').style.backgroundColor = this.map.colour(this.wards[area].average);
     document.getElementById(area).classList.add('selected');
   }
 
+  /**
+   * Removes the selected class from all wards drawn on the map
+   */
   private clearSelectedClass(): void {
     for (const [key] of Object.entries(this.wards)) {
       document.getElementById(key).classList.remove('selected');

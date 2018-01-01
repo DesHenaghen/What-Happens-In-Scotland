@@ -1,8 +1,10 @@
 import {
-  Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
-  ViewEncapsulation
+  Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 
+/**
+ * Component to generate and display a bar chart that shows how happiness ranks between wards
+ */
 @Component({
   selector: 'app-happy-rank',
   templateUrl: './happy-rank.component.html',
@@ -30,12 +32,19 @@ export class HappyRankComponent implements OnInit, OnChanges {
     this.setOptions();
   }
 
+  /**
+   * Reacts to any changes to the @Input variables
+   * @param {SimpleChanges} changes
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['ward']) {
       this.setData();
     }
   }
 
+  /**
+   * Sets the options for the happy rank bar chart
+   */
   private setOptions(): void {
     this.barOptions = {
       chart: {
@@ -70,6 +79,9 @@ export class HappyRankComponent implements OnInit, OnChanges {
     };
   }
 
+  /**
+   * Sets the data for the happy rank bar chart
+   */
   private setData(): void {
     const barData = [
       {

@@ -3,6 +3,9 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} f
 declare let d3: any;
 import 'nvd3';
 
+/**
+ * Component for the generation of a line chart to show happiness over time for a ward
+ */
 @Component({
   selector: 'app-happy-timeline',
   templateUrl: './happy-timeline.component.html',
@@ -26,12 +29,19 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     this.setOptions();
   }
 
+  /**
+   * Reacts to the change of any @Input variables
+   * @param {SimpleChanges} changes
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['ward']) {
       this.setData();
     }
   }
 
+  /**
+   * Sets the options for the happy timeline line chart
+   */
   private setOptions(): void {
     this.lineOptions = {
       chart: {
@@ -58,6 +68,9 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     };
   }
 
+  /**
+   * Sets the data for the happy timeline line chart
+   */
   private setData (): void {
     if (this.ward.values) {
       // Line chart data should be sent as an array of series objects.

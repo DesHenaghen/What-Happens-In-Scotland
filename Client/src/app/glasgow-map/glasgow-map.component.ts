@@ -4,7 +4,7 @@ declare let d3: any;
 import * as topojson from 'topojson';
 
 /**
- *
+ * Component for the generation and management of the Glasgow Map
  */
 @Component({
   selector: 'app-glasgow-map',
@@ -39,6 +39,9 @@ export class GlasgowMapComponent implements OnInit {
     this.initVariables();
   }
 
+  /**
+   *
+   */
   private initVariables (): void {
 
     this.projection = d3.geo.albers()
@@ -83,6 +86,10 @@ export class GlasgowMapComponent implements OnInit {
       this.drawWards(topology);
   }
 
+  /**
+   * Draws the wards that exist in the topology passed in.
+   * @param topology
+   */
   private drawWards (topology: any): void {
     this.svg.append('g').selectAll('path')
       .data(topology.features) // Read in the array of features from the topology data
@@ -102,6 +109,10 @@ export class GlasgowMapComponent implements OnInit {
       });
   }
 
+  /**
+   * Draws the outline of the ward in the topology passed in. Only draws outer boundaries
+   * @param t
+   */
   private drawGlasgowOutline (t: any): void  {
     const topology = topojson.topology([t], null);
     this.svg.append('path')
@@ -118,10 +129,20 @@ export class GlasgowMapComponent implements OnInit {
       });
   }
 
+  // Event Handlers //
+
+  /**
+   * Emits the id of the selected ward
+   * @param e
+   */
   private setData = (e: any): void => {
     this.wardSelected.emit(e.properties ? e.properties.WD13CD : 'glasgow-boundary');
   }
 
+  /**
+   * Displays the tooltip for the ward hovered over at the appropriate place on the screen
+   * @param d
+   */
   private showTooltip = (d: any): void => {
     const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
       '<br> ' + this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].prettyAverage + '% Happy';
