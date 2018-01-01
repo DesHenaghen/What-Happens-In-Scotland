@@ -95,7 +95,7 @@ export class GlasgowMapComponent implements OnInit {
       // Fill the polygon in with a colour from a range
       .attr('fill', d => this.colour(this.wards[d.properties.WD13CD].average))
       .attr('id', d => d.properties.WD13CD)
-      .on('click', this.setWards)
+      .on('click', this.setData)
       .on('mousemove', this.showTooltip)
       .on('mouseout', () => {
         this.tooltip.classed('hidden', true);
@@ -111,33 +111,27 @@ export class GlasgowMapComponent implements OnInit {
       .attr('stroke', () => this.colour(this.wards['glasgow-boundary'].average))
       .attr('id', 'glasgow-boundary')
       .attr('class', 'selected')
-      .on('click', this.setWards)
+      .on('click', this.setData)
       .on('mousemove', this.showTooltip)
       .on('mouseout', () => {
         this.tooltip.classed('hidden', true);
       });
   }
 
-  private setData = (selectedArea?: string): void => {
-    const area = selectedArea || 'glasgow-boundary';
-
-    this.wardSelected.emit(area);
-
-    document.getElementById('chart-box').style.backgroundColor = this.colour(this.wards[area].average);
+  private setData = (e: any): void => {
+    this.wardSelected.emit(e.properties ? e.properties.WD13CD : 'glasgow-boundary');
   }
 
   /**
    * Sets the target of the click event to be active. Sets active area on the map.
-   * @param {Event} e
+   * @param {string} area
    */
-  private setWards = (e: any): void => {
+  private setWards(area: string): void {
     this.clearSelectedClass();
-    const id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
-    this.setData(id);
-    document.getElementById(id).classList.add('selected');
+    document.getElementById(area).classList.add('selected');
   }
 
-  private clearSelectedClass = (): void => {
+  private clearSelectedClass(): void {
     for (const [key] of Object.entries(this.wards)) {
       document.getElementById(key).classList.remove('selected');
     }
@@ -147,7 +141,7 @@ export class GlasgowMapComponent implements OnInit {
     const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
       '<br> ' + this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].prettyAverage + '% Happy';
     const mouse = d3.mouse(this.svg.node());
-    console.log(mouse, this.offsetL, this.offsetT);
+    // console.log(mouse, this.offsetL, this.offsetT);
     this.tooltip.classed('hidden', false)
       .attr('style', 'left:' + (mouse[0] + this.offsetL) + 'px;top:' + (mouse[1] + this.offsetT) + 'px')
       .html(label);

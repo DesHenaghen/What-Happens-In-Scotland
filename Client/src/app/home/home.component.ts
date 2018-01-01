@@ -80,12 +80,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Sets the ward as selected. Called by the child map component.
+   * Sets the ward as selected. Called by the child components.
    * @param {string} area - id of the selected ward
    */
   public setWard(area: string): void {
     if (!this.wards[area].values) { this.generateData(area); }
     this.ward = this.wards[area];
+
+    document.getElementById('chart-box').style.backgroundColor = this.map.colour(this.wards[area].average);
+    this.map.setWards(area);
   }
 
 }

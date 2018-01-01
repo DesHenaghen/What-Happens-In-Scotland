@@ -1,4 +1,7 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {
+  Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
+  ViewEncapsulation
+} from '@angular/core';
 
 @Component({
   selector: 'app-happy-rank',
@@ -15,8 +18,11 @@ export class HappyRankComponent implements OnInit, OnChanges {
   @Input() ward: any;
   @Input() wards: any;
 
-  public lineOptions: any;
-  public lineData: any[];
+  // Emits the id of the ward selected on the chart to parent components
+  @Output() wardSelected = new EventEmitter<string>();
+
+  public barOptions: any;
+  public barData: any[];
 
   constructor() { }
 
@@ -31,8 +37,13 @@ export class HappyRankComponent implements OnInit, OnChanges {
   }
 
   private setOptions(): void {
-    this.lineOptions = {
+    this.barOptions = {
       chart: {
+        discretebar: {
+          dispatch: {
+            elementClick: e => this.wardSelected.emit(e.data.id)
+          }
+        },
         type: 'discreteBarChart',
         height: 450,
         margin : {
@@ -67,11 +78,11 @@ export class HappyRankComponent implements OnInit, OnChanges {
     ];
     for (const [key, ward] of Object.entries(this.wards)) {
       if (ward.average) {
-        console.log(ward);
         // Line chart data should be sent as an array of series objects.
         barData[0].values.push(
           {
             value: ward.average,
+            id: key,
             label: ward.name,
             color: (this.ward === ward) ? '#7cff6c' : '#ffffff'
           }
@@ -80,7 +91,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
     }
 
     barData[0].values.sort((a, b) => b.value - a.value);
-    this.lineData = barData;
+    this.barData = barData;
   }
 
 }
