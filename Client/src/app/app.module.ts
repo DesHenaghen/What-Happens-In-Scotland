@@ -8,6 +8,7 @@ import { NvD3Module } from 'ng2-nvd3';
 import { HappyRankComponent } from './happy-rank/happy-rank.component';
 import { HappyTimelineComponent } from './happy-timeline/happy-timeline.component';
 import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
+import { TweetBoxComponent } from './tweet-box/tweet-box.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
     HomeComponent,
     HappyRankComponent,
     HappyTimelineComponent,
-    GlasgowMapComponent
+    GlasgowMapComponent,
+    TweetBoxComponent
   ],
   imports: [
     BrowserModule,

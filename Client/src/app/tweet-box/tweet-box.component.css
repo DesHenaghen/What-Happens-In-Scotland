@@ -1,0 +1,11 @@
+#tweet_box {
+  border: black solid;
+  background-color: grey;
+  height: 31vh;
+  width: 37vh;
+  right: 0;
+  position: absolute;
+  top: 10px;
+  border-radius: 2vh;
+}
+
