@@ -45,7 +45,8 @@ export class HappyRankComponent implements OnInit, OnChanges {
           }
         },
         type: 'discreteBarChart',
-        height: 450,
+        yDomain: [0, 100],
+        height: 300,
         margin : {
           top: 20,
           right: 20,
