@@ -37,7 +37,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
       chart: {
         type: 'lineChart',
         yDomain: [0, 1],
-        height: 300,
+        height: 250,
         margin : {
           top: 20,
           right: 20,

@@ -122,21 +122,6 @@ export class GlasgowMapComponent implements OnInit {
     this.wardSelected.emit(e.properties ? e.properties.WD13CD : 'glasgow-boundary');
   }
 
-  /**
-   * Sets the target of the click event to be active. Sets active area on the map.
-   * @param {string} area
-   */
-  private setWards(area: string): void {
-    this.clearSelectedClass();
-    document.getElementById(area).classList.add('selected');
-  }
-
-  private clearSelectedClass(): void {
-    for (const [key] of Object.entries(this.wards)) {
-      document.getElementById(key).classList.remove('selected');
-    }
-  }
-
   private showTooltip = (d: any): void => {
     const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
       '<br> ' + this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].prettyAverage + '% Happy';

@@ -46,7 +46,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
         },
         type: 'discreteBarChart',
         yDomain: [0, 100],
-        height: 300,
+        height: 250,
         margin : {
           top: 20,
           right: 20,
@@ -85,7 +85,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
             value: ward.average,
             id: key,
             label: ward.name,
-            color: (this.ward === ward) ? '#7cff6c' : '#ffffff'
+            color: (this.ward === ward) ? '#7cff6c' : (key === 'glasgow-boundary') ? '#48BFFF' : '#ffffff'
           }
         );
       }

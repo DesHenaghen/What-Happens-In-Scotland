@@ -87,8 +87,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (!this.wards[area].values) { this.generateData(area); }
     this.ward = this.wards[area];
 
+    this.setStyling(area);
+  }
+
+  /**
+   * Sets the css styling based on which ward is selected.
+   * @param {string} area
+   */
+  private setStyling(area: string): void {
     document.getElementById('chart-box').style.backgroundColor = this.map.colour(this.wards[area].average);
-    this.map.setWards(area);
+    this.clearSelectedClass();
+    document.getElementById(area).classList.add('selected');
+  }
+
+  private clearSelectedClass(): void {
+    for (const [key] of Object.entries(this.wards)) {
+      document.getElementById(key).classList.remove('selected');
+    }
   }
 
 }

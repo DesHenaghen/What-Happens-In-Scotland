@@ -19,12 +19,12 @@ html, body {
   border-style: solid;
   border-radius: 2vh;
   background-color: #9f9f9fb3;
-  height: 80%;
-  max-height: 100vh;
+  height: 100%;
+  max-height: 85vh;
   width: 80%;
   margin: 4vh auto;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #map-background {
