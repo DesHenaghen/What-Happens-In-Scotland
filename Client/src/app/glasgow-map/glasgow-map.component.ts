@@ -84,6 +84,9 @@ export class GlasgowMapComponent implements OnInit {
 
       // Draw each ward polygon
       this.drawWards(topology);
+
+      this.drawPoints();
+      setInterval(() => {this.drawPoints(); console.log('Drawing point'); }, this.randomNumber(1000, 5000));
   }
 
   /**
@@ -127,6 +130,36 @@ export class GlasgowMapComponent implements OnInit {
       .on('mouseout', () => {
         this.tooltip.classed('hidden', true);
       });
+  }
+
+  private drawPoints(): void {
+    const coordinates = this.projection([this.randomNumber(-4.33, -4.18), this.randomNumber(55.834, 55.889)]);
+    this.svg
+      .append('circle')
+      .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
+      .attr('cx', d => coordinates[0])
+      .attr('cy', d => coordinates[1])
+      .attr('r', '4px')
+      .attr('fill', '#2a2727')
+      .call(d => this.circlePulse(d[0][0]));
+  }
+
+  private randomNumber(min: number, max: number): number {
+      return Math.random() * (max - min) + min;
+  }
+
+  private circlePulse = (d: any): void => {
+    this.svg.select('#' + d.id)
+      .transition()
+      .duration(2000)
+      .attr('stroke-width', 0.5)
+      .attr('r', 15)
+      .ease('sine')
+      .transition()
+      .duration(5000)
+      .attr('stroke-width', 10)
+      .attr('r', 0)
+      .remove();
   }
 
   // Event Handlers //

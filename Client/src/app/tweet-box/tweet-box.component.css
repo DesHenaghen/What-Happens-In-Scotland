@@ -1,11 +1,13 @@
 #tweet_box {
   border: black solid;
-  background-color: grey;
+  background-color: white;
   height: 31vh;
   width: 37vh;
   right: 0;
   position: absolute;
   top: 10px;
   border-radius: 2vh;
+  color: #14171a;
+  font-family: 'Segoe UI',Arial,sans-serif;
 }
 
