@@ -137,8 +137,8 @@ export class GlasgowMapComponent implements OnInit {
     this.svg
       .append('circle')
       .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
-      .attr('cx', d => coordinates[0])
-      .attr('cy', d => coordinates[1])
+      .attr('cx', () => coordinates[0])
+      .attr('cy', () => coordinates[1])
       .attr('r', '4px')
       .attr('fill', '#2a2727')
       .call(d => this.circlePulse(d[0][0]));
@@ -153,7 +153,7 @@ export class GlasgowMapComponent implements OnInit {
       .transition()
       .duration(2000)
       .attr('stroke-width', 0.5)
-      .attr('r', 15)
+      .attr('r', 12)
       .ease('sine')
       .transition()
       .duration(5000)
