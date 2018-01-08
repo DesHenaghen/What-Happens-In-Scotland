@@ -1,5 +1,7 @@
-import moment from 'moment';
+const moment = require('moment');
+const fs = require('fs');
 const express = require('express');
+
 const router = express.Router();
 
 router.get('/data', (req, res) => {
@@ -15,6 +17,17 @@ router.get('/data', (req, res) => {
   }
 
   res.send(values);
+});
+
+router.get('/wards', (req, res) => {
+  fs.readFile('./json/glasgow-wards.json', 'utf8', (err, topology) => {
+    if (err) {
+      console.error(err);
+      return res.error(err);
+    }
+
+    res.send(topology);
+  });
 });
 
 module.exports = router;

@@ -41,6 +41,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * to the child map component.
    */
   private loadWards(): void {
+    // this._dataService.getWards().subscribe(
+    //   topology => {
+    //     topology.features.forEach(feature => {
+    //       this.wards[feature.properties.WD13CD] = { name: feature.properties.WD13NM };
+    //       this.generateData(feature.properties.WD13CD);
+    //     });
+    //
+    //     this.wards['glasgow-boundary'] = { name: 'Glasgow' };
+    //     this.generateData(null, topology);
+    //   }
+    // );
+
     d3.json('./assets/json/glasgow-wards.json', (error, topology) => {
       if (error) {
         console.error(error);

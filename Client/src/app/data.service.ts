@@ -15,5 +15,9 @@ export class DataService {
   getData() {
     return this.http.get<any[]>('/api/data');
   }
+
+  getWards() {
+    return this.http.get<any>('/api/wards');
+  }
 }
 
