@@ -3,12 +3,12 @@ from urllib3.exceptions import ProtocolError
 
 import logger as log
 import configuration
-import DatabaseManager as db_man
-import TwitterManager as tw_man
+import DatabaseManager as dbMan
+import TwitterManager as twMan
 
-# config = configuration.ProductionConfig()
-config = configuration.DevelopmentConfig()
-twitter = tw_man.TwitterManager()
+config = configuration.ProductionConfig()
+# config = configuration.DevelopmentConfig()
+twitter = twMan.TwitterManager()
 
 
 def main():
@@ -20,9 +20,9 @@ def main():
 
         for tweet in tweet_stream:
             if tweet.get("coordinates"):
-                db_man.save_geo_tweet(tweet)
+                dbMan.save_geo_tweet(tweet)
             else:
-                db_man.save_glasgow_tweet(tweet)
+                dbMan.save_glasgow_tweet(tweet)
 
     except ProtocolError as e:
         print("Killing myself now as a PROTOCOL ERROR occurred")
