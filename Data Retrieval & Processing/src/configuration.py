@@ -1,3 +1,6 @@
+import sys
+
+
 class Config:
     def generate_connection_string(self):
         return "postgresql://{}:{}@{}:{}/{}"\
@@ -39,3 +42,12 @@ class ProductionConfig(Config):
     ACCESS_TOKEN_KEY = '924952244293955584-CyeEIdTVybmwwpE6jH25KgciahTpz2S'
     ACCESS_TOKEN_SECRET = 'ggQSp6fdat3vGVe4MYnnvR4LBmQanYcMGhFW1E3lRrGnt'
 
+
+if 'dev' in sys.argv:
+    config = DevelopmentConfig()
+else:
+    config = ProductionConfig()
+
+
+def get_config():
+    return config

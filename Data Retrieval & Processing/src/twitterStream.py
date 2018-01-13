@@ -6,8 +6,7 @@ import configuration
 import DatabaseManager as dbMan
 import TwitterManager as twMan
 
-cosnfig = configuration.ProductionConfig()
-# config = configuration.DevelopmentConfig()
+config = configuration.get_config()
 twitter = twMan.TwitterManager()
 
 

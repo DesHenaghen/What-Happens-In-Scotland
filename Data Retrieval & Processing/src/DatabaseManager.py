@@ -6,7 +6,7 @@ import logger as log
 import configuration
 from SentimentAnalyser import SentimentAnalyser
 
-config = configuration.DevelopmentConfig()
+config = configuration.get_config()
 connection_string = config.generate_connection_string()
 
 analyser = SentimentAnalyser()

@@ -3,8 +3,7 @@ from TwitterAPI import TwitterAPI
 import configuration
 import logger as log
 
-# config = configuration.ProductionConfig()
-config = configuration.DevelopmentConfig()
+config = configuration.get_config()
 
 
 class TwitterManager:
