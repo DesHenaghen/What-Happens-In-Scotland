@@ -4,9 +4,12 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 import logger as log
 import configuration
+from SentimentAnalyser import SentimentAnalyser
 
 config = configuration.DevelopmentConfig()
 connection_string = config.generate_connection_string()
+
+analyser = SentimentAnalyser()
 
 db = sqlalchemy.create_engine(connection_string)
 engine = db.connect()
@@ -31,10 +34,17 @@ meta.create_all()
 
 
 def save_geo_tweet(tweet):
+    if 'extended_tweet' in tweet:
+        text = tweet.get('extended_tweet').get('full_text')
+    else:
+        text = tweet.get('text')
+
+    # analyser.print_sentiment_scores(text)
+
     statement = geo_tweets.insert().values(
         coordinates=tweet.get("coordinates"),
         place=tweet.get("place"),
-        text=tweet.get("text"),
+        text=text,
         timestamp=tweet.get("timestamp_ms"),
         user=tweet.get("user")
     )
@@ -48,9 +58,16 @@ def save_geo_tweet(tweet):
 
 
 def save_glasgow_tweet(tweet):
+    if 'extended_tweet' in tweet:
+        text = tweet.get('extended_tweet').get('full_text')
+    else:
+        text = tweet.get('text')
+
+    # analyser.print_sentiment_scores(text)
+
     statement = glasgow_tweets.insert().values(
         place=tweet.get("place"),
-        text=tweet.get("text"),
+        text=text,
         timestamp=tweet.get("timestamp_ms"),
         user=tweet.get("user")
     )
