@@ -6,14 +6,14 @@ import configuration
 import DatabaseManager as dbMan
 import TwitterManager as twMan
 
-config = configuration.get_config()
-twitter = twMan.TwitterManager()
+__config = configuration.get_config()
+__twitter = twMan.TwitterManager()
 
 
 def main():
     try:
         # Search for tweets in Glasgow
-        tweet_stream = twitter.get_twitter_stream()
+        tweet_stream = __twitter.get_twitter_stream()
         log.logger.info("Listening for tweets...")
         print("Listening for tweets...")
 

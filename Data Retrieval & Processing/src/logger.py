@@ -2,13 +2,13 @@ import logging
 
 
 logger = logging.getLogger('twitter_stream')
-handler = logging.FileHandler('twitter_stream.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+__handler = logging.FileHandler('twitter_stream.log')
+__formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 
 
 def set_up_logger():
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    __handler.setFormatter(__formatter)
+    logger.addHandler(__handler)
     logger.setLevel(logging.INFO)
 
 
