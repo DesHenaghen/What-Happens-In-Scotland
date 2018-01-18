@@ -1,10 +1,11 @@
 import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+
 import {GlasgowMapComponent} from '../glasgow-map/glasgow-map.component';
 import {DataService} from '../data.service';
 
 declare let d3: any;
-import * as moment from 'moment';
-import {HttpClient} from '@angular/common/http';
 
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
@@ -33,67 +34,60 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngOnInit() { }
 
   ngAfterViewInit() {
-    this.loadWards();
+    this.loadWardsData();
   }
 
   /**
    * Loads the wards from a JSON file. Generates data for these wards and passes this data
    * to the child map component.
    */
-  private loadWards(): void {
-    // this._dataService.getWards().subscribe(
-    //   topology => {
-    //     topology.features.forEach(feature => {
-    //       this.wards[feature.properties.WD13CD] = { name: feature.properties.WD13NM };
-    //       this.generateData(feature.properties.WD13CD);
-    //     });
-    //
-    //     this.wards['glasgow-boundary'] = { name: 'Glasgow' };
-    //     this.generateData(null, topology);
-    //   }
-    // );
-
+  private loadWardsData(): void {
     d3.json('./assets/json/glasgow-wards.json', (error, topology) => {
       if (error) {
         console.error(error);
       } else {
+        const httpRequests = [];
+        const httpRequestIds: string[] = [];
+
+        // Extract data for each ward
         topology.features.forEach(feature => {
           this.wards[feature.properties.WD13CD] = { name: feature.properties.WD13NM };
-          this.generateData(feature.properties.WD13CD);
+          httpRequests.push(this._dataService.getData());
+          httpRequestIds.push(feature.properties.WD13CD);
         });
 
+        // All of glasgow data
         this.wards['glasgow-boundary'] = { name: 'Glasgow' };
-        this.generateData(null, topology);
+        httpRequests.push(this._dataService.getData());
+        httpRequestIds.push('glasgow-boundary');
+
+        // Assign all the values from the http requests
+        forkJoin(httpRequests).subscribe(
+          wardValues => {
+            for (let i = 0; i < wardValues.length; i++) {
+              const values: any = wardValues[i];
+              const id = httpRequestIds[i];
+
+              this.wards[id].values = values;
+              this.wards[id].average = (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length);
+              this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10 ;
+            }
+          },
+          err => {
+            console.error(err);
+            console.log('Trying to load data again.');
+            this.loadWardsData();
+          },
+          () => {
+            // Set values for and draw map of Glasgow
+            this.map.wards = this.wards;
+            this.map.drawMap(topology);
+
+            this.setWard('glasgow-boundary');
+          });
+
       }
     });
-  }
-
-  /**
-   * Generates data for the ward with the provided id.
-   * @param {string} selectedArea - the id of the ward
-   * @param topology
-   * @returns {any[]} - the values generated for the ward
-   */
-  private generateData (selectedArea?: string, topology?: any) {
-    const area = selectedArea || 'glasgow-boundary';
-
-    this._dataService.getData().subscribe(
-values => {
-        this.wards[area].values = values;
-        this.wards[area].average = (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length);
-        this.wards[area].prettyAverage = Math.round(this.wards[area].average * 100);
-
-        if (!selectedArea) {
-          // Set values for and draw map of Glasgow
-          this.map.wards = this.wards;
-          this.map.drawMap(topology);
-
-          this.setWard('glasgow-boundary');
-        }
-      },
-err => console.error(err),
-() => console.log('done loading data')
-    );
   }
 
   /**

@@ -54,7 +54,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
           }
         },
         type: 'discreteBarChart',
-        yDomain: [0, 100],
+        yDomain: [-1, 1],
         height: 250,
         margin : {
           top: 20,
@@ -63,7 +63,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
           left: 55
         },
         x: d => d.label,
-        y: d => d.value * 100,
+        y: d => d.value,
         showValues: false,
         valueFormat: d => (d * 100).toFixed() + '%',
         duration: 500,

@@ -46,7 +46,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     this.lineOptions = {
       chart: {
         type: 'lineChart',
-        yDomain: [0, 1],
+        yDomain: [-1, 1],
         height: 250,
         margin : {
           top: 20,
@@ -57,11 +57,11 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
         useInteractiveGuideline: true,
         xAxis: {
           axisLabel: 'Date',
-          tickFormat: d => d3.time.format('%b %d')(new Date(d))
+          tickFormat: d =>  d3.time.format('%b %d')(new Date(d))
         },
         yAxis: {
           axisLabel: 'Happiness',
-          tickFormat: d => Math.trunc(d * 100) + '%',
+          tickFormat: d => d,
           axisLabelDistance: -10
         }
       }
