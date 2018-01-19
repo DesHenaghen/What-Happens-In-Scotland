@@ -143,32 +143,20 @@ def get_all_geo_tweets():
     ]).execute()
 
 
-def __update_tweets_sentiment(table, tweet_id, sentiment):
+def __update_tweets_sentiment(table, tweet_id, sentiment, date):
     table.update()\
         .values(
             neg_sent=sentiment.get('neg'),
             neu_sent=sentiment.get('neu'),
             pos_sent=sentiment.get('pos'),
-            compound_sent=sentiment.get('compound')
+            compound_sent=sentiment.get('compound'),
+            date=date
         ).where(table.c.id == tweet_id).execute()
 
 
-def update_glasgow_tweets_sentiment(tweet_id, sentiment):
-    __update_tweets_sentiment(__glasgow_tweets, tweet_id, sentiment)
+def update_glasgow_tweets_sentiment(tweet_id, sentiment, date):
+    __update_tweets_sentiment(__glasgow_tweets, tweet_id, sentiment, date)
 
 
-def update_geo_tweets_sentiment(tweet_id, sentiment):
-    __update_tweets_sentiment(__geo_tweets, tweet_id, sentiment)
-
-
-def __update_tweets_date(table, tweet_id, date):
-    table.update().values(date=date).where(table.c.id == tweet_id).execute()
-
-
-def update_glasgow_tweet_date(tweet_id, date):
-    __update_tweets_date(__glasgow_tweets, tweet_id, date)
-
-
-def update_geo_tweet_date(tweet_id, date):
-    __update_tweets_date(__geo_tweets, tweet_id, date)
-
+def update_geo_tweets_sentiment(tweet_id, sentiment, date):
+    __update_tweets_sentiment(__geo_tweets, tweet_id, sentiment, date)
