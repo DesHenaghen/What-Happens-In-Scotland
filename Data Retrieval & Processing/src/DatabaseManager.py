@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import Column, Text, Integer, REAL, DateTime, select
+from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text
 from sqlalchemy.dialects.postgresql import JSONB
 import datetime
 
@@ -20,10 +20,10 @@ __meta = sqlalchemy.MetaData(__engine)
 # Define table schemas
 __geo_tweets = sqlalchemy.Table("geo_tweets", __meta,
                                 Column('id', Integer, primary_key=True),
-                                Column('coordinates', JSONB),
+                                Column('coordinates', Text),
+                                Column('area_id', Text),
                                 Column('place', JSONB),
                                 Column('text', Text),
-                                Column('timestamp', Text),
                                 Column('date', DateTime),
                                 Column('user', JSONB),
                                 Column('neg_sent', REAL),
@@ -35,7 +35,6 @@ __glasgow_tweets = sqlalchemy.Table("glasgow_tweets", __meta,
                                     Column('id', Integer, primary_key=True),
                                     Column('place', JSONB),
                                     Column('text', Text),
-                                    Column('timestamp', Text),
                                     Column('date', DateTime),
                                     Column('user', JSONB),
                                     Column('neg_sent', REAL),
@@ -43,28 +42,43 @@ __glasgow_tweets = sqlalchemy.Table("glasgow_tweets", __meta,
                                     Column('pos_sent', REAL),
                                     Column('compound_sent', REAL))
 
+__glasgow_wards = sqlalchemy.Table("glasgow_wards", __meta,
+                                   Column('id', Text),
+                                   Column('name', Text),
+                                   Column('area', Text))
+
 # Creates tables if they don't already exist
 __meta.create_all()
 
 
 def save_geo_tweet(tweet):
     if 'extended_tweet' in tweet:
-        text = tweet.get('extended_tweet').get('full_text')
+        full_text = tweet.get('extended_tweet').get('full_text')
     else:
-        text = tweet.get('text')
+        full_text = tweet.get('text')
 
     # Tweet date & time
     float_ts = int(tweet.get('timestamp_ms')) / 1000
     date = datetime.datetime.fromtimestamp(float_ts)
 
+    coord_array = tweet.get("coordinates").get("coordinates")
+    coord_string = "(" + str(coord_array[1]) + "," + str(coord_array[0]) + ")"
+
+    try:
+        area_id = __engine.execute(
+            text("select id from glasgow_wards where area @> '"+coord_string+"'")
+        ).fetchone()[0]
+    except TypeError as e:
+        area_id = None
+
     # Tweet sentiment scores
-    scores = __analyser.calculate_sentiment_scores(text)
+    scores = __analyser.calculate_sentiment_scores(full_text)
 
     statement = __geo_tweets.insert().values(
-        coordinates=tweet.get("coordinates"),
+        coordinates=coord_string,
+        area_id=area_id,
         place=tweet.get("place"),
-        text=text,
-        timestamp=tweet.get("timestamp_ms"),
+        text=full_text,
         date=date,
         user=tweet.get("user"),
         neg_sent=scores.get('neg'),
@@ -97,7 +111,6 @@ def save_glasgow_tweet(tweet):
     statement = __glasgow_tweets.insert().values(
         place=tweet.get("place"),
         text=text,
-        timestamp=tweet.get("timestamp_ms"),
         date=date,
         user=tweet.get("user"),
         neg_sent=scores.get('neg'),
