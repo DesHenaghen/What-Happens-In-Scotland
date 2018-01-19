@@ -65,14 +65,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
         forkJoin(httpRequests).subscribe(
           wardValues => {
             for (let i = 0; i < wardValues.length; i++) {
-              const values: any = wardValues[i];
+              console.log(wardValues[i]);
+              const values: any = wardValues[i].values;
+              const total: number = wardValues[i].total;
               const id = httpRequestIds[i];
 
               this.wards[id].values = values;
               this.wards[id].average = (values.length > 0)
                                         ? (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length)
                                         : 0;
-              this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10 ;
+              this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10;
+              this.wards[id].total = total;
             }
           },
           err => {

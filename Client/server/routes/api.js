@@ -11,9 +11,10 @@ const pool = new Pool(config.postgres);
 async function getGeoTweets(id){
   const res = await pool
     .query(
-      "SELECT date::date as day, AVG(neg_sent) as neg, AVG(pos_sent) as pos, AVG(compound_sent) as compound " +
+      "SELECT date::date as day, AVG(neg_sent) as neg, AVG(pos_sent) as pos, AVG(compound_sent) as compound, COUNT(*) as total " +
       "from geo_tweets " +
-      "WHERE area_id = $1 AND compound_sent != 0" +
+      "WHERE area_id = $1 " +
+      // "AND compound_sent != 0 " +
       "GROUP BY day " +
       "ORDER BY day ASC",
       [id]
@@ -25,24 +26,30 @@ router.get('/ward_data', async (req, res) => {
   const ward_id = req.query.id;
   const tweets = await getGeoTweets(ward_id);
   const values = [];
+  let total = 0;
 
   for (let i = 0; i < tweets.length; i++) {
     values.push({
       x: new Date(tweets[i].day).getTime(),
       y: tweets[i].compound
     });
+
+    total += parseInt(tweets[i].total);
   }
 
-  res.send(values);
+  res.send({
+    values,
+    total
+  });
 });
 
 
 async function getGlasgowTweets(){
   const res = await pool
     .query(
-      "SELECT date::date as day, AVG(neg_sent) as neg, AVG(pos_sent) as pos, AVG(compound_sent) as compound " +
+      "SELECT date::date as day, AVG(neg_sent) as neg, AVG(pos_sent) as pos, AVG(compound_sent) as compound, COUNT(*) as total  " +
       "from glasgow_tweets " +
-      "WHERE compound_sent != 0 " +
+      //"WHERE compound_sent != 0 " +
       "GROUP BY day " +
       "ORDER BY day ASC"
     );
@@ -52,15 +59,21 @@ async function getGlasgowTweets(){
 router.get('/glasgow_data', async (req, res) => {
   const tweets = await getGlasgowTweets();
   const values = [];
+  let total = 0;
 
   for (let i = 0; i < tweets.length; i++) {
     values.push({
       x: new Date(tweets[i].day).getTime(),
       y: tweets[i].compound
     });
+
+    total += parseInt(tweets[i].total);
   }
 
-  res.send(values);
+  res.send({
+    values,
+    total
+  });
 });
 
 router.get('/wards', (req, res) => {
