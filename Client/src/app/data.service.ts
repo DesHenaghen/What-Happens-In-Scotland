@@ -12,8 +12,16 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
   // Uses http.get() to load data from a single API endpoint
-  getData() {
-    return this.http.get<any[]>('/api/data');
+  getWardData(ward_id: string) {
+    return this.http.get<any[]>('/api/ward_data', {
+      params: {
+        id: ward_id
+      }
+    });
+  }
+
+  getGlasgowData() {
+    return this.http.get<any[]>('/api/glasgow_data');
   }
 
   getWards() {

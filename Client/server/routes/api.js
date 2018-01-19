@@ -8,31 +8,56 @@ const router = express.Router();
 
 const pool = new Pool(config.postgres);
 
-async function getTweets(){
+async function getGeoTweets(id){
+  const res = await pool
+    .query(
+      "SELECT date::date as day, AVG(neg_sent) as neg, AVG(pos_sent) as pos, AVG(compound_sent) as compound " +
+      "from geo_tweets " +
+      "WHERE area_id = $1 AND compound_sent != 0" +
+      "GROUP BY day " +
+      "ORDER BY day ASC",
+      [id]
+    );
+  return res.rows;
+}
+
+router.get('/ward_data', async (req, res) => {
+  const ward_id = req.query.id;
+  const tweets = await getGeoTweets(ward_id);
+  const values = [];
+
+  for (let i = 0; i < tweets.length; i++) {
+    values.push({
+      x: new Date(tweets[i].day).getTime(),
+      y: tweets[i].compound
+    });
+  }
+
+  res.send(values);
+});
+
+
+async function getGlasgowTweets(){
   const res = await pool
     .query(
       "SELECT date::date as day, AVG(neg_sent) as neg, AVG(pos_sent) as pos, AVG(compound_sent) as compound " +
       "from glasgow_tweets " +
+      "WHERE compound_sent != 0 " +
       "GROUP BY day " +
       "ORDER BY day ASC"
     );
   return res.rows;
 }
 
-router.get('/data', async (req, res) => {
-  const tweets = await getTweets();
+router.get('/glasgow_data', async (req, res) => {
+  const tweets = await getGlasgowTweets();
   const values = [];
-  // const date = moment().month(11).date(1);
-  // for (let i = 0; i < 30; i++) {
+
   for (let i = 0; i < tweets.length; i++) {
     values.push({
-      //x: date.valueOf(),
       x: new Date(tweets[i].day).getTime(),
-      //y: Math.random()
       y: tweets[i].compound
     });
-
-    //date.add(1, 'day');
   }
 
   res.send(values);

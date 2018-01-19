@@ -52,13 +52,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
         // Extract data for each ward
         topology.features.forEach(feature => {
           this.wards[feature.properties.WD13CD] = { name: feature.properties.WD13NM };
-          httpRequests.push(this._dataService.getData());
+          httpRequests.push(this._dataService.getWardData(feature.properties.WD13CD));
           httpRequestIds.push(feature.properties.WD13CD);
         });
 
         // All of glasgow data
         this.wards['glasgow-boundary'] = { name: 'Glasgow' };
-        httpRequests.push(this._dataService.getData());
+        httpRequests.push(this._dataService.getGlasgowData());
         httpRequestIds.push('glasgow-boundary');
 
         // Assign all the values from the http requests
@@ -69,7 +69,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
               const id = httpRequestIds[i];
 
               this.wards[id].values = values;
-              this.wards[id].average = (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length);
+              this.wards[id].average = (values.length > 0)
+                                        ? (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length)
+                                        : 0;
               this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10 ;
             }
           },
