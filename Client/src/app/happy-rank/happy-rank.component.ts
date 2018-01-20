@@ -53,6 +53,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
             elementClick: e => this.wardSelected.emit(e.data.id)
           }
         },
+        useInteractiveGuideline: true,
         type: 'discreteBarChart',
         yDomain: [-1, 1],
         height: 250,
@@ -64,8 +65,8 @@ export class HappyRankComponent implements OnInit, OnChanges {
         },
         x: d => d.label,
         y: d => d.value,
-        showValues: false,
-        valueFormat: d => (d * 100).toFixed() + '%',
+        showValues: true,
+        valueFormat: d => d.toFixed(1),
         duration: 500,
         xAxis: {
           axisLabel: 'Wards (Ranked)',

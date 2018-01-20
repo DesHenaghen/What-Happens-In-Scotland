@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         // Assign all the values from the http requests
         forkJoin(httpRequests).subscribe(
-          wardValues => {
+          (wardValues: any) => {
             for (let i = 0; i < wardValues.length; i++) {
               console.log(wardValues[i]);
               const values: any = wardValues[i].values;
@@ -73,7 +73,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               this.wards[id].values = values;
               this.wards[id].average = (values.length > 0)
                                         ? (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length)
-                                        : 0;
+                                        : 0.000001;
               this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10;
               this.wards[id].total = total;
             }
@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    */
   private setStyling(area: string): void {
     this.clearSelectedClass();
-    document.getElementById('chart-box').style.backgroundColor = this.map.colour(this.wards[area].average);
+    // document.getElementById('chart-box').style.backgroundColor = this.map.colour(this.wards[area].average);
     document.getElementById(area).classList.add('selected');
   }
 

@@ -1,7 +1,9 @@
 {
-  "pg_user": "postgres",
-  "pg_host": "localhost2",
-  "pg_database": "tweets",
-  "pg_password": "postgres",
-  "pg_port": 5432
+  "postgres": {
+    "user": "whig",
+    "host": "whathappensinglasgow.cszk7qzakguv.eu-west-2.rds.amazonaws.com",
+    "database": "tweets",
+    "password": "382FkjBoQPfk",
+    "port": 5432
+  }
 }

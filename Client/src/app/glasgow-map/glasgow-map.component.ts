@@ -52,8 +52,8 @@ export class GlasgowMapComponent implements OnInit {
       .translate([this.width / 2, this.height / 2]);
 
     this.colour = d3.scale.linear()
-      .domain([-1, -0.1, 0.1, 1])
-      .range(['#ff000c', '#8f8f8f', '#b2b2b2', '#0500ff']);
+      .domain([-1, /*-0.1, 0.1,*/0, 1])
+      .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
 
     // Create svg for graph to be drawn in
     this.svg = d3.select('#map')

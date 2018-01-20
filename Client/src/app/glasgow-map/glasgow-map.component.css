@@ -27,15 +27,7 @@ div.tooltip {
 }
 
 .selected {
-  fill: #529838;
-}
-
-.selected:hover {
-  fill: #809583;
-}
-
-#glasgow-boundary.selected:hover {
-  stroke: #809583;
+  stroke-width: 5px;
 }
 
 #map {
@@ -53,10 +45,6 @@ div.tooltip {
   stroke-linejoin: round;
   stroke-width: 4vh;
   cursor: pointer;
-}
-
-#glasgow-boundary.selected {
-  stroke: #529838;
 }
 
 #glasgow-boundary-background {

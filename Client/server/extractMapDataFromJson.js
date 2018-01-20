@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { Pool } = require('pg');
-const config = require('config.json')('../config/database.json', 'development');
+const config = require('config.json')('../config/database.json');
 
 const pool = new Pool(config.postgres);
 
@@ -22,5 +22,5 @@ async function insertWard(id, name, polygon){
   pool.query(
       "INSERT into glasgow_wards values ($1, $2, $3)",
       [id, name, polygon]
-    );
+    ).catch(e => console.log(e));
 }
