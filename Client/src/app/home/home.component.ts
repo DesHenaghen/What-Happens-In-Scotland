@@ -71,9 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               const id = httpRequestIds[i];
 
               this.wards[id].values = values;
-              this.wards[id].average = (values.length > 0)
-                                        ? (values.reduce((a, b) => ({y: a.y + b.y})).y / values.length)
-                                        : 0.000001;
+              this.wards[id].average = values[values.length - 1].y;
               this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10;
               this.wards[id].total = total;
             }
