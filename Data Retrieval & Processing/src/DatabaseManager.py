@@ -151,8 +151,8 @@ def save_scotland_geo_tweet(tweet):
 
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     log.logger.info("added to scotland_geo_tweets")
-    print("added to scotland_geo_tweets")
-    print(tweet)
+    # print("added to scotland_geo_tweets")
+    # print(tweet)
 
 
 def save_glasgow_tweet(tweet):
@@ -215,8 +215,8 @@ def save_scotland_tweet(tweet):
 
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     log.logger.info("added to scotland_tweets")
-    print("added to scotland tweets")
-    print(tweet)
+    # print("added to scotland tweets")
+    # print(tweet)
 
 
 def get_all_glasgow_tweets():
