@@ -20,7 +20,7 @@ declare let d3: any;
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   /* */
-  public ward: any = {};
+  public ward: any = {last_tweet: {text: 'n/a', user: {name: 'n/a/'}}};
   public wards = {};
 
   // Reference to the child GlasgowMapComponent
@@ -67,13 +67,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
             for (let i = 0; i < wardValues.length; i++) {
               console.log(wardValues[i]);
               const values: any = wardValues[i].values;
-              const total: number = wardValues[i].total;
               const id = httpRequestIds[i];
 
               this.wards[id].values = values;
-              this.wards[id].average = values[values.length - 1].y;
+              this.wards[id].average = (values.length > 0) ? values[values.length - 1].y : 0;
               this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10;
-              this.wards[id].total = total;
+              this.wards[id].total = wardValues[i].total;
+              this.wards[id].last_tweet = (wardValues[i].last_tweet) ?
+                                            wardValues[i].last_tweet :
+                                            {text: 'n/a', user: {name: 'n/a'}};
             }
           },
           err => {

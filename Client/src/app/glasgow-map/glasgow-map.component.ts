@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
 
 declare let d3: any;
 import * as topojson from 'topojson';
@@ -13,6 +13,8 @@ import * as topojson from 'topojson';
   encapsulation: ViewEncapsulation.None
 })
 export class GlasgowMapComponent implements OnInit {
+
+  @Input() ward;
 
   // Emits the id of the ward selected on the map to parent components
   @Output() wardSelected = new EventEmitter<string>();
@@ -29,6 +31,11 @@ export class GlasgowMapComponent implements OnInit {
   private tooltip: any;
   private offsetL: number;
   private offsetT: number;
+
+
+  private static randomNumber(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+  }
 
   constructor() {
     this.width = 1000 - this.margin.left - this.margin.right;
@@ -86,7 +93,7 @@ export class GlasgowMapComponent implements OnInit {
       this.drawWards(topology);
 
       this.drawPoints();
-      setInterval(() => this.drawPoints(), this.randomNumber(1000, 5000));
+      setInterval(() => this.drawPoints(), GlasgowMapComponent.randomNumber(1000, 5000));
   }
 
   /**
@@ -133,7 +140,7 @@ export class GlasgowMapComponent implements OnInit {
   }
 
   private drawPoints(): void {
-    const coordinates = this.projection([this.randomNumber(-4.33, -4.18), this.randomNumber(55.834, 55.889)]);
+    const coordinates = this.projection([GlasgowMapComponent.randomNumber(-4.33, -4.18), GlasgowMapComponent.randomNumber(55.834, 55.889)]);
     this.svg
       .append('circle')
       .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
@@ -142,10 +149,6 @@ export class GlasgowMapComponent implements OnInit {
       .attr('r', '4px')
       .attr('fill', '#2a2727')
       .call(d => this.circlePulse(d[0][0]));
-  }
-
-  private randomNumber(min: number, max: number): number {
-      return Math.random() * (max - min) + min;
   }
 
   private circlePulse = (d: any): void => {
@@ -169,7 +172,8 @@ export class GlasgowMapComponent implements OnInit {
    * @param e
    */
   private setData = (e: any): void => {
-    this.wardSelected.emit(e.properties ? e.properties.WD13CD : 'glasgow-boundary');
+    let id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
+    this.wardSelected.emit(id);
   }
 
   /**

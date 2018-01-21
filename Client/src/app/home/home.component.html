@@ -1,7 +1,7 @@
 <div id="map-background">
   <div class="row">
     <div class="col">
-      <app-glasgow-map (wardSelected)="setWard($event)"></app-glasgow-map>
+      <app-glasgow-map [ward]="ward" (wardSelected)="setWard($event)"></app-glasgow-map>
     </div>
     <div class="col">
       <div id="chart-box">
@@ -11,7 +11,7 @@
         <div class="row">
           <div class="col">
             <h2 class="centre"><b>Most Common Terms</b></h2>
-            <h1 class="centre alfa">Celtic</h1>
+            <h1 class="centre alfa">Glasgow</h1>
             <h2 class="centre alfa">Rangers</h2>
             <h3 class="centre alfa">Partick</h3>
           </div>

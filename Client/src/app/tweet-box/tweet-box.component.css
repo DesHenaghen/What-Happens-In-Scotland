@@ -1,7 +1,7 @@
 #tweet_box {
   border: black solid;
   background-color: white;
-  height: 31vh;
+  max-height: 31vh;
   width: 37vh;
   right: 0;
   position: absolute;
