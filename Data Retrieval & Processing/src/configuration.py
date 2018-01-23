@@ -41,12 +41,15 @@ class ProductionConfig(Config):
     CONSUMER_SECRET = '6UASMZoKUHI07SS6e6F9pXtGpODNZe8yoDNuwYfrzZU78AOX5G'
     ACCESS_TOKEN_KEY = '924952244293955584-CyeEIdTVybmwwpE6jH25KgciahTpz2S'
     ACCESS_TOKEN_SECRET = 'ggQSp6fdat3vGVe4MYnnvR4LBmQanYcMGhFW1E3lRrGnt'
+#
+#
+# if 'dev' in sys.argv:
+#     config = DevelopmentConfig()
+# else:
+#     config = ProductionConfig()
 
 
-if 'dev' in sys.argv:
-    config = DevelopmentConfig()
-else:
-    config = ProductionConfig()
+config = DevelopmentConfig()
 
 
 def get_config():
