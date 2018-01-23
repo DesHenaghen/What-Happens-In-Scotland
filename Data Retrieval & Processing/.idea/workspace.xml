@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/server.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/server/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/server/routes.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/server/sockets.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/DatabaseManager.py" afterPath="$PROJECT_DIR$/src/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/src/configuration.py" afterPath="$PROJECT_DIR$/src/configuration.py" />
-      <change beforePath="$PROJECT_DIR$/vaderSentiment/__init__.py" afterPath="$PROJECT_DIR$/src/vaderSentiment/__init__.py" />
-      <change beforePath="$PROJECT_DIR$/vaderSentiment/vaderSentiment.py" afterPath="$PROJECT_DIR$/src/vaderSentiment/vaderSentiment.py" />
-      <change beforePath="$PROJECT_DIR$/vaderSentiment/vader_lexicon.txt" afterPath="$PROJECT_DIR$/src/vaderSentiment/vader_lexicon.txt" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -487,7 +478,14 @@
       <option name="project" value="LOCAL" />
       <updated>1516571802582</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Moved NodeJs server to python.">
+      <created>1516668112451</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1516668112452</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView">
@@ -538,7 +536,8 @@
     <MESSAGE value="Attempted to use asynchronous methods" />
     <MESSAGE value="Added Scotland tweet streaming &amp; saving" />
     <MESSAGE value="Removed print statements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed print statements" />
+    <MESSAGE value="Moved NodeJs server to python." />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved NodeJs server to python." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
