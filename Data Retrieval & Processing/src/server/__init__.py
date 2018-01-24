@@ -1,19 +1,33 @@
 import os
-import socketio
-import eventlet
 from flask import Flask
+from flask_socketio import SocketIO
 
-sio = socketio.Server()
 template_dir = os.path.abspath('../../Client/dist/')
-print(template_dir)
-app = Flask(__name__, template_folder=template_dir, static_url_path='/../../Client/dist')
 
 
-if __name__ == '__main__':
-    # wrap Flask application with socketio's middleware
-    app = socketio.Middleware(sio, app)
+def get_app_instance():
+    return __app
 
-    # deploy as an eventlet WSGI server
-    eventlet.wsgi.server(eventlet.listen(('', 8000)), app)
 
-from server import routes, sockets
+def get_socketio_instance():
+    return __socketio
+
+
+def create_app(debug=False):
+    global __socketio
+    __socketio = SocketIO()
+
+    """Create an application."""
+    app = Flask(__name__, template_folder=template_dir)
+    global __app
+    __app = app
+    print(app.template_folder)
+    app.debug = debug
+
+    from .routes import data_routes
+    app.register_blueprint(data_routes)
+
+    from .sockets import socketio as s
+
+    __socketio.init_app(app)
+    return app

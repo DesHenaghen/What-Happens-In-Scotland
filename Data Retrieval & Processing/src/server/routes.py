@@ -1,11 +1,14 @@
 import datetime
+from server import template_dir, get_app_instance, get_socketio_instance
+from flask import render_template, send_from_directory, jsonify, request, Blueprint
+import DatabaseManager as dbMan
 
-from server import app
-from flask import render_template, send_from_directory, jsonify, request
-import DatabaseManager as db_man
+data_routes = Blueprint('data_routes', __name__, template_folder=template_dir)
+app = get_app_instance()
+socketio = get_socketio_instance()
 
 
-@app.route('/')
+@data_routes.route('/')
 def index():
     """Serve the client-side application."""
     return render_template('index.html')
@@ -36,25 +39,25 @@ def parse_twitter_data(tweets):
     })
 
 
-@app.route('/api/ward_data')
+@data_routes.route('/api/ward_data')
 def ward_data():
-    tweets = db_man.get_geo_tweets(request.args.get('id')).fetchall()
+    tweets = dbMan.get_geo_tweets(request.args.get('id')).fetchall()
     return parse_twitter_data(tweets)
 
 
-@app.route('/api/glasgow_data')
+@data_routes.route('/api/glasgow_data')
 def glasgow_data():
-    tweets = db_man.get_glasgow_tweets().fetchall()
+    tweets = dbMan.get_glasgow_tweets().fetchall()
     return parse_twitter_data(tweets)
 
 
-@app.route('/api/<path:api_route>')
+@data_routes.route('/api/<path:api_route>')
 def route(api_route):
     print(api_route)
     return 'This api route does not exist'
 
 
-@app.route('/<path:filename>')
+@data_routes.route('/<path:filename>')
 def fallback(filename):
     print(filename)
     return send_from_directory(app.template_folder, filename)

@@ -1,16 +1,21 @@
-from server import sio
+from flask import request
+from server import get_socketio_instance
+
+socketio = get_socketio_instance()
 
 
-@sio.on('connect')
-def connect(sid, environ):
-    print('connect ', sid)
+@socketio.on('connect')
+def test_connect():
+    print('connect', request.sid)
+    socketio.emit('my_response', {'data': 'Connected', 'count': 0})
 
 
-@sio.on('my message')
-def message(sid, data):
+@socketio.on('message')
+def message(data):
     print('message ', data)
+    socketio.emit('message', {'data': 'hi', 'count': 69})
 
 
-@sio.on('disconnect')
-def disconnect(sid):
-    print('disconnect ', sid)
+@socketio.on('disconnect')
+def disconnect():
+    print('disconnect ', request.sid)
