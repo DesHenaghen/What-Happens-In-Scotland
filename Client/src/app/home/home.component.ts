@@ -58,13 +58,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.wards[id] = ward;
 
     if (id === 'glasgow-boundary') {
-      console.log('attempting a pulse');
       const element = document.getElementById(id);
       if (element.style.animationName === 'pulsate') {
         element.style.animationName = 'pulsate2';
       } else {
         element.style.animationName = 'pulsate';
       }
+    } else {
+      console.log(tweet.coordinates);
+      this.map.drawPoint(tweet.coordinates);
     }
 
     // console.log(this.wards[id]);

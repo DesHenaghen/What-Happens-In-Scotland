@@ -91,9 +91,6 @@ export class GlasgowMapComponent implements OnInit {
 
       // Draw each ward polygon
       this.drawWards(topology);
-
-      this.drawPoints();
-      setInterval(() => this.drawPoints(), GlasgowMapComponent.randomNumber(1000, 5000));
   }
 
   /**
@@ -139,8 +136,8 @@ export class GlasgowMapComponent implements OnInit {
       });
   }
 
-  private drawPoints(): void {
-    const coordinates = this.projection([GlasgowMapComponent.randomNumber(-4.33, -4.18), GlasgowMapComponent.randomNumber(55.834, 55.889)]);
+  public drawPoint(coordArray: number[]): void {
+    const coordinates = this.projection(coordArray);
     this.svg
       .append('circle')
       .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
@@ -157,12 +154,12 @@ export class GlasgowMapComponent implements OnInit {
       .duration(2000)
       .attr('stroke-width', 0.5)
       .attr('r', 12)
-      .ease('sine')
-      .transition()
-      .duration(5000)
-      .attr('stroke-width', 10)
-      .attr('r', 0)
-      .remove();
+      .ease('sine');
+      // .transition()
+      // .duration(5000)
+      // .attr('stroke-width', 10)
+      // .attr('r', 0)
+      // .remove();
   }
 
   // Event Handlers //
