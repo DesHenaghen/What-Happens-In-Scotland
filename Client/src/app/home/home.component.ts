@@ -4,6 +4,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import {GlasgowMapComponent} from '../glasgow-map/glasgow-map.component';
 import {DataService} from '../data.service';
+import { TweetService } from '../tweet.service';
 
 declare let d3: any;
 
@@ -28,13 +29,45 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _http: HttpClient,
-    private _dataService: DataService
+    private _dataService: DataService,
+    private _tweet: TweetService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this._tweet.glasgow_tweets.subscribe(msg => this.updateLastTweet(msg, 'glasgow-boundary'));
+
+    this._tweet.geo_tweets.subscribe(msg => this.updateLastTweet(msg, msg.ward));
+  }
 
   ngAfterViewInit() {
     this.loadWardsData();
+  }
+
+  private updateLastTweet(tweet, id) {
+    const ward = this.wards[id];
+    let sum = ward.average * ward.totals[ward.totals.length - 1];
+    sum += tweet.score;
+
+    ward.total++;
+    ward.totals[ward.totals.length - 1]++;
+    ward.average = sum / ward.totals[ward.totals.length - 1];
+    ward.values[ward.values.length - 1].y = ward.average;
+    ward.prettyAverage = Math.round(ward.average * 10) / 10;
+    ward.last_tweet = tweet;
+
+    this.wards[id] = ward;
+
+    if (id === 'glasgow-boundary') {
+      console.log('attempting a pulse');
+      const element = document.getElementById(id);
+      if (element.style.animationName === 'pulsate') {
+        element.style.animationName = 'pulsate2';
+      } else {
+        element.style.animationName = 'pulsate';
+      }
+    }
+
+    // console.log(this.wards[id]);
   }
 
   /**
@@ -73,6 +106,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               this.wards[id].average = (values.length > 0) ? values[values.length - 1].y : 0;
               this.wards[id].prettyAverage = Math.round(this.wards[id].average * 10) / 10;
               this.wards[id].total = wardValues[i].total;
+              this.wards[id].totals = wardValues[i].totals;
               this.wards[id].last_tweet = (wardValues[i].last_tweet) ?
                                             wardValues[i].last_tweet :
                                             {text: 'n/a', user: {name: 'n/a'}};
@@ -80,8 +114,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
           },
           err => {
             console.error(err);
-            console.log('Trying to load data again.');
-            this.loadWardsData();
+            // console.log('Trying to load data again.');
+            // this.loadWardsData();
           },
           () => {
             // Set values for and draw map of Glasgow

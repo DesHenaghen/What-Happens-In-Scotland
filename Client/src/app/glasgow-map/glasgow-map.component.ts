@@ -172,7 +172,7 @@ export class GlasgowMapComponent implements OnInit {
    * @param e
    */
   private setData = (e: any): void => {
-    let id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
+    const id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
     this.wardSelected.emit(id);
   }
 

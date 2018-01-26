@@ -15,7 +15,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ward']) {
-      console.log(this.ward);
+      // console.log(this.ward);
     }
   }
 

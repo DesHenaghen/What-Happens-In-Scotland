@@ -13,6 +13,8 @@ import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
 import { TweetBoxComponent } from './tweet-box/tweet-box.component';
 
 import {DataService} from './data.service';
+import {TweetService} from './tweet.service';
+import {WebSocketService} from './web-socket.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import {DataService} from './data.service';
     AppRoutingModule
   ],
   providers: [
-    DataService
+    DataService,
+    TweetService,
+    WebSocketService
   ],
   bootstrap: [AppComponent]
 })
