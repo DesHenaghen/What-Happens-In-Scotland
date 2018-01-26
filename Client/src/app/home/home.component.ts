@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * to the child map component.
    */
   private loadWardsData(): void {
-    d3.json('./assets/json/glasgow-wards.json', (error, topology) => {
+    d3.json('./assets/json/scotland-councils-simplified.json', (error, topology) => {
       if (error) {
         console.error(error);
       } else {

@@ -32,14 +32,9 @@ export class GlasgowMapComponent implements OnInit {
   private offsetL: number;
   private offsetT: number;
 
-
-  private static randomNumber(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-  }
-
   constructor() {
     this.width = 1000 - this.margin.left - this.margin.right;
-    this.height = 800 - this.margin.top - this.margin.bottom;
+    this.height = 1000 - this.margin.top - this.margin.bottom;
   }
 
   ngOnInit() {
@@ -52,10 +47,10 @@ export class GlasgowMapComponent implements OnInit {
   private initVariables (): void {
 
     this.projection = d3.geo.albers()
-      .center([-0.15, 55.8642])
+      .center([-0.0959, 57.90153])
       .rotate([4.1, 0])
       .parallels([50, 60])
-      .scale(250000)
+      .scale(8000)
       .translate([this.width / 2, this.height / 2]);
 
     this.colour = d3.scale.linear()
