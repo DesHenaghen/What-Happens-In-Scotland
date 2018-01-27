@@ -1,23 +1,19 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 declare let d3: any;
 import * as topojson from 'topojson';
-import {GlasgowDataManagerService} from '../_services';
 
 /**
- * Component for the generation and management of the Glasgow Map
+ * Interface for all map components
  */
-@Component({
-  selector: 'app-glasgow-map',
-  templateUrl: './glasgow-map.component.html',
-  styleUrls: ['./glasgow-map.component.css'],
-  encapsulation: ViewEncapsulation.None
-})
-export class GlasgowMapComponent implements OnInit {
+export abstract class MapComponent implements OnInit {
 
-  // TODO: Models
-  public ward: any;
-  public wards: any;
+  @Input() ward;
+
+  // Emits the id of the ward selected on the map to parent components
+  @Output() wardSelected = new EventEmitter<string>();
+
+  public wards = {};
 
   private margin = {top: 20, right: 20, bottom: 0, left: 50};
   private height: number;
@@ -30,34 +26,13 @@ export class GlasgowMapComponent implements OnInit {
   private offsetL: number;
   private offsetT: number;
 
-  constructor(private _glasgowDataManager: GlasgowDataManagerService) {
-    this.width = 1100 - this.margin.left - this.margin.right;
+  constructor() {
+    this.width = 1000 - this.margin.left - this.margin.right;
     this.height = 1000 - this.margin.top - this.margin.bottom;
   }
 
   ngOnInit() {
     this.initVariables();
-
-    this._glasgowDataManager.getDistricts().subscribe(districts => this.wards = districts);
-
-    this._glasgowDataManager.getDistrict().subscribe(district => this.ward = district);
-
-    this._glasgowDataManager.getLatestTweet().subscribe(tweet => {
-      if (tweet !== undefined) {
-        if (tweet.id === ('glasgow-boundary')) {
-          const element = document.getElementById(tweet.id);
-          if (element.style.animationName === 'pulsate') {
-            element.style.animationName = 'pulsate2';
-          } else {
-            element.style.animationName = 'pulsate';
-          }
-        } else {
-          this.drawPoint(tweet.coordinates);
-        }
-      }
-    });
-
-    this._glasgowDataManager.getMapTopology().subscribe(topology => this.drawMap(topology));
   }
 
   /**
@@ -66,10 +41,10 @@ export class GlasgowMapComponent implements OnInit {
   private initVariables (): void {
 
     this.projection = d3.geo.albers()
-      .center([-0.144, 55.8642])
+      .center([-0.15, 55.8642])
       .rotate([4.1, 0])
       .parallels([50, 60])
-      .scale(300000)
+      .scale(250000)
       .translate([this.width / 2, this.height / 2]);
 
     this.colour = d3.scale.linear()
@@ -100,13 +75,11 @@ export class GlasgowMapComponent implements OnInit {
    * @param topology
    */
   public drawMap (topology: any): void {
-      if (topology !== undefined) {
-        // Draw map outline
-        this.drawGlasgowOutline(topology);
+    // Draw map outline
+    this.drawGlasgowOutline(topology);
 
-        // Draw each ward polygon
-        this.drawWards(topology);
-      }
+    // Draw each ward polygon
+    this.drawWards(topology);
   }
 
   /**
@@ -152,7 +125,7 @@ export class GlasgowMapComponent implements OnInit {
       });
   }
 
-  private drawPoint(coordArray: number[]): void {
+  public drawPoint(coordArray: number[]): void {
     const coordinates = this.projection(coordArray);
     this.svg
       .append('circle')
@@ -171,11 +144,11 @@ export class GlasgowMapComponent implements OnInit {
       .attr('stroke-width', 0.5)
       .attr('r', 12)
       .ease('sine');
-      // .transition()
-      // .duration(5000)
-      // .attr('stroke-width', 10)
-      // .attr('r', 0)
-      // .remove();
+    // .transition()
+    // .duration(5000)
+    // .attr('stroke-width', 10)
+    // .attr('r', 0)
+    // .remove();
   }
 
   // Event Handlers //
@@ -186,7 +159,7 @@ export class GlasgowMapComponent implements OnInit {
    */
   private setData = (e: any): void => {
     const id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
-    this._glasgowDataManager.setDistrict(id);
+    this.wardSelected.emit(id);
   }
 
   /**

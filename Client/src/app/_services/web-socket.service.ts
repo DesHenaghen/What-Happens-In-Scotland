@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { environment } from '../environments/environment';
 
 @Injectable()
 export class WebSocketService {
@@ -11,7 +10,7 @@ export class WebSocketService {
   private socket;
 
   constructor() {
-    this.socket = io('http://localhost:5000');
+    this.socket = io();
   }
 
   connect_glasgow(): Subject<MessageEvent> {

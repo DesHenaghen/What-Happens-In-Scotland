@@ -1,6 +1,7 @@
 import {
   Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
+import {GlasgowDataManagerService} from '../_services';
 
 /**
  * Component to generate and display a bar chart that shows how happiness ranks between wards
@@ -20,13 +21,10 @@ export class HappyRankComponent implements OnInit, OnChanges {
   @Input() ward: any;
   @Input() wards: any;
 
-  // Emits the id of the ward selected on the chart to parent components
-  @Output() wardSelected = new EventEmitter<string>();
-
   public barOptions: any;
   public barData: any[];
 
-  constructor() { }
+  constructor(private _glasgowDataManager: GlasgowDataManagerService) { }
 
   ngOnInit() {
     this.setOptions();
@@ -50,7 +48,8 @@ export class HappyRankComponent implements OnInit, OnChanges {
       chart: {
         discretebar: {
           dispatch: {
-            elementClick: e => this.wardSelected.emit(e.data.id)
+            elementClick: e => this._glasgowDataManager.setDistrict(e.data.id)
+
           }
         },
         useInteractiveGuideline: true,
@@ -90,17 +89,19 @@ export class HappyRankComponent implements OnInit, OnChanges {
         values: []
       }
     ];
-    for (const [key, ward] of Object.entries(this.wards)) {
-      if (ward.average) {
-        // Line chart data should be sent as an array of series objects.
-        barData[0].values.push(
-          {
-            value: ward.average,
-            id: key,
-            label: ward.name,
-            color: (this.ward === ward) ? '#7cff6c' : (key === 'glasgow-boundary') ? '#48BFFF' : '#ffffff'
-          }
-        );
+    if (this.wards !== undefined) {
+      for (const [key, ward] of Object.entries(this.wards)) {
+        if ('average' in ward) {
+          // Line chart data should be sent as an array of series objects.
+          barData[0].values.push(
+            {
+              value: ward.average,
+              id: key,
+              label: ward.name,
+              color: (this.ward === ward) ? '#7cff6c' : (key === 'glasgow-boundary') ? '#48BFFF' : '#ffffff'
+            }
+          );
+        }
       }
     }
 

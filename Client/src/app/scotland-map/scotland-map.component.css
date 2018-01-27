@@ -9,16 +9,16 @@ div.tooltip {
   position: absolute;
 }
 
-.wards {
+.regions {
   cursor: pointer;
   stroke: #000;
 }
 
-.wards:hover {
+.regions:hover {
   fill: #a2a2a2;
 }
 
-#glasgow-boundary:hover {
+#scotland-boundary:hover {
   stroke: #a2a2a2;
 }
 
@@ -30,17 +30,17 @@ div.tooltip {
   stroke-width: 5px;
 }
 
-#map {
+#scotland-map {
   text-align: center;
 }
 
-#map svg {
+#scotland-map svg {
   max-height: 85vh;
   left: 0;
   position: absolute;
 }
 
-#glasgow-boundary {
+#scotland-boundary {
   fill: none;
   stroke-linejoin: round;
   stroke-width: 4vh;
@@ -50,19 +50,19 @@ div.tooltip {
   animation-timing-function: linear;
 }
 
-#glasgow-boundary-background {
+#scotland-boundary-background {
   fill: white;
   stroke: none;
 }
 
 @keyframes pulsate {
   0%    { stroke-width: 4vh; }
-  50%   { stroke-width: 6vh; }
+  50%   { stroke-width: 5vh; }
   100%  { stroke-width: 4vh; }
 }
 
 @keyframes pulsate2 {
   0%    { stroke-width: 4vh; }
-  50%   { stroke-width: 6vh; }
+  50%   { stroke-width: 5vh; }
   100%  { stroke-width: 4vh; }
 }

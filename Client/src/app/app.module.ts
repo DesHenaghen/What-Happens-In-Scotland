@@ -12,9 +12,9 @@ import { HappyTimelineComponent } from './happy-timeline/happy-timeline.componen
 import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
 import { TweetBoxComponent } from './tweet-box/tweet-box.component';
 
-import {DataService} from './data.service';
-import {TweetService} from './tweet.service';
-import {WebSocketService} from './web-socket.service';
+import {DataService, TweetService, WebSocketService} from './_services';
+import { ScotlandMapComponent } from './scotland-map/scotland-map.component';
+import {GlasgowDataManagerService} from './_services';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,8 @@ import {WebSocketService} from './web-socket.service';
     HappyRankComponent,
     HappyTimelineComponent,
     GlasgowMapComponent,
-    TweetBoxComponent
+    TweetBoxComponent,
+    ScotlandMapComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +36,8 @@ import {WebSocketService} from './web-socket.service';
   providers: [
     DataService,
     TweetService,
-    WebSocketService
+    WebSocketService,
+    GlasgowDataManagerService
   ],
   bootstrap: [AppComponent]
 })
