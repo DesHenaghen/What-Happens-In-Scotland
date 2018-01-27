@@ -18,10 +18,6 @@
       <change beforePath="$PROJECT_DIR$/../Client/src/app/web-socket.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/web-socket.service.ts" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/DatabaseManager.py" afterPath="$PROJECT_DIR$/src/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/src/server.py" afterPath="$PROJECT_DIR$/src/server.py" />
-      <change beforePath="$PROJECT_DIR$/src/server/__init__.py" afterPath="$PROJECT_DIR$/src/server/__init__.py" />
-      <change beforePath="$PROJECT_DIR$/src/server/routes.py" afterPath="$PROJECT_DIR$/src/server/routes.py" />
-      <change beforePath="$PROJECT_DIR$/src/server/sockets.py" afterPath="$PROJECT_DIR$/src/server/sockets.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,12 +31,12 @@
       <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="112" column="44" lean-forward="false" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
+            <state relative-caret-position="148">
+              <caret line="202" column="5" lean-forward="false" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
-                <element signature="e#5344#6421#0" expanded="false" />
-                <element signature="e#7529#8418#0" expanded="false" />
+                <element signature="e#5346#6423#0" expanded="false" />
+                <element signature="e#7533#8422#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -524,7 +520,14 @@
       <option name="project" value="LOCAL" />
       <updated>1516832987560</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Sockets and server now work beautifully together">
+      <created>1517054676429</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1517054676430</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TodoView">
@@ -538,13 +541,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="819" y="0" width="974" height="1047" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29700854" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39626783" sideWeight="0.508547" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39626783" sideWeight="0.491453" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39626783" sideWeight="0.491453" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33695653" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -578,7 +582,8 @@
     <MESSAGE value="Moved NodeJs server to python." />
     <MESSAGE value="Scotland config" />
     <MESSAGE value="Made sockets gorgeous" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made sockets gorgeous" />
+    <MESSAGE value="Sockets and server now work beautifully together" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sockets and server now work beautifully together" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -647,8 +652,8 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#5344#6421#0" expanded="false" />
-            <element signature="e#7529#8418#0" expanded="false" />
+            <element signature="e#5346#6423#0" expanded="false" />
+            <element signature="e#7533#8422#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -727,8 +732,8 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#5344#6421#0" expanded="false" />
-            <element signature="e#7529#8418#0" expanded="false" />
+            <element signature="e#5346#6423#0" expanded="false" />
+            <element signature="e#7533#8422#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -793,8 +798,8 @@
           <caret line="83" column="38" lean-forward="false" selection-start-line="83" selection-start-column="38" selection-end-line="83" selection-end-column="38" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#5344#6421#0" expanded="false" />
-            <element signature="e#7529#8418#0" expanded="false" />
+            <element signature="e#5346#6423#0" expanded="false" />
+            <element signature="e#7533#8422#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -969,12 +974,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="112" column="44" lean-forward="false" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
+        <state relative-caret-position="148">
+          <caret line="202" column="5" lean-forward="false" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#5344#6421#0" expanded="false" />
-            <element signature="e#7529#8418#0" expanded="false" />
+            <element signature="e#5346#6423#0" expanded="false" />
+            <element signature="e#7533#8422#0" expanded="false" />
           </folding>
         </state>
       </provider>
