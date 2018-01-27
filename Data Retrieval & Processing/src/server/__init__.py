@@ -15,7 +15,7 @@ def get_socketio_instance():
 
 def create_app(debug=False):
     global __socketio
-    __socketio = SocketIO()
+    __socketio = SocketIO(async_mode='threading')
 
     """Create an application."""
     app = Flask(__name__, template_folder=template_dir)

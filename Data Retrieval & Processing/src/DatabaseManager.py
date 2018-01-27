@@ -2,10 +2,12 @@ import sqlalchemy
 from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text
 from sqlalchemy.dialects.postgresql import JSONB
 import datetime
-
+from server import get_socketio_instance
 import logger as log
 import configuration
 from SentimentAnalyser import SentimentAnalyser
+
+__socketio = get_socketio_instance()
 
 __config = configuration.get_config()
 __connection_string = __config.generate_connection_string()
@@ -113,10 +115,19 @@ def save_geo_tweet(tweet):
 
     __engine.execute(statement)
 
+    if area_id is not None:
+        __socketio.emit('geo_tweet', {
+            'text': full_text,
+            'user': tweet.get("user"),
+            'ward': area_id,
+            'coordinates': coord_array,
+            'score': scores.get('compound')
+        })
+
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     log.logger.info("added to geo_tweets")
-    # print("added to geo_tweets")
-    # print(tweet)
+    print("added to geo_tweets")
+    print(tweet)
 
 
 def save_scotland_geo_tweet(tweet):
@@ -181,10 +192,16 @@ def save_glasgow_tweet(tweet):
 
     __engine.execute(statement)
 
+    __socketio.emit('glasgow_tweet', {
+        'text': full_text,
+        'user': tweet.get("user"),
+        'score': scores.get('compound')
+    })
+
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     log.logger.info("added to glasgow_tweets")
-    # print("added to glasgow_tweets")
-    # print(tweet)
+    print("added to glasgow_tweets")
+    print(tweet)
 
 
 def save_scotland_tweet(tweet):
@@ -230,7 +247,7 @@ def get_geo_tweets(area_id):
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +
-        ") as x INNER JOIN geo_tweets as t ON t.date = x.max_date ")
+        ") as x INNER JOIN geo_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
     return __engine.execute(sql, {'id': area_id})
 
 
@@ -240,11 +257,11 @@ def get_glasgow_tweets():
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM geo_tweets " +
+        "FROM glasgow_tweets " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +
-        ") as x INNER JOIN geo_tweets as t ON t.date = x.max_date ")
+        ") as x INNER JOIN glasgow_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
     return __engine.execute(sql)
 
 

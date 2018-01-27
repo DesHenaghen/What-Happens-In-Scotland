@@ -16,6 +16,7 @@ def index():
 
 def parse_twitter_data(tweets):
     values = []
+    totals = []
     total = 0
     last_tweet_text = tweets[-1].text if len(tweets) > 0 else ""
     last_tweet_user = tweets[-1].user if len(tweets) > 0 else {}
@@ -28,10 +29,12 @@ def parse_twitter_data(tweets):
         })
 
         total += int(tweet[8])
+        totals.append(int(tweet[8]))
 
     return jsonify({
         'values': values,
         'total': total,
+        'totals': totals,
         'last_tweet': {
             'text': last_tweet_text,
             'user': last_tweet_user
