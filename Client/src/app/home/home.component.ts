@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {DataService, GlasgowDataManagerService, TweetService} from '../_services';
+import {ApiDataService, GlasgowDataManagerService, TweetService} from '../_services';
 
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _http: HttpClient,
-    private _dataService: DataService,
+    private _dataService: ApiDataService,
     private _tweet: TweetService,
     private _glasgowDataManager: GlasgowDataManagerService
   ) { }

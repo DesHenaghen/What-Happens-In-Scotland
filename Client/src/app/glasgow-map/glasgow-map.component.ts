@@ -3,6 +3,9 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 declare let d3: any;
 import * as topojson from 'topojson';
 import {GlasgowDataManagerService} from '../_services';
+import {District} from '../_models/District';
+import {Tweet} from '../_models/Tweet';
+import {Feature, FeatureCollection, MultiLineString} from 'geojson';
 
 /**
  * Component for the generation and management of the Glasgow Map
@@ -16,8 +19,8 @@ import {GlasgowDataManagerService} from '../_services';
 export class GlasgowMapComponent implements OnInit {
 
   // TODO: Models
-  public ward: any;
-  public wards: any;
+  public ward: District;
+  public wards: { [id: string]: District };
 
   private margin = {top: 20, right: 20, bottom: 0, left: 50};
   private height: number;
@@ -35,14 +38,15 @@ export class GlasgowMapComponent implements OnInit {
     this.height = 1000 - this.margin.top - this.margin.bottom;
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.initVariables();
 
-    this._glasgowDataManager.getDistricts().subscribe(districts => this.wards = districts);
+    this._glasgowDataManager.getDistricts()
+      .subscribe((districts: { [id: string]: District }) => this.wards = districts);
 
-    this._glasgowDataManager.getDistrict().subscribe(district => this.ward = district);
+    this._glasgowDataManager.getDistrict().subscribe((district: District) => this.ward = district);
 
-    this._glasgowDataManager.getLatestTweet().subscribe(tweet => {
+    this._glasgowDataManager.getLatestTweet().subscribe((tweet: Tweet) => {
       if (tweet !== undefined) {
         if (tweet.id === ('glasgow-boundary')) {
           const element = document.getElementById(tweet.id);
@@ -57,13 +61,13 @@ export class GlasgowMapComponent implements OnInit {
       }
     });
 
-    this._glasgowDataManager.getMapTopology().subscribe(topology => this.drawMap(topology));
+    this._glasgowDataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => this.drawMap(topology));
   }
 
   /**
    *
    */
-  private initVariables (): void {
+  private initVariables(): void {
 
     this.projection = d3.geo.albers()
       .center([-0.144, 55.8642])
@@ -99,21 +103,21 @@ export class GlasgowMapComponent implements OnInit {
    * Draws map when topology has been parsed
    * @param topology
    */
-  public drawMap (topology: any): void {
-      if (topology !== undefined) {
-        // Draw map outline
-        this.drawGlasgowOutline(topology);
+  public drawMap(topology: FeatureCollection<any>): void {
+    if (topology !== undefined) {
+      // Draw map outline
+      this.drawGlasgowOutline(topology);
 
-        // Draw each ward polygon
-        this.drawWards(topology);
-      }
+      // Draw each ward polygon
+      this.drawWards(topology);
+    }
   }
 
   /**
    * Draws the wards that exist in the topology passed in.
    * @param topology
    */
-  private drawWards (topology: any): void {
+  private drawWards(topology: FeatureCollection<any>): void {
     this.svg.append('g').selectAll('path')
       .data(topology.features) // Read in the array of features from the topology data
       .enter()
@@ -136,11 +140,11 @@ export class GlasgowMapComponent implements OnInit {
    * Draws the outline of the ward in the topology passed in. Only draws outer boundaries
    * @param t
    */
-  private drawGlasgowOutline (t: any): void  {
+  private drawGlasgowOutline(t: FeatureCollection<any>): void {
     const topology = topojson.topology([t], null);
     this.svg.append('path')
     // Only returns the arcs that aren't shared by wards i.e the outer bounds
-      .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b ))
+      .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b))
       .attr('d', this.path)
       .attr('stroke', () => this.colour(this.wards['glasgow-boundary'].average))
       .attr('id', 'glasgow-boundary')
@@ -171,11 +175,11 @@ export class GlasgowMapComponent implements OnInit {
       .attr('stroke-width', 0.5)
       .attr('r', 12)
       .ease('sine');
-      // .transition()
-      // .duration(5000)
-      // .attr('stroke-width', 10)
-      // .attr('r', 0)
-      // .remove();
+    // .transition()
+    // .duration(5000)
+    // .attr('stroke-width', 10)
+    // .attr('r', 0)
+    // .remove();
   }
 
   // Event Handlers //
@@ -184,8 +188,8 @@ export class GlasgowMapComponent implements OnInit {
    * Emits the id of the selected ward
    * @param e
    */
-  private setData = (e: any): void => {
-    const id = e.properties ? e.properties.WD13CD : 'glasgow-boundary';
+  private setData = (e: Feature<any> | MultiLineString): void => {
+    const id = this.isFeature(e) ? e.properties.WD13CD : 'glasgow-boundary';
     this._glasgowDataManager.setDistrict(id);
   }
 
@@ -193,13 +197,17 @@ export class GlasgowMapComponent implements OnInit {
    * Displays the tooltip for the ward hovered over at the appropriate place on the screen
    * @param d
    */
-  private showTooltip = (d: any): void => {
-    const label = (d.properties ? d.properties.WD13NM : 'Glasgow') +
-      '<br> ' + this.wards[d.properties ? d.properties.WD13CD : 'glasgow-boundary'].prettyAverage + '% Happy';
+  private showTooltip = (d: Feature<any> | MultiLineString): void => {
+    const label = (this.isFeature(d) ? d.properties.WD13NM : 'Glasgow') +
+      '<br> ' + this.wards[this.isFeature(d) ? d.properties.WD13CD : 'glasgow-boundary'].prettyAverage + '% Happy';
     const mouse = d3.mouse(this.svg.node());
     // console.log(mouse, this.offsetL, this.offsetT);
     this.tooltip.classed('hidden', false)
       .attr('style', 'left:' + (mouse[0] + this.offsetL) + 'px;top:' + (mouse[1] + this.offsetT) + 'px')
       .html(label);
+  }
+
+  private isFeature(object: any): object is Feature<any> {
+    return 'properties' in object;
   }
 }

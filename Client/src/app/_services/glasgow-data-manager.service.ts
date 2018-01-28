@@ -1,5 +1,6 @@
-import {Injectable, Injector, OnInit} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {DataManagerInterface} from '../_interfaces/data-manager.abstract';
+import {Tweet} from '../_models/Tweet';
 
 @Injectable()
 export class GlasgowDataManagerService extends DataManagerInterface {
@@ -17,7 +18,7 @@ export class GlasgowDataManagerService extends DataManagerInterface {
   }
 
   protected listenOnSockets(): void {
-    this._tweet.glasgow_tweets.subscribe(msg => this.updateLastTweet(msg, 'glasgow-boundary'));
-    this._tweet.geo_tweets.subscribe(msg => this.updateLastTweet(msg, msg.ward));
+    this._tweet.glasgow_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, 'glasgow-boundary'));
+    this._tweet.geo_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
   }
 }

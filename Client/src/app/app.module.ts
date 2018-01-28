@@ -12,7 +12,7 @@ import { HappyTimelineComponent } from './happy-timeline/happy-timeline.componen
 import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
 import { TweetBoxComponent } from './tweet-box/tweet-box.component';
 
-import {DataService, TweetService, WebSocketService} from './_services';
+import {ApiDataService, TweetService, WebSocketService} from './_services';
 import { ScotlandMapComponent } from './scotland-map/scotland-map.component';
 import {GlasgowDataManagerService} from './_services';
 
@@ -34,7 +34,7 @@ import {GlasgowDataManagerService} from './_services';
     AppRoutingModule
   ],
   providers: [
-    DataService,
+    ApiDataService,
     TweetService,
     WebSocketService,
     GlasgowDataManagerService

@@ -2,10 +2,14 @@ import { Injector } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import {DataService} from '../_services/data.service';
+import {ApiDataService} from '../_services/data.service';
 import {TweetService} from '../_services/tweet.service';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
+import {District} from '../_models/District';
+import {AreaData} from '../_models/AreaData';
+import {Tweet} from '../_models/Tweet';
+import {Feature, FeatureCollection} from 'geojson';
 
 declare let d3: any;
 
@@ -15,19 +19,15 @@ declare let d3: any;
 export abstract class DataManagerInterface {
   // Services
   protected _http: HttpClient;
-  protected _dataService: DataService;
+  protected _dataService: ApiDataService;
   protected _tweet: TweetService;
 
   // Fields
-  // TODO: Replace any with models
-  protected district = new BehaviorSubject<any>({last_tweet: {text: 'n/a', user: {name: 'n/a/'}}});
-  // TODO: Replace any with models
-  protected districts = {};
-  protected districtsSubject = new BehaviorSubject<any>(undefined);
-  // TODO: Replace any with models
-  protected latestTweet = new BehaviorSubject<any>(undefined);
-  // TODO: Replace any with models
-  protected mapTopology = new BehaviorSubject<any>(undefined);
+  protected district = new BehaviorSubject<District>(new District());
+  protected districts: {[id: string]: District} = {};
+  protected districtsSubject = new BehaviorSubject<{[id: string]: District}>(undefined);
+  protected latestTweet = new BehaviorSubject<Tweet>(undefined);
+  protected mapTopology = new BehaviorSubject<FeatureCollection<any>>(undefined);
 
 
   // Map identifiers
@@ -42,27 +42,27 @@ export abstract class DataManagerInterface {
 
   constructor(injector: Injector) {
     this._http = injector.get(HttpClient);
-    this._dataService = injector.get(DataService);
+    this._dataService = injector.get(ApiDataService);
     this._tweet = injector.get(TweetService);
   }
 
-  public getDistrict(): Observable<any> {
+  public getDistrict(): Observable<District> {
     return this.district.asObservable();
   }
 
-  public getDistricts(): Observable<any> {
+  public getDistricts(): Observable<{[id: string]: District}> {
     return this.districtsSubject.asObservable();
   }
 
-  public getLatestTweet(): Observable<any> {
+  public getLatestTweet(): Observable<Tweet> {
     return this.latestTweet.asObservable();
   }
 
-  public getMapTopology(): Observable<any> {
+  public getMapTopology(): Observable<FeatureCollection<any>> {
     return this.mapTopology.asObservable();
   }
 
-  public updateLastTweet(tweet, id) {
+  public updateLastTweet(tweet: Tweet, id: string): void {
     tweet.id = id;
     const district = this.districts[id];
     let sum = district.average * district.totals[district.totals.length - 1];
@@ -87,52 +87,55 @@ export abstract class DataManagerInterface {
    */
   public loadDistrictsData(): void {
     // d3.json('./assets/json/glasgow-districts.json', (error, topology) => {
-    d3.json('./assets/json/' + this.dataFile, (error, topology) => {
+    d3.json('./assets/json/' + this.dataFile, (error, topology: FeatureCollection<any>) => {
       if (error) {
         console.error(error);
       } else {
-        const httpRequests = [];
-        const httpRequestIds: string[] = [];
+        const httpRequests: Observable<AreaData>[] = [];
+        const httpRequestsInfo: {id: string, name: string}[] = [];
 
         // Extract data for each district
-        topology.features.forEach(feature => {
+        topology.features.forEach( (feature: Feature<any>) => {
           const id = feature.properties[this.topologyId];
+          const name = feature.properties[this.topologyName];
 
-          this.districts[feature.properties[this.topologyId]] = {
-            name: feature.properties[this.topologyName],
-            id
-          };
           httpRequests.push(this._dataService.getWardData(id));
-          httpRequestIds.push(id);
+          httpRequestsInfo.push({id, name});
         });
 
         // All of glasgow data
-        this.districts[this.mapType + '-boundary'] = { name: this.regionName, id: this.mapType + '-boundary'};
         httpRequests.push(this._dataService.getGlasgowData());
-        httpRequestIds.push(this.mapType + '-boundary');
+        httpRequestsInfo.push({id: this.mapType + '-boundary', name: this.regionName});
 
         // Assign all the values from the http requests
         forkJoin(httpRequests).subscribe(
-          (wardValues: any) => {
+          (wardValues: AreaData[]) => {
             for (let i = 0; i < wardValues.length; i++) {
-              console.log(wardValues[i]);
-              const values: any = wardValues[i].values;
-              const id = httpRequestIds[i];
+              const wardData: AreaData = wardValues[i];
 
-              this.districts[id].values = values;
-              this.districts[id].average = (values.length > 0) ? values[values.length - 1].y : 0;
-              this.districts[id].prettyAverage = Math.round(this.districts[id].average * 10) / 10;
-              this.districts[id].total = wardValues[i].total;
-              this.districts[id].totals = wardValues[i].totals;
-              this.districts[id].last_tweet = (wardValues[i].last_tweet) ?
-                wardValues[i].last_tweet :
+              const values = wardData.values;
+              const id = httpRequestsInfo[i].id;
+              const name = httpRequestsInfo[i].name;
+              const average = (values.length > 0) ? values[values.length - 1].y : 0;
+              const prettyAverage = Math.round(average * 10) / 10;
+              const last_tweet: Tweet = (wardData.last_tweet) ?
+                wardData.last_tweet :
                 {text: 'n/a', user: {name: 'n/a'}};
+
+              this.districts[id] = {
+                id,
+                name,
+                values,
+                average,
+                prettyAverage,
+                last_tweet,
+                total: wardValues[i].total,
+                totals: wardValues[i].totals
+              };
             }
           },
           err => {
             console.error(err);
-            // console.log('Trying to load data again.');
-            // this.loadWardsData();
           },
           () => {
             this.districtsSubject.next(this.districts);
@@ -152,6 +155,6 @@ export abstract class DataManagerInterface {
     this.district.next(this.districts[area]);
   }
 
-  protected abstract listenOnSockets();
+  protected abstract listenOnSockets(): void;
 }
 
