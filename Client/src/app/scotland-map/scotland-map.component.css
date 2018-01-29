@@ -9,12 +9,12 @@ div.tooltip {
   position: absolute;
 }
 
-.regions {
+.districts {
   cursor: pointer;
   stroke: #000;
 }
 
-.regions:hover {
+.districts:hover {
   fill: #a2a2a2;
 }
 

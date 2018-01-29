@@ -1,4 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {District} from '../_models/District';
 
 @Component({
   selector: 'app-tweet-box',
@@ -6,14 +7,14 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
   styleUrls: ['./tweet-box.component.css']
 })
 export class TweetBoxComponent implements OnInit, OnChanges {
-  @Input() ward: any;
+  @Input() ward: District;
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes['ward']) {
       // console.log(this.ward);
     }

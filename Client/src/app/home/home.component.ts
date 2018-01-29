@@ -1,6 +1,7 @@
-import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ApiDataService, GlasgowDataManagerService, TweetService} from '../_services';
+import {TweetService, DataManagerService} from '../_services';
+import {District} from '../_models/District';
 
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
@@ -13,28 +14,23 @@ import {ApiDataService, GlasgowDataManagerService, TweetService} from '../_servi
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
 
-  public district: any;
-  public districts: any;
+  public district: District;
+  public districts: {[id: string]: District};
 
   constructor(
     private _http: HttpClient,
-    private _dataService: ApiDataService,
     private _tweet: TweetService,
-    private _glasgowDataManager: GlasgowDataManagerService
+    private _dataManager: DataManagerService
   ) { }
 
-  ngOnInit(): void {
-    this._glasgowDataManager.getDistrict().subscribe(district => {
+  public ngOnInit(): void {
+    this._dataManager.getDistrict().subscribe((district: District) => {
       this.district = district;
       this.setStyling(district.id);
     });
-    this._glasgowDataManager.getDistricts().subscribe(districts => this.districts = districts);
-  }
-
-  ngAfterViewInit(): void {
-    this._glasgowDataManager.loadDistrictsData();
+    this._dataManager.getDistricts().subscribe((districts: {[id: string]: District}) => this.districts = districts);
   }
 
   /**

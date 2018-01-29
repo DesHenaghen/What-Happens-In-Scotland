@@ -2,24 +2,23 @@ import { Injector } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import {ApiDataService} from '../_services/data.service';
-import {TweetService} from '../_services/tweet.service';
+import {TweetService} from '../_services/tweet/tweet.service';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {District} from '../_models/District';
 import {AreaData} from '../_models/AreaData';
 import {Tweet} from '../_models/Tweet';
 import {Feature, FeatureCollection} from 'geojson';
+import {DataManagerInterface} from './data-manager.interface';
 
 declare let d3: any;
 
 /**
  *
  */
-export abstract class DataManagerInterface {
+export abstract class AbstractDataManager implements DataManagerInterface {
   // Services
   protected _http: HttpClient;
-  protected _dataService: ApiDataService;
   protected _tweet: TweetService;
 
   // Fields
@@ -28,7 +27,6 @@ export abstract class DataManagerInterface {
   protected districtsSubject = new BehaviorSubject<{[id: string]: District}>(undefined);
   protected latestTweet = new BehaviorSubject<Tweet>(undefined);
   protected mapTopology = new BehaviorSubject<FeatureCollection<any>>(undefined);
-
 
   // Map identifiers
   protected regionName: string;
@@ -42,7 +40,6 @@ export abstract class DataManagerInterface {
 
   constructor(injector: Injector) {
     this._http = injector.get(HttpClient);
-    this._dataService = injector.get(ApiDataService);
     this._tweet = injector.get(TweetService);
   }
 
@@ -65,6 +62,8 @@ export abstract class DataManagerInterface {
   public updateLastTweet(tweet: Tweet, id: string): void {
     tweet.id = id;
     const district = this.districts[id];
+    console.log(this.districts);
+    console.log(this.regionName, tweet, id, district);
     let sum = district.average * district.totals[district.totals.length - 1];
     sum += tweet.score;
 
@@ -86,6 +85,9 @@ export abstract class DataManagerInterface {
    * to the child map component.
    */
   public loadDistrictsData(): void {
+
+    console.log(this.getDistrictData);
+    console.log(this.getRegionData);
     // d3.json('./assets/json/glasgow-districts.json', (error, topology) => {
     d3.json('./assets/json/' + this.dataFile, (error, topology: FeatureCollection<any>) => {
       if (error) {
@@ -99,12 +101,12 @@ export abstract class DataManagerInterface {
           const id = feature.properties[this.topologyId];
           const name = feature.properties[this.topologyName];
 
-          httpRequests.push(this._dataService.getWardData(id));
+          httpRequests.push(this.getDistrictData('S13002650'));
           httpRequestsInfo.push({id, name});
         });
 
         // All of glasgow data
-        httpRequests.push(this._dataService.getGlasgowData());
+        httpRequests.push(this.getRegionData());
         httpRequestsInfo.push({id: this.mapType + '-boundary', name: this.regionName});
 
         // Assign all the values from the http requests
@@ -112,7 +114,7 @@ export abstract class DataManagerInterface {
           (wardValues: AreaData[]) => {
             for (let i = 0; i < wardValues.length; i++) {
               const wardData: AreaData = wardValues[i];
-
+              console.log(wardData, this.regionName);
               const values = wardData.values;
               const id = httpRequestsInfo[i].id;
               const name = httpRequestsInfo[i].name;
@@ -138,6 +140,7 @@ export abstract class DataManagerInterface {
             console.error(err);
           },
           () => {
+            console.log(this.regionName, this.districts);
             this.districtsSubject.next(this.districts);
             this.mapTopology.next(topology);
             this.setDistrict(this.mapType + '-boundary');
@@ -154,6 +157,9 @@ export abstract class DataManagerInterface {
   public setDistrict(area: string): void {
     this.district.next(this.districts[area]);
   }
+
+  protected abstract getRegionData(): any;
+  protected abstract getDistrictData(id: string): any;
 
   protected abstract listenOnSockets(): void;
 }

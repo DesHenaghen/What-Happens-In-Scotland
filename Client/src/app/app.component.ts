@@ -7,12 +7,12 @@ import {Component, OnInit} from '@angular/core';
   '../assets/css/sticky-footer.css']
 })
 export class AppComponent implements OnInit {
-  value = 0;
-  paused = true;
+  public value = 0;
+  public paused = true;
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     setInterval(() => {
       if (this.paused && this.value > 0) {
         this.value--;
@@ -22,8 +22,7 @@ export class AppComponent implements OnInit {
     }, 1000);
   }
 
-  public togglePaused() {
-    console.log(this.paused, 'howdy');
+  public togglePaused(): void {
     this.paused = !this.paused;
   }
 }

@@ -31,6 +31,7 @@ def parse_twitter_data(tweets):
         total += int(tweet[8])
         totals.append(int(tweet[8]))
 
+    print(last_tweet_user, tweets[-1])
     return jsonify({
         'values': values,
         'total': total,
@@ -42,15 +43,27 @@ def parse_twitter_data(tweets):
     })
 
 
-@data_routes.route('/api/ward_data')
-def ward_data():
-    tweets = dbMan.get_geo_tweets(request.args.get('id')).fetchall()
+@data_routes.route('/api/glasgow_district_data')
+def glasgow_district_data():
+    tweets = dbMan.get_glasgow_geo_tweets(request.args.get('id')).fetchall()
     return parse_twitter_data(tweets)
 
 
 @data_routes.route('/api/glasgow_data')
 def glasgow_data():
     tweets = dbMan.get_glasgow_tweets().fetchall()
+    return parse_twitter_data(tweets)
+
+
+@data_routes.route('/api/scotland_district_data')
+def scotland_district_data():
+    tweets = dbMan.get_scotland_geo_tweets(request.args.get('id')).fetchall()
+    return parse_twitter_data(tweets)
+
+
+@data_routes.route('/api/scotland_data')
+def scotland_data():
+    tweets = dbMan.get_scotland_tweets().fetchall()
     return parse_twitter_data(tweets)
 
 

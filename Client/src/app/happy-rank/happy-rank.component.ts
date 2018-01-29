@@ -1,7 +1,8 @@
 import {
-  Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
+  Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
-import {GlasgowDataManagerService} from '../_services';
+import {DataManagerService} from '../_services';
+import {District} from '../_models/District';
 
 /**
  * Component to generate and display a bar chart that shows how happiness ranks between wards
@@ -18,15 +19,15 @@ import {GlasgowDataManagerService} from '../_services';
 })
 export class HappyRankComponent implements OnInit, OnChanges {
 
-  @Input() ward: any;
-  @Input() wards: any;
+  @Input() ward: District;
+  @Input() wards: {[id: string]: District};
 
   public barOptions: any;
   public barData: any[];
 
-  constructor(private _glasgowDataManager: GlasgowDataManagerService) { }
+  constructor(private _dataManager: DataManagerService) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.setOptions();
   }
 
@@ -34,7 +35,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
    * Reacts to any changes to the @Input variables
    * @param {SimpleChanges} changes
    */
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes['ward']) {
       this.setData();
     }
@@ -48,7 +49,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
       chart: {
         discretebar: {
           dispatch: {
-            elementClick: e => this._glasgowDataManager.setDistrict(e.data.id)
+            elementClick: e => this._dataManager.setDistrict(e.data.id)
 
           }
         },

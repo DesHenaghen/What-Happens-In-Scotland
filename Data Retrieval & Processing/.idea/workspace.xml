@@ -2,17 +2,35 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Made sockets gorgeous">
-      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_models/AreaData.ts" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_models/District.ts" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_models/LineChartValues.ts" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_models/Tweet.ts" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.interface.ts" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_services/glasgow-data-manager/glasgow-data-manager.service.ts" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_services/scotland-data-manager/scotland-data-manager.service.spec.ts" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_services/scotland-data-manager/scotland-data-manager.service.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/scripts/extractCoordinatesFromJSONB.js" afterPath="$PROJECT_DIR$/../Client/scripts/extractCoordinatesFromJSONB.js" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.abstract.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data.service.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_models/District.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_models/District.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data.service.ts" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/glasgow-data-manager.service.spec.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/glasgow-data-manager/glasgow-data-manager.service.spec.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/glasgow-data-manager.service.ts" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/index.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/index.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/tweet.service.spec.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/tweet/tweet.service.spec.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/tweet.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/tweet/tweet.service.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/web-socket.service.spec.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/web-socket/web-socket.service.spec.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/web-socket.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/web-socket/web-socket.service.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/app.module.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.module.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/glasgow-map/glasgow-map.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/glasgow-map/glasgow-map.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-rank/happy-rank.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-rank/happy-rank.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/scotland-map/scotland-map.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/scotland-map/scotland-map.component.css" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/scotland-map/scotland-map.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/scotland-map/scotland-map.component.html" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/scotland-map/scotland-map.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/scotland-map/scotland-map.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.ts" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/DatabaseManager.py" afterPath="$PROJECT_DIR$/src/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/src/server.py" afterPath="$PROJECT_DIR$/src/server.py" />
+      <change beforePath="$PROJECT_DIR$/src/server/routes.py" afterPath="$PROJECT_DIR$/src/server/routes.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,14 +41,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="591">
-              <caret line="120" column="35" lean-forward="false" selection-start-line="120" selection-start-column="35" selection-end-line="120" selection-end-column="35" />
+            <state relative-caret-position="375">
+              <caret line="292" column="91" lean-forward="false" selection-start-line="292" selection-start-column="91" selection-end-line="292" selection-end-column="91" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
+                <element signature="e#3762#5301#0" expanded="false" />
                 <element signature="e#5344#6421#0" expanded="false" />
+                <element signature="e#6459#7490#0" expanded="false" />
                 <element signature="e#7529#8418#0" expanded="false" />
               </folding>
             </state>
@@ -40,7 +60,7 @@
       <file leaf-file-name="TwitterManager.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TwitterManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
+            <state relative-caret-position="289">
               <caret line="20" column="23" lean-forward="false" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
@@ -69,11 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="routes.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/server/routes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4">
-              <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+            <state relative-caret-position="328">
+              <caret line="28" column="10" lean-forward="true" selection-start-line="28" selection-start-column="10" selection-end-line="28" selection-end-column="10" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -96,8 +116,8 @@
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/server/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="24" column="21" lean-forward="false" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
+            <state relative-caret-position="493">
+              <caret line="31" column="28" lean-forward="false" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -168,6 +188,7 @@
       <find>Back all</find>
       <find>fuck</find>
       <find>configuration</find>
+      <find>Monsi</find>
     </findStrings>
     <dirStrings>
       <dir>D:\Libraries\Documents\University\4th Year\CS408 - Individual Project\Projects\What-Happens-In-Glasgow\Data Retrieval &amp; Processing\src</dir>
@@ -191,14 +212,14 @@
         <option value="$PROJECT_DIR$/src/index.html" />
         <option value="$PROJECT_DIR$/src/configuration.py" />
         <option value="$PROJECT_DIR$/src/server/sockets.py" />
-        <option value="$PROJECT_DIR$/src/server/routes.py" />
         <option value="$PROJECT_DIR$/src/server/__init__.py" />
         <option value="$PROJECT_DIR$/src/server.py" />
         <option value="$PROJECT_DIR$/src/DatabaseManager.py" />
+        <option value="$PROJECT_DIR$/src/server/routes.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="953" />
     <option name="y" value="84" />
     <option name="width" value="974" />
@@ -220,6 +241,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -243,7 +265,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -533,15 +554,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="953" y="84" width="974" height="963" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29700854" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14646997" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.43651754" sideWeight="0.5106838" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3923913" sideWeight="0.5105374" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="812" y="291" width="296" height="457" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.43651754" sideWeight="0.48931623" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.3923913" sideWeight="0.48946258" order="5" side_tool="false" content_ui="tabs" x="375" y="739" width="1380" height="496" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33695653" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -552,7 +574,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -645,7 +666,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
+            <element signature="e#3762#5301#0" expanded="false" />
             <element signature="e#5344#6421#0" expanded="false" />
+            <element signature="e#6459#7490#0" expanded="false" />
             <element signature="e#7529#8418#0" expanded="false" />
           </folding>
         </state>
@@ -724,7 +747,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
+            <element signature="e#3762#5301#0" expanded="false" />
             <element signature="e#5344#6421#0" expanded="false" />
+            <element signature="e#6459#7490#0" expanded="false" />
             <element signature="e#7529#8418#0" expanded="false" />
           </folding>
         </state>
@@ -789,7 +814,9 @@
           <caret line="83" column="38" lean-forward="false" selection-start-line="83" selection-start-column="38" selection-end-line="83" selection-end-column="38" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
+            <element signature="e#3762#5301#0" expanded="false" />
             <element signature="e#5344#6421#0" expanded="false" />
+            <element signature="e#6459#7490#0" expanded="false" />
             <element signature="e#7529#8418#0" expanded="false" />
           </folding>
         </state>
@@ -914,10 +941,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/twitter_stream.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1317" column="0" lean-forward="false" selection-start-line="1317" selection-start-column="0" selection-end-line="1317" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TwitterManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="20" column="23" lean-forward="false" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/server/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="24" column="21" lean-forward="false" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
+        <state relative-caret-position="493">
+          <caret line="31" column="28" lean-forward="false" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -934,42 +978,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/twitter_stream.log">
+    <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1317" column="0" lean-forward="false" selection-start-line="1317" selection-start-column="0" selection-end-line="1317" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TwitterManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="20" column="23" lean-forward="false" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
+        <state relative-caret-position="375">
+          <caret line="292" column="91" lean-forward="false" selection-start-line="292" selection-start-column="91" selection-end-line="292" selection-end-column="91" />
           <folding>
-            <element signature="e#0#33#0" expanded="true" />
+            <element signature="e#0#17#0" expanded="true" />
+            <element signature="e#3762#5301#0" expanded="false" />
+            <element signature="e#5344#6421#0" expanded="false" />
+            <element signature="e#6459#7490#0" expanded="false" />
+            <element signature="e#7529#8418#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/server/routes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4">
-          <caret line="36" column="17" lean-forward="false" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+        <state relative-caret-position="328">
+          <caret line="28" column="10" lean-forward="true" selection-start-line="28" selection-start-column="10" selection-end-line="28" selection-end-column="10" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="591">
-          <caret line="120" column="35" lean-forward="false" selection-start-line="120" selection-start-column="35" selection-end-line="120" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#5344#6421#0" expanded="false" />
-            <element signature="e#7529#8418#0" expanded="false" />
           </folding>
         </state>
       </provider>

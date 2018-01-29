@@ -1,9 +1,11 @@
+// 3rd Party Imports
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NvD3Module } from 'ng2-nvd3';
 
+// Components
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,10 +13,16 @@ import { HappyRankComponent } from './happy-rank/happy-rank.component';
 import { HappyTimelineComponent } from './happy-timeline/happy-timeline.component';
 import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
 import { TweetBoxComponent } from './tweet-box/tweet-box.component';
-
-import {ApiDataService, TweetService, WebSocketService} from './_services';
 import { ScotlandMapComponent } from './scotland-map/scotland-map.component';
-import {GlasgowDataManagerService} from './_services';
+
+// Services
+import {
+  DataManagerService,
+  TweetService,
+  WebSocketService,
+  GlasgowDataManagerService,
+  ScotlandDataManagerService
+} from './_services';
 
 @NgModule({
   declarations: [
@@ -34,10 +42,11 @@ import {GlasgowDataManagerService} from './_services';
     AppRoutingModule
   ],
   providers: [
-    ApiDataService,
     TweetService,
     WebSocketService,
-    GlasgowDataManagerService
+    GlasgowDataManagerService,
+    ScotlandDataManagerService,
+    DataManagerService
   ],
   bootstrap: [AppComponent]
 })

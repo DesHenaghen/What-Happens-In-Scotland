@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} f
 
 declare let d3: any;
 import 'nvd3';
+import {District} from '../_models/District';
 
 /**
  * Component for the generation of a line chart to show happiness over time for a ward
@@ -18,14 +19,14 @@ import 'nvd3';
 })
 export class HappyTimelineComponent implements OnInit, OnChanges {
 
-  @Input() ward: any;
+  @Input() ward: District;
 
   public lineOptions: any;
   public lineData: any[];
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.setOptions();
   }
 
@@ -33,7 +34,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
    * Reacts to the change of any @Input variables
    * @param {SimpleChanges} changes
    */
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes['ward']) {
       this.setData();
     }

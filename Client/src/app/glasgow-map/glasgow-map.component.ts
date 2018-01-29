@@ -18,7 +18,6 @@ import {Feature, FeatureCollection, MultiLineString} from 'geojson';
 })
 export class GlasgowMapComponent implements OnInit {
 
-  // TODO: Models
   public ward: District;
   public wards: { [id: string]: District };
 

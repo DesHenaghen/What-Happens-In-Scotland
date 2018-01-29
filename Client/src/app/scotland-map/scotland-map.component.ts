@@ -1,7 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 
 declare let d3: any;
 import * as topojson from 'topojson';
+import {District} from '../_models/District';
+import {ScotlandDataManagerService} from '../_services';
+import {Feature, FeatureCollection, MultiLineString} from 'geojson';
+import {Tweet} from '../_models/Tweet';
 
 /**
  * Component for the generation and management of the Scotland Map
@@ -14,12 +18,8 @@ import * as topojson from 'topojson';
 })
 export class ScotlandMapComponent implements OnInit {
 
-  @Input() region;
-
-  // Emits the id of the region selected on the map to parent components
-  @Output() regionSelected = new EventEmitter<string>();
-
-  public regions = {};
+  public district: District;
+  public districts: { [id: string]: District };
 
   private margin = {top: 20, right: 20, bottom: 0, left: 50};
   private height: number;
@@ -32,13 +32,35 @@ export class ScotlandMapComponent implements OnInit {
   private offsetL: number;
   private offsetT: number;
 
-  constructor() {
+  constructor(private _scotlandDataManager: ScotlandDataManagerService) {
     this.width = 1000 - this.margin.left - this.margin.right;
     this.height = 1000 - this.margin.top - this.margin.bottom;
   }
 
   ngOnInit() {
     this.initVariables();
+
+    this._scotlandDataManager.getDistricts()
+      .subscribe((districts: { [id: string]: District }) => this.districts = districts);
+
+    this._scotlandDataManager.getDistrict().subscribe((district: District) => this.district = district);
+
+    this._scotlandDataManager.getLatestTweet().subscribe((tweet: Tweet) => {
+      if (tweet !== undefined) {
+        if (tweet.id === ('scotland-boundary')) {
+          const element = document.getElementById(tweet.id);
+          if (element.style.animationName === 'pulsate') {
+            element.style.animationName = 'pulsate2';
+          } else {
+            element.style.animationName = 'pulsate';
+          }
+        } else {
+          this.drawPoint(tweet.coordinates);
+        }
+      }
+    });
+
+    this._scotlandDataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => this.drawMap(topology));
   }
 
   /**
@@ -80,29 +102,31 @@ export class ScotlandMapComponent implements OnInit {
    * Draws map when topology has been parsed
    * @param topology
    */
-  public drawMap (topology: any): void {
-    // Draw map outline
-    // this.drawGlasgowOutline(topology);
+  public drawMap(topology: FeatureCollection<any>): void {
+    if (topology !== undefined) {
+      // Draw map outline
+      this.drawRegionOutline(topology);
 
-    // Draw each region polygon
-    this.drawRegions(topology);
+      // Draw each district polygon
+      this.drawDistricts(topology);
+    }
   }
 
   /**
-   * Draws the regions that exist in the topology passed in.
+   * Draws the districts that exist in the topology passed in.
    * @param topology
    */
-  private drawRegions (topology: any): void {
+  private drawDistricts(topology: FeatureCollection<any>): void {
     this.svg.append('g').selectAll('path')
       .data(topology.features) // Read in the array of features from the topology data
       .enter()
       .append('path') // Add a path element
-      // With classes regions and region id
-      .attr('class', d => 'regions ' + d.properties.LAD13CD)
+      // With classes districts and district id
+      .attr('class', d => 'districts ' + d.properties.LAD13CD)
       // Define the outline of the shape based on the defined projection and polygon shape
       .attr('d', this.path)
       // Fill the polygon in with a colour from a range
-      .attr('fill', d => this.colour(this.regions[d.properties.LAD13CD].average))
+      .attr('fill', d => this.colour(this.districts[d.properties.LAD13CD].average))
       .attr('id', d => d.properties.LAD13CD)
       .on('click', this.setData)
       .on('mousemove', this.showTooltip)
@@ -111,25 +135,25 @@ export class ScotlandMapComponent implements OnInit {
       });
   }
 
-  // /**
-  //  * Draws the outline of the region in the topology passed in. Only draws outer boundaries
-  //  * @param t
-  //  */
-  // private drawGlasgowOutline (t: any): void  {
-  //   const topology = topojson.topology([t], null);
-  //   this.svg.append('path')
-  //   // Only returns the arcs that aren't shared by regions i.e the outer bounds
-  //     .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b ))
-  //     .attr('d', this.path)
-  //     .attr('stroke', () => this.colour(this.regions['glasgow-boundary'].average))
-  //     .attr('id', 'glasgow-boundary')
-  //     .attr('class', 'selected')
-  //     .on('click', this.setData)
-  //     .on('mousemove', this.showTooltip)
-  //     .on('mouseout', () => {
-  //       this.tooltip.classed('hidden', true);
-  //     });
-  // }
+  /**
+   * Draws the outline of the district in the topology passed in. Only draws outer boundaries
+   * @param t
+   */
+  private drawRegionOutline (t: any): void  {
+    const topology = topojson.topology([t], null);
+    this.svg.append('path')
+    // Only returns the arcs that aren't shared by districts i.e the outer bounds
+      .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b ))
+      .attr('d', this.path)
+      .attr('stroke', () => this.colour(this.districts['scotland-boundary'].average))
+      .attr('id', 'scotland-boundary')
+      .attr('class', 'selected')
+      .on('click', this.setData)
+      .on('mousemove', this.showTooltip)
+      .on('mouseout', () => {
+        this.tooltip.classed('hidden', true);
+      });
+  }
 
   public drawPoint(coordArray: number[]): void {
     const coordinates = this.projection(coordArray);
@@ -160,25 +184,29 @@ export class ScotlandMapComponent implements OnInit {
   // Event Handlers //
 
   /**
-   * Emits the id of the selected region
+   * Emits the id of the selected district
    * @param e
    */
-  private setData = (e: any): void => {
-    const id = e.properties ? e.properties.LAD13CD : 'scotland-boundary';
-    this.regionSelected.emit(id);
+  private setData = (e: Feature<any> | MultiLineString): void => {
+    const id = this.isFeature(e) ? e.properties.LAD13CD : 'scotland-boundary';
+    this._scotlandDataManager.setDistrict(id);
   }
 
   /**
-   * Displays the tooltip for the region hovered over at the appropriate place on the screen
+   * Displays the tooltip for the district hovered over at the appropriate place on the screen
    * @param d
    */
   private showTooltip = (d: any): void => {
     const label = (d.properties ? d.properties.LAD13NM : 'Scotland') +
-      '<br> ' + this.regions[d.properties ? d.properties.LAD13CD : 'scotland-boundary'].prettyAverage + '% Happy';
+      '<br> ' + this.districts[d.properties ? d.properties.LAD13CD : 'scotland-boundary'].prettyAverage + '% Happy';
     const mouse = d3.mouse(this.svg.node());
     // console.log(mouse, this.offsetL, this.offsetT);
     this.tooltip.classed('hidden', false)
       .attr('style', 'left:' + (mouse[0] + this.offsetL) + 'px;top:' + (mouse[1] + this.offsetT) + 'px')
       .html(label);
+  }
+
+  private isFeature(object: any): object is Feature<any> {
+    return 'properties' in object;
   }
 }
