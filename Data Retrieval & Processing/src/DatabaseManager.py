@@ -183,6 +183,15 @@ def save_scotland_tweet(tweet):
     except TypeError as e:
         area_id = None
 
+    if area_id is not None:
+        __socketio.emit('scotland_geo_tweet', {
+            'text': full_text,
+            'user': tweet.get("user"),
+            'ward': area_id,
+            'coordinates': coord_array,
+            'score': scores.get('compound')
+        })
+
     statement = __scotland_tweets.insert().values(
         place=tweet.get("place"),
         text=full_text,
