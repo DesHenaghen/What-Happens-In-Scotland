@@ -3,27 +3,56 @@ const config = require('config.json')('../config/database.json', 'development');
 
 const pool = new Pool(config.postgres);
 
-pool.query(
-  "SELECT id, coordinates " +
-  "FROM geo_tweets"
-)
-  .then(res => {
-    res.rows.forEach(row => {
-      let coordString = row.coordinates.coordinates;
-      coordString = "("+coordString[1]+","+coordString[0]+")";
+function updateScotlandGeoTweetsArea() {
+  pool.query(
+    "SELECT id, coordinates " +
+    "FROM scotland_geo_tweets"
+  )
+    .then(res => {
+      res.rows.forEach(row => {
+        let coordString = 'POINT(' + row.coordinates.y + " " + row.coordinates.x + ")";
+        console.log(coordString, row.id);
 
-      pool.query(
-        "UPDATE geo_tweets " +
-        "SET tmp_coordinates = $1::point " +
-        "WHERE id=$2 ",
-        [coordString, row.id]
-      ).then(
-        "UPDATE geo_tweets " +
-        "SET area_id = glasgow_wards.id " +
-        "FROM glasgow_wards " +
-        "WHERE glasgow_wards.area @> geo_tweets.tmp_coordinates "
-      )
-        .catch(e => console.log(e))
-    });
-  })
-  .catch(e => console.error(e.stack));
+        pool.query(
+          "UPDATE scotland_geo_tweets " +
+          "SET area_id = scotland_districts.id " +
+          "FROM scotland_districts " +
+          "WHERE scotland_geo_tweets.id=$2 " +
+          "AND ST_Contains(scotland_districts.area, ST_GeomFromText($1, 4326))",
+          [coordString, row.id]
+        ).catch(e => console.log(e))
+      });
+    })
+    .catch(e => console.error(e.stack));
+}
+
+function updateScotlandTweetsArea() {
+  pool.query(
+    "SELECT id, place " +
+    "FROM scotland_tweets"
+  )
+    .then(res => {
+      res.rows.forEach(row => {
+        console.log(row.place.name, row.place.bounding_box.coordinates);
+
+        let bbox = row.place.bounding_box;
+
+        let polygon_string = "POLYGON((" + bbox.coordinates[0].map(position => `${position[0]} ${position[1]}`).join(', ') +
+          ", " + bbox.coordinates[0][0][0] +" " + bbox.coordinates[0][0][1] +"))";
+        console.log(polygon_string);
+
+        pool.query(
+          "UPDATE scotland_tweets " +
+          "SET area_id = scotland_districts.id " +
+          "FROM scotland_districts " +
+          "WHERE scotland_tweets.id=$2 " +
+          "AND ST_Contains(scotland_districts.area, ST_Centroid(ST_GeomFromText($1, 4326)))",
+          [polygon_string, row.id]
+        ).catch(e => console.log(e))
+      });
+    })
+    .catch(e => console.error(e.stack));
+}
+
+updateScotlandGeoTweetsArea();
+updateScotlandTweetsArea();
