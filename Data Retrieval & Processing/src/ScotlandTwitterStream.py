@@ -18,10 +18,7 @@ def main():
         print("Listening for tweets...")
 
         for tweet in tweet_stream:
-            if tweet.get("coordinates"):
-                dbMan.save_scotland_geo_tweet(tweet)
-            else:
-                dbMan.save_scotland_tweet(tweet)
+            dbMan.save_scotland_tweet(tweet)
 
     except ProtocolError as e:
         print("Killing myself now as a PROTOCOL ERROR occurred")

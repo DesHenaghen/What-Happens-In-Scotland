@@ -33,19 +33,6 @@ __geo_tweets = sqlalchemy.Table("geo_tweets", __meta,
                                 Column('pos_sent', REAL),
                                 Column('compound_sent', REAL))
 
-__scotland_geo_tweets = sqlalchemy.Table("scotland_geo_tweets", __meta,
-                                         Column('id', Integer, primary_key=True),
-                                         Column('coordinates', Text),
-                                         Column('area_id', Text),
-                                         Column('place', JSONB),
-                                         Column('text', Text),
-                                         Column('date', DateTime),
-                                         Column('user', JSONB),
-                                         Column('neg_sent', REAL),
-                                         Column('neu_sent', REAL),
-                                         Column('pos_sent', REAL),
-                                         Column('compound_sent', REAL))
-
 __glasgow_tweets = sqlalchemy.Table("glasgow_tweets", __meta,
                                     Column('id', Integer, primary_key=True),
                                     Column('place', JSONB),
@@ -66,12 +53,9 @@ __scotland_tweets = sqlalchemy.Table("scotland_tweets", __meta,
                                      Column('neg_sent', REAL),
                                      Column('neu_sent', REAL),
                                      Column('pos_sent', REAL),
-                                     Column('compound_sent', REAL))
-
-__glasgow_wards = sqlalchemy.Table("glasgow_wards", __meta,
-                                   Column('id', Text),
-                                   Column('name', Text),
-                                   Column('area', Text))
+                                     Column('compound_sent', REAL),
+                                     Column('area_id', Text),
+                                     Column('coordinates', Text))
 
 # Creates tables if they don't already exist
 __meta.create_all()
@@ -130,42 +114,6 @@ def save_geo_tweet(tweet):
     print(tweet)
 
 
-def save_scotland_geo_tweet(tweet):
-    if 'extended_tweet' in tweet:
-        full_text = tweet.get('extended_tweet').get('full_text')
-    else:
-        full_text = tweet.get('text')
-
-    # Tweet date & time
-    float_ts = int(tweet.get('timestamp_ms')) / 1000
-    date = datetime.datetime.fromtimestamp(float_ts)
-
-    coord_array = tweet.get("coordinates").get("coordinates")
-    coord_string = "(" + str(coord_array[1]) + "," + str(coord_array[0]) + ")"
-
-    # Tweet sentiment scores
-    scores = __analyser.calculate_sentiment_scores(full_text)
-
-    statement = __scotland_geo_tweets.insert().values(
-        coordinates=coord_string,
-        place=tweet.get("place"),
-        text=full_text,
-        date=date,
-        user=tweet.get("user"),
-        neg_sent=scores.get('neg'),
-        neu_sent=scores.get('neu'),
-        pos_sent=scores.get('pos'),
-        compound_sent=scores.get('compound')
-    )
-
-    __engine.execute(statement)
-
-    # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
-    log.logger.info("added to scotland_geo_tweets")
-    # print("added to scotland_geo_tweets")
-    # print(tweet)
-
-
 def save_glasgow_tweet(tweet):
     if 'extended_tweet' in tweet:
         full_text = tweet.get('extended_tweet').get('full_text')
@@ -217,23 +165,43 @@ def save_scotland_tweet(tweet):
     # Tweet sentiment scores
     scores = __analyser.calculate_sentiment_scores(full_text)
 
+    if tweet.get('coordinates'):
+        coord_array = tweet.get("coordinates").get("coordinates")
+        coord_string = "(" + str(coord_array[1]) + "," + str(coord_array[0]) + ")"
+        wkt_coords = "POINT("+str(coord_array[0])+" "+str(coord_array[1])+")"
+    else:
+        coord_string = None
+        coord_array = tweet.get("place").get("bounding_box").get("coordinates")[0]
+        wkt_coords = 'POLYGON(('+', '.join(map(lambda x: str(x[0])+" "+str(x[1]), coord_array))+', '+str(coord_array[0][0])+' '+str(coord_array[0][1])+'))'
+
+    try:
+        area_id = __engine.execute(
+            text("select id " +
+                 "from scotland_districts " +
+                 "where ST_Contains(area, ST_Centroid(ST_GeomFromText('" + wkt_coords + "', 4326)))")
+        ).fetchone()[0]
+    except TypeError as e:
+        area_id = None
+
     statement = __scotland_tweets.insert().values(
         place=tweet.get("place"),
         text=full_text,
         date=date,
+        coordinates=coord_string,
         user=tweet.get("user"),
         neg_sent=scores.get('neg'),
         neu_sent=scores.get('neu'),
         pos_sent=scores.get('pos'),
-        compound_sent=scores.get('compound')
+        compound_sent=scores.get('compound'),
+        area_id=area_id
     )
 
     __engine.execute(statement)
 
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     log.logger.info("added to scotland_tweets")
-    # print("added to scotland tweets")
-    # print(tweet)
+    print("added to scotland tweets")
+    print(tweet)
 
 
 def get_glasgow_geo_tweets(area_id):
@@ -287,6 +255,7 @@ def get_scotland_tweets():
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
         "FROM scotland_tweets " +
+        "WHERE area_id IS NOT NULL " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +

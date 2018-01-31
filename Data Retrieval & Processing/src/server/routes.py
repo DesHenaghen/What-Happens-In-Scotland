@@ -31,7 +31,6 @@ def parse_twitter_data(tweets):
         total += int(tweet[8])
         totals.append(int(tweet[8]))
 
-    print(last_tweet_user, tweets[-1])
     return jsonify({
         'values': values,
         'total': total,
