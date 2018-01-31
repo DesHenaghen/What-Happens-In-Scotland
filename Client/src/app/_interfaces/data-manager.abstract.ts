@@ -62,22 +62,25 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   public updateLastTweet(tweet: Tweet, id: string): void {
     tweet.id = id;
     const district = this.districts[id];
-    console.log(this.districts);
-    console.log(this.regionName, tweet, id, district);
-    let sum = district.average * district.totals[district.totals.length - 1];
-    sum += tweet.score;
+    // console.log(this.districts);
+    // console.log(this.regionName, tweet, id, district);
 
-    district.total++;
-    district.totals[district.totals.length - 1]++;
-    district.average = sum / district.totals[district.totals.length - 1];
-    district.values[district.values.length - 1].y = district.average;
-    district.prettyAverage = Math.round(district.average * 10) / 10;
-    district.last_tweet = tweet;
+    if (district) {
+      let sum = district.average * district.totals[district.totals.length - 1];
+      sum += tweet.score;
 
-    this.districts[id] = district;
+      district.total++;
+      district.totals[district.totals.length - 1]++;
+      district.average = sum / district.totals[district.totals.length - 1];
+      district.values[district.values.length - 1].y = district.average;
+      district.prettyAverage = Math.round(district.average * 10) / 10;
+      district.last_tweet = tweet;
 
-    this.districtsSubject.next(this.districts);
-    this.latestTweet.next(tweet);
+      this.districts[id] = district;
+
+      this.districtsSubject.next(this.districts);
+      this.latestTweet.next(tweet);
+    }
   }
 
   /**
@@ -101,7 +104,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
           const id = feature.properties[this.topologyId];
           const name = feature.properties[this.topologyName];
 
-          httpRequests.push(this.getDistrictData('S13002650'));
+          httpRequests.push(this.getDistrictData(id));
           httpRequestsInfo.push({id, name});
         });
 

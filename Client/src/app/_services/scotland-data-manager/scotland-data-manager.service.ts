@@ -26,7 +26,7 @@ export class ScotlandDataManagerService extends AbstractDataManager {
   }
 
   protected getDistrictData(id: string): Observable<AreaData> {
-    return this._http.get<AreaData>('/api/glasgow_district_data', {
+    return this._http.get<AreaData>('/api/scotland_district_data', {
       params: { id }
     });
   }
