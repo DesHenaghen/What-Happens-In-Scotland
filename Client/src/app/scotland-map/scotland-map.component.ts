@@ -47,15 +47,17 @@ export class ScotlandMapComponent implements OnInit {
 
     this._scotlandDataManager.getLatestTweet().subscribe((tweet: Tweet) => {
       if (tweet !== undefined) {
-        if (tweet.id === ('scotland-boundary')) {
-          const element = document.getElementById(tweet.id);
+        if (tweet.id !== ('scotland-boundary')) {
+          this.drawPoint(tweet.coordinates);
+        }
+
+        const element = document.getElementById('scotland-boundary');
+        if (element) {
           if (element.style.animationName === 'pulsate') {
             element.style.animationName = 'pulsate2';
           } else {
             element.style.animationName = 'pulsate';
           }
-        } else {
-          this.drawPoint(tweet.coordinates);
         }
       }
     });

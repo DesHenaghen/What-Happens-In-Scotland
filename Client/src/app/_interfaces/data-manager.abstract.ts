@@ -62,25 +62,33 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   public updateLastTweet(tweet: Tweet, id: string): void {
     tweet.id = id;
     const district = this.districts[id];
+    const region = this.districts[this.mapType + '-boundary'];
     // console.log(this.districts);
     // console.log(this.regionName, tweet, id, district);
+    if (region) {
+      this.districts[this.mapType + '-boundary'] = this.updateDistrict(region, tweet);
+    }
 
     if (district) {
-      let sum = district.average * district.totals[district.totals.length - 1];
-      sum += tweet.score;
-
-      district.total++;
-      district.totals[district.totals.length - 1]++;
-      district.average = sum / district.totals[district.totals.length - 1];
-      district.values[district.values.length - 1].y = district.average;
-      district.prettyAverage = Math.round(district.average * 10) / 10;
-      district.last_tweet = tweet;
-
-      this.districts[id] = district;
-
-      this.districtsSubject.next(this.districts);
-      this.latestTweet.next(tweet);
+      this.districts[id] = this.updateDistrict(district, tweet);
     }
+
+    this.districtsSubject.next(this.districts);
+    this.latestTweet.next(tweet);
+  }
+
+  private updateDistrict(district: District, tweet: Tweet): District {
+    let sum = district.average * district.totals[district.totals.length - 1];
+    sum += tweet.score;
+
+    district.total++;
+    district.totals[district.totals.length - 1]++;
+    district.average = sum / district.totals[district.totals.length - 1];
+    district.values[district.values.length - 1].y = district.average;
+    district.prettyAverage = Math.round(district.average * 10) / 10;
+    district.last_tweet = tweet;
+
+    return district;
   }
 
   /**
