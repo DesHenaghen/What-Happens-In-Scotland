@@ -239,12 +239,12 @@ def get_scotland_geo_tweets(area_id):
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM scotland_geo_tweets " +
+        "FROM scotland_tweets " +
         "WHERE area_id = :id " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +
-        ") as x INNER JOIN scotland_geo_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
+        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
     return __engine.execute(sql, {'id': area_id})
 
 
