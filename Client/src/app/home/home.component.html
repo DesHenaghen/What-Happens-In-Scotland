@@ -1,13 +1,13 @@
 <div id="map-background">
   <div class="row">
     <div class="col">
-      <mat-tab-group (selectedTabChange)="tabChanged($event)">
+      <mat-tab-group #mapModeTabs (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Scotland"></mat-tab>
         <mat-tab label="Glasgow"></mat-tab>
       </mat-tab-group>
 
       <app-glasgow-map [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
-      <app-scotland-map [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
+      <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
     </div>
     <div class="col">
       <div id="chart-box">

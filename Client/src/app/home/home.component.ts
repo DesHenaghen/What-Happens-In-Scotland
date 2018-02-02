@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {TweetService, DataManagerService} from '../_services';
 import {District} from '../_models/District';
-import {MatTabChangeEvent} from '@angular/material';
+import {MatTabChangeEvent, MatTabGroup} from '@angular/material';
 import {MapModes} from '../_models/MapModes';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -18,6 +18,8 @@ import {Subscription} from 'rxjs/Subscription';
   encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit {
+
+  @ViewChild('mapModeTabs') mapModeTabs: MatTabGroup;
 
   public district: District = new District();
   public districts: {[id: string]: District} = {};
@@ -75,8 +77,13 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
-    this.currentMode = tabChangeEvent.index;
+  public tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
+    this.setMode(tabChangeEvent.index);
+  }
+
+  public setMode(index: MapModes): void {
+    this.mapModeTabs.selectedIndex = index;
+    this.currentMode = index;
     this._dataManager.selectDataManager(this.currentMode);
   }
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
 
 declare let d3: any;
 import * as topojson from 'topojson';
@@ -7,6 +7,7 @@ import {ScotlandDataManagerService} from '../_services';
 import {Feature, FeatureCollection, MultiLineString} from 'geojson';
 import {Tweet} from '../_models/Tweet';
 import {isNumber} from 'util';
+import {MapModes} from '../_models/MapModes';
 
 /**
  * Component for the generation and management of the Scotland Map
@@ -18,6 +19,9 @@ import {isNumber} from 'util';
   encapsulation: ViewEncapsulation.None
 })
 export class ScotlandMapComponent implements OnInit {
+
+  @Output()
+  mapMode: EventEmitter<number> = new EventEmitter<number>();
 
   public district: District;
   public districts: { [id: string]: District };
@@ -148,6 +152,7 @@ export class ScotlandMapComponent implements OnInit {
       .attr('fill', d => this.colour(this.districts[d.properties.LAD13CD].average))
       .attr('id', d => d.properties.LAD13CD)
       .on('click', this.setData)
+      .on('dblclick', this.changeMap)
       .on('mousemove', this.showTooltip)
       .on('mouseout', () => {
         this.tooltip.classed('hidden', true);
@@ -211,6 +216,13 @@ export class ScotlandMapComponent implements OnInit {
   private setData = (e: Feature<any> | MultiLineString): void => {
     const id = this.isFeature(e) ? e.properties.LAD13CD : 'scotland-boundary';
     this._scotlandDataManager.setDistrict(id);
+  }
+
+  private changeMap = (e: Feature<any> | MultiLineString): void => {
+    const id = this.isFeature(e) ? e.properties.LAD13CD : 'scotland-boundary';
+    if (id === 'S12000046') {
+      this.mapMode.emit(MapModes.Glasgow);
+    }
   }
 
   /**
