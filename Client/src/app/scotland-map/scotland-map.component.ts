@@ -49,20 +49,37 @@ export class ScotlandMapComponent implements OnInit {
       if (tweet !== undefined) {
         if (tweet.id !== ('scotland-boundary')) {
           this.drawPoint(tweet.coordinates);
+          this.pulsateDistrictElement(tweet.id);
         }
 
-        const element = document.getElementById('scotland-boundary');
-        if (element) {
-          if (element.style.animationName === 'pulsate') {
-            element.style.animationName = 'pulsate2';
-          } else {
-            element.style.animationName = 'pulsate';
-          }
-        }
+        // this.pulsateRegionElement();
       }
     });
 
     this._scotlandDataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => this.drawMap(topology));
+  }
+
+  private pulsateRegionElement(): void {
+    const element = document.getElementById('scotland-boundary');
+    if (element) {
+      if (element.style.animationName === 'regionPulsate') {
+        element.style.animationName = 'regionPulsate2';
+      } else {
+        element.style.animationName = 'regionPulsate';
+      }
+    }
+  }
+
+  private pulsateDistrictElement(id): void {
+    const element = document.getElementById(id);
+    if (element) {
+      console.log(id, element.style.animationName);
+      if (element.style.animationName === 'districtPulsate') {
+        element.style.animationName = 'districtPulsate2';
+      } else {
+        element.style.animationName = 'districtPulsate';
+      }
+    }
   }
 
   /**
@@ -175,12 +192,12 @@ export class ScotlandMapComponent implements OnInit {
       .duration(2000)
       .attr('stroke-width', 0.5)
       .attr('r', 12)
-      .ease('sine');
-    // .transition()
-    // .duration(5000)
-    // .attr('stroke-width', 10)
-    // .attr('r', 0)
-    // .remove();
+      .ease('sine')
+      .transition()
+      .duration(20000)
+      .attr('stroke-width', 10)
+      .attr('r', 0)
+      .remove();
   }
 
   // Event Handlers //

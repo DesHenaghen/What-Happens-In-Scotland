@@ -31,7 +31,7 @@ def parse_twitter_data(tweets):
         total += int(tweet[8])
         totals.append(int(tweet[8]))
 
-    return jsonify({
+    return {
         'values': values,
         'total': total,
         'totals': totals,
@@ -39,31 +39,59 @@ def parse_twitter_data(tweets):
             'text': last_tweet_text,
             'user': last_tweet_user
         }
-    })
+   }
 
 
 @data_routes.route('/api/glasgow_district_data')
 def glasgow_district_data():
     tweets = dbMan.get_glasgow_geo_tweets(request.args.get('id')).fetchall()
-    return parse_twitter_data(tweets)
+    return jsonify(parse_twitter_data(tweets))
+
+
+@data_routes.route('/api/all_glasgow_district_data')
+def all_glasgow_district_data():
+    area_ids = request.args.getlist('ids')
+    ids_dict = {}
+
+    for area_id in area_ids:
+        if area_id != 'glasgow-boundary':
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_glasgow_geo_tweets(area_id).fetchall())
+        else:
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_glasgow_tweets().fetchall())
+
+    return jsonify(ids_dict)
 
 
 @data_routes.route('/api/glasgow_data')
 def glasgow_data():
     tweets = dbMan.get_glasgow_tweets().fetchall()
-    return parse_twitter_data(tweets)
+    return jsonify(parse_twitter_data(tweets))
 
 
 @data_routes.route('/api/scotland_district_data')
 def scotland_district_data():
     tweets = dbMan.get_scotland_geo_tweets(request.args.get('id')).fetchall()
-    return parse_twitter_data(tweets)
+    return jsonify(parse_twitter_data(tweets))
+
+
+@data_routes.route('/api/all_scotland_district_data')
+def all_scotland_district_data():
+    area_ids = request.args.getlist('ids')
+    ids_dict = {}
+
+    for area_id in area_ids:
+        if area_id != 'scotland-boundary':
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_geo_tweets(area_id).fetchall())
+        else:
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_tweets().fetchall())
+
+    return jsonify(ids_dict)
 
 
 @data_routes.route('/api/scotland_data')
 def scotland_data():
     tweets = dbMan.get_scotland_tweets().fetchall()
-    return parse_twitter_data(tweets)
+    return jsonify(parse_twitter_data(tweets))
 
 
 @data_routes.route('/api/<path:api_route>')

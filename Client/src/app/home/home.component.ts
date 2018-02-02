@@ -3,6 +3,11 @@ import {HttpClient} from '@angular/common/http';
 import {TweetService, DataManagerService} from '../_services';
 import {District} from '../_models/District';
 
+export enum MapModes {
+  Glasgow,
+  Scotland
+}
+
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
  * of wards data.
@@ -19,6 +24,9 @@ export class HomeComponent implements OnInit {
   public district: District;
   public districts: {[id: string]: District};
 
+  public mapModes = MapModes;
+  public currentMode: MapModes;
+
   constructor(
     private _http: HttpClient,
     private _tweet: TweetService,
@@ -26,6 +34,8 @@ export class HomeComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
+    this.currentMode = MapModes.Scotland;
+
     this._dataManager.getDistrict().subscribe((district: District) => {
       this.district = district;
       this.setStyling(district.id);

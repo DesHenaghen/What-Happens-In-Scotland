@@ -2,14 +2,14 @@ import { Injector } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import {TweetService} from '../_services/tweet/tweet.service';
+import {TweetService} from '../tweet/tweet.service';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {District} from '../_models/District';
-import {AreaData} from '../_models/AreaData';
-import {Tweet} from '../_models/Tweet';
+import {District} from '../../_models/District';
+import {AreaData} from '../../_models/AreaData';
+import {Tweet} from '../../_models/Tweet';
 import {Feature, FeatureCollection} from 'geojson';
-import {DataManagerInterface} from './data-manager.interface';
+import {DataManagerInterface} from '../../_interfaces/data-manager.interface';
 
 declare let d3: any;
 
@@ -104,31 +104,26 @@ export abstract class AbstractDataManager implements DataManagerInterface {
       if (error) {
         console.error(error);
       } else {
-        const httpRequests: Observable<AreaData>[] = [];
-        const httpRequestsInfo: {id: string, name: string}[] = [];
+        const areaIds: string[] = [];
+        const areaNames: {[id: string]: string} = {};
 
         // Extract data for each district
         topology.features.forEach( (feature: Feature<any>) => {
           const id = feature.properties[this.topologyId];
-          const name = feature.properties[this.topologyName];
-
-          httpRequests.push(this.getDistrictData(id));
-          httpRequestsInfo.push({id, name});
+          areaNames[id] = feature.properties[this.topologyName];
+          areaIds.push(id);
         });
 
         // All of glasgow data
-        httpRequests.push(this.getRegionData());
-        httpRequestsInfo.push({id: this.mapType + '-boundary', name: this.regionName});
+        areaIds.push(this.mapType + '-boundary');
 
-        // Assign all the values from the http requests
-        forkJoin(httpRequests).subscribe(
-          (wardValues: AreaData[]) => {
-            for (let i = 0; i < wardValues.length; i++) {
-              const wardData: AreaData = wardValues[i];
-              console.log(wardData, this.regionName);
+        this.getDistrictsData(areaIds).subscribe(
+          results => {
+            for (let i = 0; i < areaIds.length; i++) {
+              const id = areaIds[i];
+              const wardData: AreaData = results[id];
               const values = wardData.values;
-              const id = httpRequestsInfo[i].id;
-              const name = httpRequestsInfo[i].name;
+              const name = areaNames[id];
               const average = (values.length > 0) ? values[values.length - 1].y : 0;
               const prettyAverage = Math.round(average * 10) / 10;
               const last_tweet: Tweet = (wardData.last_tweet) ?
@@ -142,8 +137,8 @@ export abstract class AbstractDataManager implements DataManagerInterface {
                 average,
                 prettyAverage,
                 last_tweet,
-                total: wardValues[i].total,
-                totals: wardValues[i].totals
+                total: wardData.total,
+                totals: wardData.totals
               };
             }
           },
@@ -151,12 +146,11 @@ export abstract class AbstractDataManager implements DataManagerInterface {
             console.error(err);
           },
           () => {
-            console.log(this.regionName, this.districts);
             this.districtsSubject.next(this.districts);
             this.mapTopology.next(topology);
             this.setDistrict(this.mapType + '-boundary');
-          });
-
+          }
+        );
       }
     });
   }
@@ -171,6 +165,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   protected abstract getRegionData(): any;
   protected abstract getDistrictData(id: string): any;
+  protected abstract getDistrictsData(ids: string[]): any;
 
   protected abstract listenOnSockets(): void;
 }

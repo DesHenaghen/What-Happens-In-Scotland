@@ -17,6 +17,3 @@ if __name__ == '__main__':
     twitter_stream_thread.start()
 
     app_thread = Thread(name="app", target=socketio.run(app, host='0.0.0.0'))
-
-    # app_thread.start()
-

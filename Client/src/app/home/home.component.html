@@ -1,12 +1,14 @@
 <div id="map-background">
   <div class="row">
     <div class="col">
-      <!--<app-glasgow-map></app-glasgow-map>-->
-      <app-scotland-map></app-scotland-map>
+      <app-glasgow-map *ngIf="currentMode==mapModes.Glasgow"></app-glasgow-map>
+      <app-scotland-map *ngIf="currentMode==mapModes.Scotland"></app-scotland-map>
     </div>
     <div class="col">
       <div id="chart-box">
         <h1 class="centre alfa">{{district.name}}</h1>
+        <button class="btn btn-primary" *ngIf="currentMode==mapModes.Glasgow" (click)="currentMode=mapModes.Scotland">Switch Map</button>
+        <button class="btn btn-primary" *ngIf="currentMode==mapModes.Scotland" (click)="currentMode=mapModes.Glasgow">Switch Map</button>
         <h2 class="centre">{{district.prettyAverage}}% Happy</h2>
         <app-happy-timeline [ward]="district"></app-happy-timeline>
         <div class="row">

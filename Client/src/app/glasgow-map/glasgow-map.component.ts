@@ -173,12 +173,12 @@ export class GlasgowMapComponent implements OnInit {
       .duration(2000)
       .attr('stroke-width', 0.5)
       .attr('r', 12)
-      .ease('sine');
-    // .transition()
-    // .duration(5000)
-    // .attr('stroke-width', 10)
-    // .attr('r', 0)
-    // .remove();
+      .ease('sine')
+      .transition()
+      .duration(180000)
+      .attr('stroke-width', 10)
+      .attr('r', 0)
+      .remove();
   }
 
   // Event Handlers //

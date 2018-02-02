@@ -1,5 +1,5 @@
 import {Injectable, Injector} from '@angular/core';
-import {AbstractDataManager} from '../../_interfaces/data-manager.abstract';
+import {AbstractDataManager} from '../data-manager/data-manager.abstract';
 import {Tweet} from '../../_models/Tweet';
 import {AreaData} from '../../_models/AreaData';
 import {Observable} from 'rxjs/Observable';
@@ -28,6 +28,12 @@ export class GlasgowDataManagerService extends AbstractDataManager {
   protected getDistrictData(id: string): Observable<AreaData> {
     return this._http.get<AreaData>('/api/glasgow_district_data', {
       params: { id }
+    });
+  }
+
+  protected getDistrictsData(ids: string[]) {
+    return this._http.get<any>('/api/all_glasgow_district_data', {
+      params: {ids}
     });
   }
 

@@ -12,6 +12,9 @@ div.tooltip {
 .districts {
   cursor: pointer;
   stroke: #000;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
 }
 
 .districts:hover {
@@ -55,14 +58,26 @@ div.tooltip {
   stroke: none;
 }
 
-@keyframes pulsate {
+@keyframes regionPulsate {
   0%    { stroke-width: 4vh; }
   50%   { stroke-width: 5vh; }
   100%  { stroke-width: 4vh; }
 }
 
-@keyframes pulsate2 {
+@keyframes regionPulsate2 {
   0%    { stroke-width: 4vh; }
   50%   { stroke-width: 5vh; }
   100%  { stroke-width: 4vh; }
+}
+
+@keyframes districtPulsate {
+  0%    { stroke-width: 1px; }
+  50%   { stroke-width: 5px; }
+  100%  { stroke-width: 1px; }
+}
+
+@keyframes districtPulsate2 {
+  0%    { stroke-width: 1px; }
+  50%   { stroke-width: 5px; }
+  100%  { stroke-width: 1px; }
 }
