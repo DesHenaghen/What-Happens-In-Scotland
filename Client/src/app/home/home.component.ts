@@ -2,10 +2,11 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {TweetService, DataManagerService} from '../_services';
 import {District} from '../_models/District';
+import {MatTabChangeEvent} from '@angular/material';
 
 export enum MapModes {
-  Glasgow,
-  Scotland
+  Scotland=0,
+  Glasgow=1
 }
 
 /**
@@ -52,6 +53,10 @@ export class HomeComponent implements OnInit {
       this.clearSelectedClass();
       document.getElementById(area).classList.add('selected');
     }
+  }
+
+  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
+    this.currentMode = tabChangeEvent.index;
   }
 
   /**

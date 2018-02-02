@@ -1,9 +1,10 @@
 // 3rd Party Imports
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NvD3Module } from 'ng2-nvd3';
+import {MatTabsModule} from '@angular/material/tabs';
 
 // Components
 import { AppComponent } from './app.component';
@@ -39,7 +40,8 @@ import {
     HttpClientModule,
     FormsModule,
     NvD3Module,
-    AppRoutingModule
+    AppRoutingModule,
+    MatTabsModule
   ],
   providers: [
     TweetService,
@@ -48,6 +50,7 @@ import {
     ScotlandDataManagerService,
     DataManagerService
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
