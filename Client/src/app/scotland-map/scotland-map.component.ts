@@ -6,6 +6,7 @@ import {District} from '../_models/District';
 import {ScotlandDataManagerService} from '../_services';
 import {Feature, FeatureCollection, MultiLineString} from 'geojson';
 import {Tweet} from '../_models/Tweet';
+import {isNumber} from 'util';
 
 /**
  * Component for the generation and management of the Scotland Map
@@ -73,7 +74,6 @@ export class ScotlandMapComponent implements OnInit {
   private pulsateDistrictElement(id): void {
     const element = document.getElementById(id);
     if (element) {
-      console.log(id, element.style.animationName);
       if (element.style.animationName === 'districtPulsate') {
         element.style.animationName = 'districtPulsate2';
       } else {
@@ -175,15 +175,17 @@ export class ScotlandMapComponent implements OnInit {
   }
 
   public drawPoint(coordArray: number[]): void {
-    const coordinates = this.projection(coordArray);
-    this.svg
-      .append('circle')
-      .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
-      .attr('cx', () => coordinates[0])
-      .attr('cy', () => coordinates[1])
-      .attr('r', '4px')
-      .attr('fill', '#2a2727')
-      .call(d => this.circlePulse(d[0][0]));
+    if (isNumber(coordArray[0])) {
+      const coordinates = this.projection(coordArray);
+      this.svg
+        .append('circle')
+        .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
+        .attr('cx', () => coordinates[0])
+        .attr('cy', () => coordinates[1])
+        .attr('r', '4px')
+        .attr('fill', '#2a2727')
+        .call(d => this.circlePulse(d[0][0]));
+    }
   }
 
   private circlePulse = (d: any): void => {

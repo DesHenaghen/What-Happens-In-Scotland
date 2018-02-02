@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="" />
+    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/_models/MapModes.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -1,6 +1,5 @@
 import { Injector } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import {TweetService} from '../tweet/tweet.service';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -116,6 +115,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
         // All of glasgow data
         areaIds.push(this.mapType + '-boundary');
+        areaNames[this.mapType + '-boundary'] = this.regionName;
 
         this.getDistrictsData(areaIds).subscribe(
           results => {

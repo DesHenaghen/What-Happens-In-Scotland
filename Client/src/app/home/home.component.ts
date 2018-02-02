@@ -3,11 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {TweetService, DataManagerService} from '../_services';
 import {District} from '../_models/District';
 import {MatTabChangeEvent} from '@angular/material';
-
-export enum MapModes {
-  Scotland=0,
-  Glasgow=1
-}
+import {MapModes} from '../_models/MapModes';
+import {Subscription} from 'rxjs/Subscription';
 
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
@@ -22,11 +19,14 @@ export enum MapModes {
 })
 export class HomeComponent implements OnInit {
 
-  public district: District;
-  public districts: {[id: string]: District};
+  public district: District = new District();
+  public districts: {[id: string]: District} = {};
 
   public mapModes = MapModes;
   public currentMode: MapModes;
+
+  private districtSubscription: Subscription = new Subscription();
+  private districtsSubscription: Subscription = new Subscription();
 
   constructor(
     private _http: HttpClient,
@@ -37,11 +37,31 @@ export class HomeComponent implements OnInit {
   public ngOnInit(): void {
     this.currentMode = MapModes.Scotland;
 
-    this._dataManager.getDistrict().subscribe((district: District) => {
+    this._dataManager.getDataManager().subscribe(dm => {
+      if (dm !== undefined) {
+        this.subscribeForDistrictData();
+      }
+    });
+  }
+
+  private subscribeForDistrictData(): void {
+
+    // Manage District Subscription
+    if (!this.districtSubscription.closed) {
+      this.districtSubscription.unsubscribe();
+    }
+    this.districtSubscription = this._dataManager.getDistrict().subscribe((district: District) => {
       this.district = district;
       this.setStyling(district.id);
     });
-    this._dataManager.getDistricts().subscribe((districts: {[id: string]: District}) => this.districts = districts);
+
+    // Manage Districts Subscription
+    if (!this.districtsSubscription.closed) {
+      this.districtsSubscription.unsubscribe();
+    }
+    this.districtsSubscription = this._dataManager.getDistricts().subscribe(
+      (districts: {[id: string]: District}) => this.districts = districts
+    );
   }
 
   /**
@@ -57,6 +77,7 @@ export class HomeComponent implements OnInit {
 
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     this.currentMode = tabChangeEvent.index;
+    this._dataManager.selectDataManager(this.currentMode);
   }
 
   /**

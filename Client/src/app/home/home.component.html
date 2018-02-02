@@ -2,12 +2,12 @@
   <div class="row">
     <div class="col">
       <mat-tab-group (selectedTabChange)="tabChanged($event)">
-        <mat-tab label="Scotland">Scotland</mat-tab>
-        <mat-tab label="Glasgow">Glasgow</mat-tab>
+        <mat-tab label="Scotland"></mat-tab>
+        <mat-tab label="Glasgow"></mat-tab>
       </mat-tab-group>
 
-      <app-glasgow-map *ngIf="currentMode==mapModes.Glasgow"></app-glasgow-map>
-      <app-scotland-map *ngIf="currentMode==mapModes.Scotland"></app-scotland-map>
+      <app-glasgow-map [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
+      <app-scotland-map [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
     </div>
     <div class="col">
       <div id="chart-box">
