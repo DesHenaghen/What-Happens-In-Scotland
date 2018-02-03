@@ -29,7 +29,7 @@ html, body {
 
 #map-background {
   height: 100%;
-  background-color: #eeeeee;
+  background-color: #dadada;
 }
 
 .alfa {
@@ -42,4 +42,29 @@ html, body {
 
 .centre {
   text-align: center;
+}
+
+.districtInfoBox {
+  top: 2%;
+  right: 1%;
+  background-color: #f6f6f6;
+}
+
+.districtInfoBox .header {
+  font-size: 2.5rem;
+  display: inline-block;
+}
+
+.districtInfoBox .subtitle {
+  font-size: 1.2rem;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#mapModeTabs {
+  flex-direction: initial;
+}
+
+.mat-tab-header {
+  background-color: #f6f6f6;
 }

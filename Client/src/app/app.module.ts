@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NvD3Module } from 'ng2-nvd3';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatCardModule} from '@angular/material/card';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
@@ -44,6 +45,7 @@ import {
     NvD3Module,
     AppRoutingModule,
     MatTabsModule,
+    MatCardModule,
     BrowserAnimationsModule
   ],
   providers: [

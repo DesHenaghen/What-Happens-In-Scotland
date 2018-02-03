@@ -1,4 +1,14 @@
-<div id="tweet_box">
-  <h3 style="margin-left: 25px; font-weight: bold;">{{ward.last_tweet.user.name}}</h3>
-  <h5 style="margin-left: 30px;">{{ward.last_tweet.text}}</h5>
-</div>
+<!--<div id="tweet_box">-->
+  <!--<h3 style="margin-left: 25px; font-weight: bold;">{{ward.last_tweet.user.name}}</h3>-->
+  <!--<h5 style="margin-left: 30px;">{{ward.last_tweet.text}}</h5>-->
+<!--</div>-->
+<mat-card id="tweet_box" >
+  <mat-card-header>
+    <mat-card-title class="header">{{ward.last_tweet.user.name}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      {{ward.last_tweet.text}}
+    </p>
+  </mat-card-content>
+</mat-card>
