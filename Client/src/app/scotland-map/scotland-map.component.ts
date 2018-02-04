@@ -23,6 +23,8 @@ export class ScotlandMapComponent implements OnInit {
   @Output()
   mapMode: EventEmitter<number> = new EventEmitter<number>();
 
+  // Map variables
+  public loaded = false;
   public district: District;
   public districts: { [id: string]: District };
 
@@ -46,7 +48,13 @@ export class ScotlandMapComponent implements OnInit {
     this.initVariables();
 
     this._scotlandDataManager.getDistricts()
-      .subscribe((districts: { [id: string]: District }) => this.districts = districts);
+      .subscribe((districts: { [id: string]: District }) => {
+        console.log(districts);
+        this.districts = districts;
+        if (districts) {
+          this.loaded = true;
+        }
+      });
 
     this._scotlandDataManager.getDistrict().subscribe((district: District) => this.district = district);
 

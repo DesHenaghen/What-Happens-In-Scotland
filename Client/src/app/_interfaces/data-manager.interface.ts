@@ -11,4 +11,5 @@ export interface DataManagerInterface {
   updateLastTweet(tweet: Tweet, id: string): void;
   loadDistrictsData(): void;
   setDistrict(area: string): void;
+  getMapBoundaryId(): string;
 }

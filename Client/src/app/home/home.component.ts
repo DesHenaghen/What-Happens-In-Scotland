@@ -82,7 +82,7 @@ export class HomeComponent implements OnInit {
     if (area !== undefined) {
       this.clearSelectedClass();
       document.getElementById(area).classList.add('selected');
-      document.getElementById('districtInfoBox').style.border = '4px solid ' + this.colour(this.district.average);
+      document.getElementById('districtInfoBox').style.border = '6px solid ' + this.colour(this.district.average);
     }
   }
 

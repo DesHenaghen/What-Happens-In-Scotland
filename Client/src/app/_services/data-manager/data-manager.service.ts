@@ -67,4 +67,8 @@ export class DataManagerService implements DataManagerInterface {
     this._dataManager.setDistrict(area);
   }
 
+  getMapBoundaryId(): string {
+    return this._dataManager.getMapBoundaryId();
+  }
+
 }

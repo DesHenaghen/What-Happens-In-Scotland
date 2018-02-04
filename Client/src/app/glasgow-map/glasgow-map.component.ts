@@ -18,6 +18,8 @@ import {Feature, FeatureCollection, MultiLineString} from 'geojson';
 })
 export class GlasgowMapComponent implements OnInit {
 
+  // Public map variables
+  public loaded = false;
   public ward: District;
   public wards: { [id: string]: District };
 
@@ -41,8 +43,13 @@ export class GlasgowMapComponent implements OnInit {
     this.initVariables();
 
     this._glasgowDataManager.getDistricts()
-      .subscribe((districts: { [id: string]: District }) => this.wards = districts);
-
+      .subscribe((districts: { [id: string]: District }) => {
+        console.log(districts);
+        this.wards = districts;
+        if (districts) {
+          this.loaded = true;
+        }
+      });
     this._glasgowDataManager.getDistrict().subscribe((district: District) => this.ward = district);
 
     this._glasgowDataManager.getLatestTweet().subscribe((tweet: Tweet) => {

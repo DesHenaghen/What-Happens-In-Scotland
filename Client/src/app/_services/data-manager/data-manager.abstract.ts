@@ -59,6 +59,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     return this.mapTopology.asObservable();
   }
 
+  public getMapBoundaryId(): string {
+    return this.mapType + '-boundary';
+  }
+
   public updateLastTweet(tweet: Tweet, id: string): void {
     // If the tweet belongs to the whole map area, set the id accordingly
     console.log(id, this.districtId, tweet);

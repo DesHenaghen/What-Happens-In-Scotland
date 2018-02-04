@@ -1,2 +1,6 @@
+<div *ngIf="!loaded" style="z-index: 9999999; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
+  <div class="loader"></div>
+</div>
+
 <div id="map" class="map"></div>
 <app-tweet-box [ward]="ward"></app-tweet-box>

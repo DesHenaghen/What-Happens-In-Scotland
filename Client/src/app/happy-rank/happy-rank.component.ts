@@ -99,7 +99,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
               value: ward.average,
               id: key,
               label: ward.name,
-              color: (this.ward === ward) ? '#7cff6c' : (key === 'glasgow-boundary') ? '#48BFFF' : '#ffffff'
+              color: (this.ward === ward) ? '#7cff6c' : (key === this._dataManager.getMapBoundaryId()) ? '#48BFFF' : '#b8b9ac'
             }
           );
         }
