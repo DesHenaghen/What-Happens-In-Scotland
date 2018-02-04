@@ -65,7 +65,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   public updateLastTweet(tweet: Tweet, id: string): void {
     // If the tweet belongs to the whole map area, set the id accordingly
-    console.log(id, this.districtId, tweet);
     id = (this.districtId === id) ? this.mapType + '-boundary' : id;
 
     tweet.id = id;

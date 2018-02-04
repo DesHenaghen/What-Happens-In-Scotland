@@ -44,7 +44,6 @@ export class GlasgowMapComponent implements OnInit {
 
     this._glasgowDataManager.getDistricts()
       .subscribe((districts: { [id: string]: District }) => {
-        console.log(districts);
         this.wards = districts;
         if (districts) {
           this.loaded = true;

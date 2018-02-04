@@ -49,7 +49,6 @@ export class ScotlandMapComponent implements OnInit {
 
     this._scotlandDataManager.getDistricts()
       .subscribe((districts: { [id: string]: District }) => {
-        console.log(districts);
         this.districts = districts;
         if (districts) {
           this.loaded = true;
