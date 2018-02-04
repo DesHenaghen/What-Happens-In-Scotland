@@ -55,101 +55,11 @@ __scotland_tweets = sqlalchemy.Table("scotland_tweets", __meta,
                                      Column('pos_sent', REAL),
                                      Column('compound_sent', REAL),
                                      Column('area_id', Text),
+                                     Column('ward_id', Text),
                                      Column('coordinates', Text))
 
 # Creates tables if they don't already exist
 __meta.create_all()
-
-
-def save_geo_tweet(tweet):
-    if 'extended_tweet' in tweet:
-        full_text = tweet.get('extended_tweet').get('full_text')
-    else:
-        full_text = tweet.get('text')
-
-    # Tweet date & time
-    float_ts = int(tweet.get('timestamp_ms')) / 1000
-    date = datetime.datetime.fromtimestamp(float_ts)
-
-    coord_array = tweet.get("coordinates").get("coordinates")
-    coord_string = "(" + str(coord_array[1]) + "," + str(coord_array[0]) + ")"
-
-    try:
-        area_id = __engine.execute(
-            text("select id from glasgow_wards where area @> '" + coord_string + "'")
-        ).fetchone()[0]
-    except TypeError as e:
-        area_id = None
-
-    # Tweet sentiment scores
-    scores = __analyser.calculate_sentiment_scores(full_text)
-
-    statement = __geo_tweets.insert().values(
-        coordinates=coord_string,
-        area_id=area_id,
-        place=tweet.get("place"),
-        text=full_text,
-        date=date,
-        user=tweet.get("user"),
-        neg_sent=scores.get('neg'),
-        neu_sent=scores.get('neu'),
-        pos_sent=scores.get('pos'),
-        compound_sent=scores.get('compound')
-    )
-
-    __engine.execute(statement)
-
-    if area_id is not None:
-        __socketio.emit('geo_tweet', {
-            'text': full_text,
-            'user': tweet.get("user"),
-            'ward': area_id,
-            'coordinates': coord_array,
-            'score': scores.get('compound')
-        })
-
-    # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
-    log.logger.info("added to geo_tweets")
-    print("added to geo_tweets")
-    print(tweet)
-
-
-def save_glasgow_tweet(tweet):
-    if 'extended_tweet' in tweet:
-        full_text = tweet.get('extended_tweet').get('full_text')
-    else:
-        full_text = tweet.get('text')
-
-    # Tweet date & time
-    float_ts = int(tweet.get('timestamp_ms')) / 1000
-    date = datetime.datetime.fromtimestamp(float_ts)
-
-    # Tweet sentiment scores
-    scores = __analyser.calculate_sentiment_scores(full_text)
-
-    statement = __glasgow_tweets.insert().values(
-        place=tweet.get("place"),
-        text=full_text,
-        date=date,
-        user=tweet.get("user"),
-        neg_sent=scores.get('neg'),
-        neu_sent=scores.get('neu'),
-        pos_sent=scores.get('pos'),
-        compound_sent=scores.get('compound')
-    )
-
-    __engine.execute(statement)
-
-    __socketio.emit('glasgow_tweet', {
-        'text': full_text,
-        'user': tweet.get("user"),
-        'score': scores.get('compound')
-    })
-
-    # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
-    log.logger.info("added to glasgow_tweets")
-    print("added to glasgow_tweets")
-    print(tweet)
 
 
 def save_scotland_tweet(tweet):
@@ -183,14 +93,37 @@ def save_scotland_tweet(tweet):
     except TypeError as e:
         area_id = None
 
+    if coord_string is not None:
+        try:
+            ward_id = __engine.execute(
+                text("select id " +
+                     "from scotland_wards " +
+                     "where ST_Contains(area, ST_Centroid(ST_GeomFromText('" + wkt_coords + "', 4326)))")
+            ).fetchone()[0]
+        except TypeError as e:
+            ward_id = None
+    else:
+        ward_id = None
+
     if area_id is not None:
-        __socketio.emit('scotland_geo_tweet', {
+        __socketio.emit('district_geo_tweet', {
             'text': full_text,
             'user': tweet.get("user"),
             'ward': area_id,
             'coordinates': coord_array,
             'score': scores.get('compound')
         })
+        print("emitted district_geo_tweet")
+
+    if ward_id is not None:
+        __socketio.emit('ward_geo_tweet', {
+            'text': full_text,
+            'user': tweet.get("user"),
+            'ward': ward_id,
+            'coordinates': coord_array,
+            'score': scores.get('compound')
+        })
+        print("emitted ward_geo_tweet")
 
     statement = __scotland_tweets.insert().values(
         place=tweet.get("place"),
@@ -202,7 +135,8 @@ def save_scotland_tweet(tweet):
         neu_sent=scores.get('neu'),
         pos_sent=scores.get('pos'),
         compound_sent=scores.get('compound'),
-        area_id=area_id
+        area_id=area_id,
+        ward_id=ward_id
     )
 
     __engine.execute(statement)
@@ -234,15 +168,16 @@ def get_glasgow_tweets():
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM glasgow_tweets " +
+        "FROM scotland_tweets " +
+        "WHERE area_id = 'S12000046' " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +
-        ") as x INNER JOIN glasgow_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
+        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
     return __engine.execute(sql)
 
 
-def get_scotland_geo_tweets(area_id):
+def get_scotland_district_tweets(area_id):
     sql = text(
         "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
         "FROM ( " +
@@ -250,6 +185,21 @@ def get_scotland_geo_tweets(area_id):
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
         "FROM scotland_tweets " +
         "WHERE area_id = :id " +
+        # "AND compound_sent != 0 " +
+        "GROUP by day " +
+        "ORDER BY day ASC " +
+        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
+    return __engine.execute(sql, {'id': area_id})
+
+
+def get_scotland_ward_tweets(area_id):
+    sql = text(
+        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
+        "FROM ( " +
+        "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
+        "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
+        "FROM scotland_tweets " +
+        "WHERE ward_id = :id " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +

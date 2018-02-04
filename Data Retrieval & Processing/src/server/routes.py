@@ -70,7 +70,7 @@ def glasgow_data():
 
 @data_routes.route('/api/scotland_district_data')
 def scotland_district_data():
-    tweets = dbMan.get_scotland_geo_tweets(request.args.get('id')).fetchall()
+    tweets = dbMan.get_scotland_district_tweets(request.args.get('id')).fetchall()
     return jsonify(parse_twitter_data(tweets))
 
 
@@ -81,9 +81,23 @@ def all_scotland_district_data():
 
     for area_id in area_ids:
         if area_id != 'scotland-boundary':
-            ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_geo_tweets(area_id).fetchall())
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_district_tweets(area_id).fetchall())
         else:
             ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_tweets().fetchall())
+
+    return jsonify(ids_dict)
+
+
+@data_routes.route('/api/all_scotland_ward_data')
+def all_scotland_ward_data():
+    area_ids = request.args.getlist('ids')
+    ids_dict = {}
+
+    for area_id in area_ids:
+        if area_id != 'glasgow-boundary':
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_ward_tweets(area_id).fetchall())
+        else:
+            ids_dict[area_id] = parse_twitter_data(dbMan.get_glasgow_tweets().fetchall())
 
     return jsonify(ids_dict)
 
