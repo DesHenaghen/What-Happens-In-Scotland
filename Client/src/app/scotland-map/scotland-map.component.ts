@@ -64,17 +64,6 @@ export class ScotlandMapComponent implements OnInit {
     this._scotlandDataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => this.drawMap(topology));
   }
 
-  private pulsateRegionElement(): void {
-    const element = document.getElementById('scotland-boundary');
-    if (element) {
-      if (element.style.animationName === 'regionPulsate') {
-        element.style.animationName = 'regionPulsate2';
-      } else {
-        element.style.animationName = 'regionPulsate';
-      }
-    }
-  }
-
   private pulsateDistrictElement(id): void {
     const element = document.getElementById(id);
     if (element) {

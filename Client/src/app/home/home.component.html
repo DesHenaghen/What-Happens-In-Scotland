@@ -10,7 +10,7 @@
       <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
     </div>
     <div class="col">
-      <mat-card class="districtInfoBox">
+      <mat-card id="districtInfoBox">
         <mat-card-header>
           <mat-card-title class="header">{{district.name}}</mat-card-title>
           <mat-card-subtitle class="subtitle">{{district.prettyAverage}}% Happy</mat-card-subtitle>

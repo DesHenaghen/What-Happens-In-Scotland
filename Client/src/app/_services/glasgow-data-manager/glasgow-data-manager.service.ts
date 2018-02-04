@@ -1,8 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {AbstractDataManager} from '../data-manager/data-manager.abstract';
 import {Tweet} from '../../_models/Tweet';
-import {AreaData} from '../../_models/AreaData';
-import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class GlasgowDataManagerService extends AbstractDataManager {
@@ -15,30 +13,21 @@ export class GlasgowDataManagerService extends AbstractDataManager {
     this.topologyName = 'WD13NM';
     this.mapType = 'glasgow';
     this.regionName = 'Glasgow';
+    this.districtId = 'S12000046';
 
     this.loadDistrictsData();
 
     this.listenOnSockets();
   }
 
-  protected getRegionData(): Observable<AreaData> {
-    return this._http.get<AreaData>('/api/glasgow_data');
-  }
-
-  protected getDistrictData(id: string): Observable<AreaData> {
-    return this._http.get<AreaData>('/api/glasgow_district_data', {
-      params: { id }
-    });
-  }
-
   protected getDistrictsData(ids: string[]) {
-    return this._http.get<any>('/api/all_glasgow_district_data', {
+    return this._http.get<any>('/api/all_scotland_ward_data', {
       params: {ids}
     });
   }
 
   protected listenOnSockets(): void {
-    this._tweet.glasgow_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, 'glasgow-boundary'));
-    this._tweet.glasgow_geo_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
+    this._tweet.scotland_district_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
+    this._tweet.scotland_ward_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
   }
 }

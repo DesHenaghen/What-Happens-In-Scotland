@@ -6,6 +6,8 @@ import {MatTabChangeEvent, MatTabGroup} from '@angular/material';
 import {MapModes} from '../_models/MapModes';
 import {Subscription} from 'rxjs/Subscription';
 
+declare let d3: any;
+
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
  * of wards data.
@@ -27,6 +29,8 @@ export class HomeComponent implements OnInit {
   public mapModes = MapModes;
   public currentMode: MapModes;
 
+  private colour: any;
+
   private districtSubscription: Subscription = new Subscription();
   private districtsSubscription: Subscription = new Subscription();
 
@@ -44,6 +48,10 @@ export class HomeComponent implements OnInit {
         this.subscribeForDistrictData();
       }
     });
+
+    this.colour = d3.scale.linear()
+      .domain([-1, /*-0.1, 0.1,*/0, 1])
+      .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
   }
 
   private subscribeForDistrictData(): void {
@@ -74,6 +82,7 @@ export class HomeComponent implements OnInit {
     if (area !== undefined) {
       this.clearSelectedClass();
       document.getElementById(area).classList.add('selected');
+      document.getElementById('districtInfoBox').style.border = '4px solid ' + this.colour(this.district.average);
     }
   }
 

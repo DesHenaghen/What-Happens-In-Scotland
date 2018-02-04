@@ -14,10 +14,10 @@ export class WebSocketService {
     this.socket = io();
   }
 
-  public connect_glasgow(): Subject<MessageEvent> {
+  public connect_scotland_wards(): Subject<MessageEvent> {
 
     const observable = new Observable(ob => {
-      this.socket.on('glasgow_tweet', (data: Tweet) => ob.next(data));
+      this.socket.on('ward_geo_tweet', (data: Tweet) => ob.next(data));
 
       return () => this.socket.disconnect();
     });
@@ -31,44 +31,10 @@ export class WebSocketService {
     return Subject.create(observer, observable);
   }
 
-  public connect_glasgow_geo(): Subject<MessageEvent> {
+  public connect_scotland_districts(): Subject<MessageEvent> {
 
     const observable = new Observable(ob => {
-      this.socket.on('glasgow_geo_tweet', (data: Tweet) => ob.next(data));
-
-      return () => this.socket.disconnect();
-    });
-
-    const observer = {
-      next: (data: Object) => {
-        this.socket.emit('message', JSON.stringify(data));
-      },
-    };
-
-    return Subject.create(observer, observable);
-  }
-
-  public connect_scotland(): Subject<MessageEvent> {
-
-    const observable = new Observable(ob => {
-      this.socket.on('scotland_tweet', (data: Tweet) => ob.next(data));
-
-      return () => this.socket.disconnect();
-    });
-
-    const observer = {
-      next: (data: Object) => {
-        this.socket.emit('message', JSON.stringify(data));
-      },
-    };
-
-    return Subject.create(observer, observable);
-  }
-
-  public connect_scotland_geo(): Subject<MessageEvent> {
-
-    const observable = new Observable(ob => {
-      this.socket.on('scotland_geo_tweet', (data: Tweet) => ob.next(data));
+      this.socket.on('district_geo_tweet', (data: Tweet) => ob.next(data));
 
       return () => this.socket.disconnect();
     });

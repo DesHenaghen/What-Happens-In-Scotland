@@ -48,7 +48,7 @@ function updateScotlandTweetsArea() {
           "WHERE scotland_tweets.id=$2 " +
           "AND ST_Contains(scotland_districts.area, ST_Centroid(ST_GeomFromText($1, 4326)))",
           [polygon_string, row.id]
-        ).catch(e => console.log(e))
+        ).then(() => console.log(polygon_string)).catch(e => console.log(e))
       });
     })
     .catch(e => console.error(e.stack));

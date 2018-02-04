@@ -49,10 +49,12 @@ export class GlasgowMapComponent implements OnInit {
       if (tweet !== undefined) {
         if (tweet.id === ('glasgow-boundary')) {
           const element = document.getElementById(tweet.id);
-          if (element.style.animationName === 'pulsate') {
-            element.style.animationName = 'pulsate2';
-          } else {
-            element.style.animationName = 'pulsate';
+          if (element) {
+            if (element.style.animationName === 'pulsate') {
+              element.style.animationName = 'pulsate2';
+            } else {
+              element.style.animationName = 'pulsate';
+            }
           }
         } else {
           this.drawPoint(tweet.coordinates);

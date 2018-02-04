@@ -1,8 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {AbstractDataManager} from '../data-manager/data-manager.abstract';
 import {Tweet} from '../../_models/Tweet';
-import {AreaData} from '../../_models/AreaData';
-import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class ScotlandDataManagerService extends AbstractDataManager {
@@ -15,20 +13,11 @@ export class ScotlandDataManagerService extends AbstractDataManager {
     this.topologyName = 'LAD13NM';
     this.mapType = 'scotland';
     this.regionName = 'Scotland';
+    this.districtId = 'n/a';
 
     this.loadDistrictsData();
 
     this.listenOnSockets();
-  }
-
-  protected getRegionData(): Observable<AreaData> {
-    return this._http.get<AreaData>('/api/scotland_data');
-  }
-
-  protected getDistrictData(id: string): Observable<AreaData> {
-    return this._http.get<AreaData>('/api/scotland_district_data', {
-      params: { id }
-    });
   }
 
   protected getDistrictsData(ids: string[]) {
@@ -38,7 +27,6 @@ export class ScotlandDataManagerService extends AbstractDataManager {
   }
 
   protected listenOnSockets(): void {
-    this._tweet.scotland_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, 'scotland-boundary'));
-    this._tweet.scotland_geo_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
+    this._tweet.scotland_district_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
   }
 }

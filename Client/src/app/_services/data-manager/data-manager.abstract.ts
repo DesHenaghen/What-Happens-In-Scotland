@@ -31,6 +31,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   protected regionName: string;
   protected mapType: string;
   protected dataFile: string;
+  protected districtId: string;
 
   // GeoJSON data keys
   protected topologyId: string;
@@ -59,21 +60,31 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   }
 
   public updateLastTweet(tweet: Tweet, id: string): void {
+    // If the tweet belongs to the whole map area, set the id accordingly
+    console.log(id, this.districtId, tweet);
+    id = (this.districtId === id) ? this.mapType + '-boundary' : id;
+
     tweet.id = id;
     const district = this.districts[id];
     const region = this.districts[this.mapType + '-boundary'];
     // console.log(this.districts);
     // console.log(this.regionName, tweet, id, district);
-    if (region) {
+
+    // If the id isn't equivalent to the region, update it
+    if (region && district && region !== district) {
       this.districts[this.mapType + '-boundary'] = this.updateDistrict(region, tweet);
     }
 
+    // If id matched one of the map disticts, update it
     if (district) {
       this.districts[id] = this.updateDistrict(district, tweet);
     }
 
-    this.districtsSubject.next(this.districts);
-    this.latestTweet.next(tweet);
+    // If the id matched the district or one of the regions, update the values
+    if (region || district) {
+      this.districtsSubject.next(this.districts);
+      this.latestTweet.next(tweet);
+    }
   }
 
   private updateDistrict(district: District, tweet: Tweet): District {
@@ -96,8 +107,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
    */
   public loadDistrictsData(): void {
 
-    console.log(this.getDistrictData);
-    console.log(this.getRegionData);
     // d3.json('./assets/json/glasgow-districts.json', (error, topology) => {
     d3.json('./assets/json/' + this.dataFile, (error, topology: FeatureCollection<any>) => {
       if (error) {
@@ -163,8 +172,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     this.district.next(this.districts[area]);
   }
 
-  protected abstract getRegionData(): any;
-  protected abstract getDistrictData(id: string): any;
   protected abstract getDistrictsData(ids: string[]): any;
 
   protected abstract listenOnSockets(): void;
