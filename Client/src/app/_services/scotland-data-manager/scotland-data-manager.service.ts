@@ -13,7 +13,7 @@ export class ScotlandDataManagerService extends AbstractDataManager {
     this.topologyName = 'LAD13NM';
     this.mapType = 'scotland';
     this.regionName = 'Scotland';
-    this.districtId = 'n/a';
+    this.districtId = 'scotland-boundary';
 
     this.loadDistrictsData();
 

@@ -94,10 +94,8 @@ def all_scotland_ward_data():
     ids_dict = {}
 
     for area_id in area_ids:
-        if area_id != 'glasgow-boundary':
-            ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_ward_tweets(area_id).fetchall())
-        else:
-            ids_dict[area_id] = parse_twitter_data(dbMan.get_glasgow_tweets().fetchall())
+        ids_dict[area_id] = parse_twitter_data(dbMan.get_scotland_district_tweets(area_id).fetchall())
+        print(area_id, ids_dict[area_id])
 
     return jsonify(ids_dict)
 

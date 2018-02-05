@@ -4,10 +4,12 @@
       <mat-tab-group id="mapModeTabs" #mapModeTabs (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Scotland"></mat-tab>
         <mat-tab label="Glasgow"></mat-tab>
+        <mat-tab label="Edinburgh"></mat-tab>
       </mat-tab-group>
 
       <app-glasgow-map [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
       <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
+      <app-edinburgh-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Edinburgh"></app-edinburgh-map>
     </div>
     <div class="col">
       <mat-card id="districtInfoBox">

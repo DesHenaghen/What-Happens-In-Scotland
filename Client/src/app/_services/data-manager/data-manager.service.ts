@@ -7,8 +7,8 @@ import {FeatureCollection} from 'geojson';
 import {GlasgowDataManagerService} from '../glasgow-data-manager/glasgow-data-manager.service';
 import {ScotlandDataManagerService} from '../scotland-data-manager/scotland-data-manager.service';
 import {MapModes} from '../../_models/MapModes';
-import {Data} from '@angular/router';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {EdinburghDataManagerService} from '../edinburgh-data-manager/edinburgh-data-manager.service';
 
 @Injectable()
 export class DataManagerService implements DataManagerInterface {
@@ -21,10 +21,12 @@ export class DataManagerService implements DataManagerInterface {
 
   constructor(
     private _glasgowDataManager: GlasgowDataManagerService,
-    private _scotlandDataManager: ScotlandDataManagerService
+    private _scotlandDataManager: ScotlandDataManagerService,
+    private _edinburghDataManager: EdinburghDataManagerService
   ) {
     this._dataManagers[MapModes.Scotland] = _scotlandDataManager;
     this._dataManagers[MapModes.Glasgow] = _glasgowDataManager;
+    this._dataManagers[MapModes.Edinburgh] = _edinburghDataManager;
 
     this._dataManager = this._dataManagers[MapModes.Scotland];
     this._dataManagerSubject.next(this._dataManager);

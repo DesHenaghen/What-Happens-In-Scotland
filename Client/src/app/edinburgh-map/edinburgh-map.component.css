@@ -1,0 +1,68 @@
+div.tooltip {
+  color: #222;
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 0 #a6a6a6;
+  padding: .2em;
+  text-shadow: #f5f5f5 0 1px 0;
+  opacity: 0.9;
+  position: absolute;
+}
+
+.wards {
+  cursor: pointer;
+  stroke: #000;
+}
+
+.wards:hover {
+  fill: #a2a2a2;
+}
+
+#edinburgh-boundary:hover {
+  stroke: #a2a2a2;
+}
+
+.place-label {
+  pointer-events:none;
+}
+
+.selected {
+  stroke-width: 5px;
+}
+
+#edinburgh-map {
+  text-align: center;
+}
+
+#edinburgh-map svg {
+  max-height: 85vh;
+  left: 0;
+  position: absolute;
+}
+
+#edinburgh-boundary {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-width: 4vh;
+  cursor: pointer;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
+#edinburgh-boundary-background {
+  fill: white;
+  stroke: none;
+}
+
+@keyframes pulsate {
+  0%    { stroke-width: 4vh; }
+  50%   { stroke-width: 6vh; }
+  100%  { stroke-width: 4vh; }
+}
+
+@keyframes pulsate2 {
+  0%    { stroke-width: 4vh; }
+  50%   { stroke-width: 6vh; }
+  100%  { stroke-width: 4vh; }
+}

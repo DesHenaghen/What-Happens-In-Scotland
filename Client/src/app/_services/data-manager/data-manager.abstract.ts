@@ -94,6 +94,8 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     let sum = district.average * district.totals[district.totals.length - 1];
     sum += tweet.score;
 
+    console.log(district);
+
     district.total++;
     district.totals[district.totals.length - 1]++;
     district.average = sum / district.totals[district.totals.length - 1];
@@ -125,15 +127,16 @@ export abstract class AbstractDataManager implements DataManagerInterface {
           areaIds.push(id);
         });
 
-        // All of glasgow data
-        areaIds.push(this.mapType + '-boundary');
-        areaNames[this.mapType + '-boundary'] = this.regionName;
+        // All of regions data
+        areaIds.push(this.districtId);
+        areaNames[this.districtId] = this.regionName;
 
         this.getDistrictsData(areaIds).subscribe(
           results => {
             for (let i = 0; i < areaIds.length; i++) {
               const id = areaIds[i];
               const wardData: AreaData = results[id];
+              console.log(this.mapType, wardData, id);
               const values = wardData.values;
               const name = areaNames[id];
               const average = (values.length > 0) ? values[values.length - 1].y : 0;
@@ -142,7 +145,8 @@ export abstract class AbstractDataManager implements DataManagerInterface {
                 wardData.last_tweet :
                 {text: 'n/a', user: {name: 'n/a'}};
 
-              this.districts[id] = {
+              const districtId = (id === this.districtId) ? this.getMapBoundaryId() : id;
+              this.districts[districtId] = {
                 id,
                 name,
                 values,

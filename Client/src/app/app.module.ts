@@ -25,8 +25,9 @@ import {
   TweetService,
   WebSocketService,
   GlasgowDataManagerService,
-  ScotlandDataManagerService
+  ScotlandDataManagerService, EdinburghDataManagerService
 } from './_services';
+import { EdinburghMapComponent } from './edinburgh-map/edinburgh-map.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {
     HappyTimelineComponent,
     GlasgowMapComponent,
     TweetBoxComponent,
-    ScotlandMapComponent
+    ScotlandMapComponent,
+    EdinburghMapComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +55,7 @@ import {
     WebSocketService,
     GlasgowDataManagerService,
     ScotlandDataManagerService,
+    EdinburghDataManagerService,
     DataManagerService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -147,36 +147,6 @@ def save_scotland_tweet(tweet):
     print(tweet)
 
 
-def get_glasgow_geo_tweets(area_id):
-    sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
-        "FROM ( " +
-        "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
-        "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM geo_tweets " +
-        "WHERE area_id = :id " +
-        # "AND compound_sent != 0 " +
-        "GROUP by day " +
-        "ORDER BY day ASC " +
-        ") as x INNER JOIN geo_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
-    return __engine.execute(sql, {'id': area_id})
-
-
-def get_glasgow_tweets():
-    sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
-        "FROM ( " +
-        "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
-        "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM scotland_tweets " +
-        "WHERE area_id = 'S12000046' " +
-        # "AND compound_sent != 0 " +
-        "GROUP by day " +
-        "ORDER BY day ASC " +
-        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
-    return __engine.execute(sql)
-
-
 def get_scotland_district_tweets(area_id):
     sql = text(
         "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
@@ -184,22 +154,7 @@ def get_scotland_district_tweets(area_id):
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
         "FROM scotland_tweets " +
-        "WHERE area_id = :id " +
-        # "AND compound_sent != 0 " +
-        "GROUP by day " +
-        "ORDER BY day ASC " +
-        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
-    return __engine.execute(sql, {'id': area_id})
-
-
-def get_scotland_ward_tweets(area_id):
-    sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
-        "FROM ( " +
-        "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
-        "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM scotland_tweets " +
-        "WHERE ward_id = :id " +
+        "WHERE area_id = :id OR ward_id = :id " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
         "ORDER BY day ASC " +
