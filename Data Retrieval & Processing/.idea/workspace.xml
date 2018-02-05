@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/DatabaseManager.py" afterPath="$PROJECT_DIR$/src/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/src/server.py" afterPath="$PROJECT_DIR$/src/server.py" />
-      <change beforePath="$PROJECT_DIR$/src/server/routes.py" afterPath="$PROJECT_DIR$/src/server/routes.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -527,7 +524,14 @@
       <option name="project" value="LOCAL" />
       <updated>1517753408835</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Improved API performance">
+      <created>1517863936697</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1517863936698</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView">
@@ -608,7 +612,8 @@
     <MESSAGE value="Merged scotland_geo_tweets and scotland_tweets" />
     <MESSAGE value="scotland_tweet messages. woop woop" />
     <MESSAGE value="Refactored the retrieving of data so local region data fetching should be simpler" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored the retrieving of data so local region data fetching should be simpler" />
+    <MESSAGE value="Improved API performance" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved API performance" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

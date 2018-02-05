@@ -22,7 +22,7 @@ export class ScotlandDataManagerService extends AbstractDataManager {
 
   protected getDistrictsData(ids: string[]) {
     return this._http.get<any>('/api/all_scotland_district_data', {
-      params: {ids}
+      params: {ids, region: 'true'}
     });
   }
 
