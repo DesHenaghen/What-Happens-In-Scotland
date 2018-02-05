@@ -78,11 +78,12 @@ def save_scotland_tweet(tweet):
     if tweet.get('coordinates'):
         coord_array = tweet.get("coordinates").get("coordinates")
         coord_string = "(" + str(coord_array[1]) + "," + str(coord_array[0]) + ")"
-        wkt_coords = "POINT("+str(coord_array[0])+" "+str(coord_array[1])+")"
+        wkt_coords = "POINT(" + str(coord_array[0]) + " " + str(coord_array[1]) + ")"
     else:
         coord_string = None
         coord_array = tweet.get("place").get("bounding_box").get("coordinates")[0]
-        wkt_coords = 'POLYGON(('+', '.join(map(lambda x: str(x[0])+" "+str(x[1]), coord_array))+', '+str(coord_array[0][0])+' '+str(coord_array[0][1])+'))'
+        wkt_coords = 'POLYGON((' + ', '.join(map(lambda x: str(x[0]) + " " + str(x[1]), coord_array)) + ', ' + str(
+            coord_array[0][0]) + ' ' + str(coord_array[0][1]) + '))'
 
     try:
         area_id = __engine.execute(
@@ -113,7 +114,6 @@ def save_scotland_tweet(tweet):
             'coordinates': coord_array,
             'score': scores.get('compound')
         })
-        print("emitted district_geo_tweet")
 
     if ward_id is not None:
         __socketio.emit('ward_geo_tweet', {
@@ -123,7 +123,6 @@ def save_scotland_tweet(tweet):
             'coordinates': coord_array,
             'score': scores.get('compound')
         })
-        print("emitted ward_geo_tweet")
 
     statement = __scotland_tweets.insert().values(
         place=tweet.get("place"),
@@ -147,19 +146,21 @@ def save_scotland_tweet(tweet):
     print(tweet)
 
 
-def get_scotland_district_tweets(area_id):
+def get_scotland_district_tweets(area_ids, group):
     sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
+        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, " +
+        "t."+group+"_id " +
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
         "FROM scotland_tweets " +
-        "WHERE area_id = :id OR ward_id = :id " +
+        "WHERE " + group + "_id = ANY(:ids) " +
         # "AND compound_sent != 0 " +
-        "GROUP by day " +
+        "GROUP by day, " + group + "_id " +
         "ORDER BY day ASC " +
         ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
-    return __engine.execute(sql, {'id': area_id})
+
+    return __engine.execute(sql, {'ids': area_ids})
 
 
 def get_scotland_tweets():
