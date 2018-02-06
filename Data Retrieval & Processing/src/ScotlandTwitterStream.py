@@ -1,4 +1,4 @@
-import sys
+import _thread
 from urllib3.exceptions import ProtocolError
 
 import logger as log
@@ -23,12 +23,12 @@ def main():
     except ProtocolError as e:
         print("Killing myself now as a PROTOCOL ERROR occurred")
         print(e)
-        sys.exit(0)
+        _thread.interrupt_main()
 
     except Exception as e:
         print("Killing myself now as an error occurred")
         print(e)
-        sys.exit(0)
+        _thread.interrupt_main()
 
 
 if __name__ == "__main__":
