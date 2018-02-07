@@ -142,8 +142,8 @@ def save_scotland_tweet(tweet):
 
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     log.logger.info("added to scotland_tweets")
-    print("added to scotland tweets")
-    print(tweet)
+    # print("added to scotland tweets")
+    # print(tweet)
 
 
 def get_scotland_district_tweets(area_ids, group):
