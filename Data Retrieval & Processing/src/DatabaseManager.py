@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text
 from sqlalchemy.dialects.postgresql import JSONB
-import datetime
+from datetime import datetime, timedelta
 from server import get_socketio_instance
 import logger as log
 import configuration
@@ -70,7 +70,7 @@ def save_scotland_tweet(tweet):
 
     # Tweet date & time
     float_ts = int(tweet.get('timestamp_ms')) / 1000
-    date = datetime.datetime.fromtimestamp(float_ts)
+    date = datetime.fromtimestamp(float_ts)
 
     # Tweet sentiment scores
     scores = __analyser.calculate_sentiment_scores(full_text)
@@ -147,14 +147,17 @@ def save_scotland_tweet(tweet):
 
 
 def get_scotland_district_tweets(area_ids, group):
+    start_date = datetime.now() - timedelta(days=14)
+
     sql = text(
         "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, " +
-        "t."+group+"_id " +
+        "t." + group + "_id " +
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
         "FROM scotland_tweets " +
         "WHERE " + group + "_id = ANY(:ids) " +
+        "AND date >= '" + start_date.strftime('%Y-%m-%d') + "' " +
         # "AND compound_sent != 0 " +
         "GROUP by day, " + group + "_id " +
         "ORDER BY day ASC " +
@@ -164,6 +167,8 @@ def get_scotland_district_tweets(area_ids, group):
 
 
 def get_scotland_tweets():
+    start_date = datetime.now() - timedelta(days=14)
+
     sql = text(
         "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
         "FROM ( " +
@@ -171,11 +176,20 @@ def get_scotland_tweets():
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
         "FROM scotland_tweets " +
         "WHERE area_id IS NOT NULL " +
+        "AND date >= '" + start_date.strftime('%Y-%m-%d') + "' " +
         # "AND compound_sent != 0 " +
         "GROUP by day " +
-        "ORDER BY day ASC " +
-        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
+        "ORDER BY day DESC " +
+        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day DESC")
     return __engine.execute(sql)
+
+
+def get_all_scotland_tweets():
+    return select([
+        __scotland_tweets.c.id,
+        __scotland_tweets.c.text,
+        __scotland_tweets.c.timestamp
+    ]).execute()
 
 
 def get_all_glasgow_tweets():
@@ -203,6 +217,10 @@ def __update_tweets_sentiment(table, tweet_id, sentiment, date):
         compound_sent=sentiment.get('compound'),
         date=date
     ).where(table.c.id == tweet_id).execute()
+
+
+def update_scotland_tweets_sentiment(tweet_id, sentiment, date):
+    __update_tweets_sentiment(__scotland_tweets, tweet_id, sentiment, date)
 
 
 def update_glasgow_tweets_sentiment(tweet_id, sentiment, date):
