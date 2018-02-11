@@ -82,8 +82,12 @@ def save_scotland_tweet(tweet):
     else:
         coord_string = None
         coord_array = tweet.get("place").get("bounding_box").get("coordinates")[0]
-        wkt_coords = 'POLYGON((' + ', '.join(map(lambda x: str(x[0]) + " " + str(x[1]), coord_array)) + ', ' + str(
-            coord_array[0][0]) + ' ' + str(coord_array[0][1]) + '))'
+
+        if tweet.get('place').get('name') != 'Scotland':
+            wkt_coords = 'POLYGON((' + ', '.join(map(lambda x: str(x[0]) + " " + str(x[1]), coord_array)) + ', ' + str(
+                coord_array[0][0]) + ' ' + str(coord_array[0][1]) + '))'
+        else:
+            wkt_coords = None
 
     try:
         area_id = __engine.execute(
