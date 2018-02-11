@@ -101,7 +101,11 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     district.average = sum / district.totals[district.totals.length - 1];
     district.values[district.values.length - 1].y = district.average;
     district.prettyAverage = Math.round(district.average * 10) / 10;
-    district.last_tweet = tweet;
+
+    if (district.last_tweets.length >= 5) {
+      district.last_tweets.shift();
+    }
+    district.last_tweets.push(tweet);
 
     return district;
   }
@@ -141,9 +145,9 @@ export abstract class AbstractDataManager implements DataManagerInterface {
               const name = areaNames[id];
               const average = (values.length > 0) ? values[values.length - 1].y : 0;
               const prettyAverage = Math.round(average * 10) / 10;
-              const last_tweet: Tweet = (wardData.last_tweet) ?
-                wardData.last_tweet :
-                {text: 'n/a', user: {name: 'n/a'}};
+              const last_tweets: Tweet[] = (wardData.last_tweet) ?
+                [wardData.last_tweet] :
+                [];
 
               const districtId = (id === this.districtId) ? this.getMapBoundaryId() : id;
               this.districts[districtId] = {
@@ -152,7 +156,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
                 values,
                 average,
                 prettyAverage,
-                last_tweet,
+                last_tweets,
                 total: wardData.total,
                 totals: wardData.totals
               };

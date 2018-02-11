@@ -1,10 +1,11 @@
 const fs = require('fs');
 const { Pool } = require('pg');
-const config = require('config.json')('../config/database.json');
+const config = require('config.json')('../config/database.json', 'production');
+console.log(config.postgres);
 
 const pool = new Pool(config.postgres);
 
-fs.readFile('../src/assets/json/scotland-councils-simplified.json', 'utf8', (err, topology) => {
+fs.readFile('../src/assets/json/scotland-councils.json', 'utf8', (err, topology) => {
     let features = JSON.parse(topology).features;
 
     features.forEach(feature => {

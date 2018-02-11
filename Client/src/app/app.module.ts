@@ -28,6 +28,7 @@ import {
   ScotlandDataManagerService, EdinburghDataManagerService
 } from './_services';
 import { EdinburghMapComponent } from './edinburgh-map/edinburgh-map.component';
+import { ReversePipe } from './_pipes/reverse.pipe';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { EdinburghMapComponent } from './edinburgh-map/edinburgh-map.component';
     GlasgowMapComponent,
     TweetBoxComponent,
     ScotlandMapComponent,
-    EdinburghMapComponent
+    EdinburghMapComponent,
+    ReversePipe
   ],
   imports: [
     BrowserModule,

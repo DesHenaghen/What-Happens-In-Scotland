@@ -8,5 +8,5 @@ export class District {
   prettyAverage: number;
   total: number;
   totals: number[];
-  last_tweet: Tweet = {text: 'n/a', user: {name: 'n/a/'}};
+  last_tweets: Tweet[] = [];
 }

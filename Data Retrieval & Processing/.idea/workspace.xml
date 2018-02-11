@@ -580,7 +580,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518045876918</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Stopped registering Scotland tweets, need to think of a better solution">
+      <created>1518366792535</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1518366792535</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TodoView">
@@ -671,7 +678,8 @@
     <MESSAGE value="Death to the twitter stream now murders everything" />
     <MESSAGE value="Limited data fetched to past two weeks" />
     <MESSAGE value="Commented out prints" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commented out prints" />
+    <MESSAGE value="Stopped registering Scotland tweets, need to think of a better solution" />
+    <option name="LAST_COMMIT_MESSAGE" value="Stopped registering Scotland tweets, need to think of a better solution" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

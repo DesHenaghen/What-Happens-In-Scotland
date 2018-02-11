@@ -3,14 +3,16 @@
   right: 1%;
   /*border: black solid;*/
   background-color: white;
-  /*max-height: 31vh;*/
-  width: 37vh;
+  max-height: 90vh;
+  width: 100%;
+  overflow-y: auto;
   /*right: 0;*/
   position: absolute;
   /*top: 10px;*/
   /*border-radius: 2vh;*/
   color: #14171a;
   font-family: 'Segoe UI',Arial,sans-serif;
+
 }
 
 #tweet_box .header {

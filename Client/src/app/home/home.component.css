@@ -3,7 +3,7 @@ html * {
 }
 
 body {
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 .hidden {
@@ -48,6 +48,8 @@ html, body {
   top: 2%;
   right: 1%;
   background-color: #f6f6f6;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 #districtInfoBox .header {
