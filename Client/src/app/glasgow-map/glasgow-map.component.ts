@@ -77,7 +77,7 @@ export class GlasgowMapComponent implements OnInit {
   private initVariables(): void {
 
     this.projection = d3.geo.albers()
-      .center([-0.144, 55.8642])
+      .center([-0.134, 55.8642])
       .rotate([4.1, 0])
       .parallels([50, 60])
       .scale(300000)

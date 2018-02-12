@@ -7,7 +7,7 @@ import { NvD3Module } from 'ng2-nvd3';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatCardModule} from '@angular/material/card';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
 // Components
 import { AppComponent } from './app.component';
@@ -18,6 +18,7 @@ import { HappyTimelineComponent } from './happy-timeline/happy-timeline.componen
 import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
 import { TweetBoxComponent } from './tweet-box/tweet-box.component';
 import { ScotlandMapComponent } from './scotland-map/scotland-map.component';
+import { EdinburghMapComponent } from './edinburgh-map/edinburgh-map.component';
 
 // Services
 import {
@@ -27,7 +28,8 @@ import {
   GlasgowDataManagerService,
   ScotlandDataManagerService, EdinburghDataManagerService
 } from './_services';
-import { EdinburghMapComponent } from './edinburgh-map/edinburgh-map.component';
+
+// Pipes
 import { ReversePipe } from './_pipes/reverse.pipe';
 
 @NgModule({
@@ -50,7 +52,8 @@ import { ReversePipe } from './_pipes/reverse.pipe';
     AppRoutingModule,
     MatTabsModule,
     MatCardModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ScrollToModule.forRoot()
   ],
   providers: [
     TweetService,

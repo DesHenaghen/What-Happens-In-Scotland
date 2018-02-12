@@ -83,3 +83,9 @@ html, body {
   background-color: #f6f6f6;
   z-index: 0;
 }
+
+.next-page-chevron {
+  width: 100% !important;
+  text-align: center;
+  z-index: 999;
+}

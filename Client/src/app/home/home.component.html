@@ -11,10 +11,18 @@
       <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
       <app-edinburgh-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Edinburgh"></app-edinburgh-map>
     </div>
-    <div style="height: 90vh" class="col col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
+    <div
+      class="next-page-chevron d-md-none"
+      [ngx-scroll-to]="'#tweets_box'"
+    ><i class="fas fa-angle-down fa-2x"></i></div>
+    <div id="tweets_box" style="height: 90vh" class="col col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
       <app-tweet-box [ward]="district"></app-tweet-box>
     </div>
-    <div class="col col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+    <div
+      class="next-page-chevron d-lg-none"
+      [ngx-scroll-to]="'#infoBox'"
+    ><i class="hidden-lg-up fas fa-angle-down fa-2x"></i></div>
+    <div id="infoBox" class="col col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
       <mat-card id="districtInfoBox">
         <mat-card-header>
           <mat-card-title class="header">{{district.name}}</mat-card-title>
@@ -41,5 +49,9 @@
         </mat-card-content>
       </mat-card>
     </div>
+    <div
+      class="next-page-chevron d-lg-none"
+      [ngx-scroll-to]="'#navbarNav'"
+    ><i class="hidden-lg-up fas fa-angle-double-up fa-2x"></i></div>
   </div>
 </div>
