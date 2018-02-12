@@ -15,10 +15,10 @@ import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HappyRankComponent } from './happy-rank/happy-rank.component';
 import { HappyTimelineComponent } from './happy-timeline/happy-timeline.component';
-import { GlasgowMapComponent } from './glasgow-map/glasgow-map.component';
+import { GlasgowMapComponent } from './map/glasgow-map/glasgow-map.component';
 import { TweetBoxComponent } from './tweet-box/tweet-box.component';
-import { ScotlandMapComponent } from './scotland-map/scotland-map.component';
-import { EdinburghMapComponent } from './edinburgh-map/edinburgh-map.component';
+import { ScotlandMapComponent } from './map/scotland-map/scotland-map.component';
+import { EdinburghMapComponent } from './map/edinburgh-map/edinburgh-map.component';
 
 // Services
 import {

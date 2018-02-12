@@ -1,6 +1,7 @@
 import {Injectable, Injector} from '@angular/core';
 import {Tweet} from '../../_models/Tweet';
 import {AbstractDataManager} from '../data-manager/data-manager.abstract';
+import {MapModes} from '../../_models/MapModes';
 
 @Injectable()
 export class EdinburghDataManagerService extends AbstractDataManager{
@@ -14,6 +15,8 @@ export class EdinburghDataManagerService extends AbstractDataManager{
     this.mapType = 'edinburgh';
     this.regionName = 'Edinburgh';
     this.districtId = 'S12000036';
+    this.mapMode = MapModes.Edinburgh;
+    this.allowRegionPulsing = true;
 
     this.loadDistrictsData();
 

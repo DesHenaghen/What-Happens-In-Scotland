@@ -12,6 +12,14 @@ import {EdinburghDataManagerService} from '../edinburgh-data-manager/edinburgh-d
 
 @Injectable()
 export class DataManagerService implements DataManagerInterface {
+  allowRegionPulsing: boolean;
+  regionName: string;
+  mapType: string;
+  dataFile: string;
+  districtId: string;
+  topologyId: string;
+  topologyName: string;
+  mapMode: MapModes;
 
   private _dataManager: DataManagerInterface;
   private _dataManagerSubject = new BehaviorSubject<DataManagerInterface>(this._dataManager);

@@ -9,6 +9,7 @@ import {AreaData} from '../../_models/AreaData';
 import {Tweet} from '../../_models/Tweet';
 import {Feature, FeatureCollection} from 'geojson';
 import {DataManagerInterface} from '../../_interfaces/data-manager.interface';
+import {MapModes} from '../../_models/MapModes';
 
 declare let d3: any;
 
@@ -28,14 +29,16 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   protected mapTopology = new BehaviorSubject<FeatureCollection<any>>(undefined);
 
   // Map identifiers
-  protected regionName: string;
-  protected mapType: string;
-  protected dataFile: string;
-  protected districtId: string;
+  public regionName: string;
+  public mapType: string;
+  public dataFile: string;
+  public districtId: string;
+  public mapMode: MapModes;
+  public allowRegionPulsing: boolean;
 
   // GeoJSON data keys
-  protected topologyId: string;
-  protected topologyName: string;
+  public topologyId: string;
+  public topologyName: string;
 
 
   constructor(injector: Injector) {
