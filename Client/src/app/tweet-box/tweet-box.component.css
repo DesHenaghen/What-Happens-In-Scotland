@@ -1,9 +1,10 @@
 #tweet_box {
   top: 2%;
+  margin-top: 5%;
   right: 1%;
   /*border: black solid;*/
   background-color: white;
-  max-height: 90vh;
+  max-height: 85vh;
   width: 100%;
   overflow-y: auto;
   /*right: 0;*/
@@ -12,7 +13,26 @@
   /*border-radius: 2vh;*/
   color: #14171a;
   font-family: 'Segoe UI',Arial,sans-serif;
+}
 
+@media (min-width: 992px) {
+  #tweet_box {
+
+  }
+}
+
+
+@media (min-width: 768px) and (max-width: 991px) {
+  #tweet_box {
+    margin-right: 7%;
+  }
+}
+
+@media (max-width: 767px) {
+  #tweet_box {
+    margin: 0 4%;
+    width: auto;
+  }
 }
 
 #tweet_box .header {

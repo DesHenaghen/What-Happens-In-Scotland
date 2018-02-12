@@ -88,8 +88,8 @@ export class ScotlandMapComponent implements OnInit {
   private initVariables (): void {
 
     this.projection = d3.geo.albers()
-      .center([-0.0959, 57.90153])
-      .rotate([4.1, 0])
+      .center([-0.0959, 57.60153])
+      .rotate([3.1, 0])
       .parallels([50, 60])
       .scale(8000)
       .translate([this.width / 2, this.height / 2]);

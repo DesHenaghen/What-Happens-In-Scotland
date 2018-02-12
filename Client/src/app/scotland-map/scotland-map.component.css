@@ -33,6 +33,10 @@ div.tooltip {
   stroke-width: 5px;
 }
 
+.map-title {
+  margin: 1%;
+}
+
 #scotland-map {
   text-align: center;
 }
@@ -41,7 +45,28 @@ div.tooltip {
   max-height: 85vh;
   left: 0;
   position: absolute;
+  min-height: 50vh;
 }
+
+@media (min-width: 992px) {
+  #scotland-map svg {
+    max-width: 40vw;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  #scotland-map svg {
+    max-width: 70vw;
+  }
+}
+
+@media (max-width: 767px) {
+  #scotland-map svg {
+    width: 100vw;
+    height: 85vh;
+  }
+}
+
 
 #scotland-boundary {
   fill: none;

@@ -1,6 +1,6 @@
 <div id="map-background">
   <div class="row">
-    <div style="height: 90vh" class="col col-lg-5 col-md-10 col-sm-12 col-12">
+    <div style="height: 80vh" class="col col-xl-4 col-lg-4 col-md-8 col-sm-12 col-12">
       <mat-tab-group id="mapModeTabs" #mapModeTabs (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Scotland"></mat-tab>
         <mat-tab label="Glasgow"></mat-tab>
@@ -11,10 +11,10 @@
       <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
       <app-edinburgh-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Edinburgh"></app-edinburgh-map>
     </div>
-    <div style="height: 90vh" class="col col-lg-3 col-md-2 col-sm-12 col-12">
+    <div style="height: 90vh" class="col col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
       <app-tweet-box [ward]="district"></app-tweet-box>
     </div>
-    <div class="col col-lg-4 col-md-12 col-sm-12 col-12">
+    <div class="col col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
       <mat-card id="districtInfoBox">
         <mat-card-header>
           <mat-card-title class="header">{{district.name}}</mat-card-title>
