@@ -6,6 +6,7 @@ export class District {
   values: {x: number, y: number}[];
   average: number;
   prettyAverage: number;
+  common_emote_words: string[];
   total: number;
   totals: number[];
   last_tweets: Tweet[] = [];

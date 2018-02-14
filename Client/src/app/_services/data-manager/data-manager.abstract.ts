@@ -68,7 +68,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   public updateLastTweet(tweet: Tweet, id: string): void {
 
-    console.log(tweet.text_sentiments, tweet.text_sentiment_words);
     const new_scores = [];
     const new_words = [];
 
@@ -92,7 +91,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
     tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
     tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
-    console.log(tweet);
+
     // If the tweet belongs to the whole map area, set the id accordingly
     id = (this.districtId === id) ? this.mapType + '-boundary' : id;
 
@@ -169,11 +168,12 @@ export abstract class AbstractDataManager implements DataManagerInterface {
             for (let i = 0; i < areaIds.length; i++) {
               const id = areaIds[i];
               const wardData: AreaData = results[id];
-              console.log(this.mapType, wardData, id);
+
               const values = wardData.values;
               const name = areaNames[id];
               const average = (values.length > 0) ? values[values.length - 1].y : 0;
               const prettyAverage = Math.round(average * 10) / 10;
+              const common_emote_words = wardData.common_emote_words;
               const last_tweets: Tweet[] = (wardData.last_tweet) ?
                 [wardData.last_tweet] :
                 [];
@@ -185,6 +185,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
                 values,
                 average,
                 prettyAverage,
+                common_emote_words,
                 last_tweets,
                 total: wardData.total,
                 totals: wardData.totals

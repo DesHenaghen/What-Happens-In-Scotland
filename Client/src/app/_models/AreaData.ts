@@ -6,4 +6,5 @@ export class AreaData {
   total: number;
   totals: number[];
   last_tweet: Tweet;
+  common_emote_words: string[];
 }
