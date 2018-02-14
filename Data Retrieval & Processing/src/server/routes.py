@@ -24,6 +24,8 @@ def parse_twitter_data(tweets):
     last_tweet_words = tweets[-1].text_sentiments if len(tweets) > 0 else []
     last_tweet_scores = tweets[-1].text_sentiment_words if len(tweets) > 0 else []
 
+    common_emote_words = tweets[-1].word_arr if len(tweets) > 0 else []
+
     epoch = datetime.date.fromtimestamp(0)
     for tweet in tweets:
         values.append({
@@ -38,13 +40,14 @@ def parse_twitter_data(tweets):
         'values': values,
         'total': total,
         'totals': totals,
+        'common_emote_words': common_emote_words,
         'last_tweet': {
             'text': last_tweet_text,
             'user': last_tweet_user,
             'words': last_tweet_words,
             'scores': last_tweet_scores
         }
-   }
+    }
 
 
 @data_routes.route('/api/all_scotland_district_data')

@@ -139,19 +139,34 @@ def save_scotland_tweet(tweet):
 def get_scotland_district_tweets(area_ids, group):
     start_date = datetime.now() - timedelta(days=14)
 
-    sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, " +
-        "t.text_sentiments, t.text_sentiment_words, t." + group + "_id " +
-        "FROM ( " +
-        "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
-        "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM scotland_tweets " +
-        "WHERE " + group + "_id = ANY(:ids) " +
-        "AND date >= '" + start_date.strftime('%Y-%m-%d') + "' " +
-        # "AND compound_sent != 0 " +
-        "GROUP by day, " + group + "_id " +
-        "ORDER BY day ASC " +
-        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day ASC")
+    sql = text("""
+      SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
+      t.text_sentiment_words, t.{0}_id , y.word_arr
+      FROM scotland_tweets as t 
+        INNER JOIN ( 
+          SELECT t.area_id, array_agg(word ||', ' || word_ct::text) word_arr 
+          FROM ( 
+            SELECT area_id, word, count(*) word_ct
+            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
+            WHERE  word_score != 0 AND date > {1}
+            GROUP  BY word, area_id
+            ORDER  BY area_id, count(*) DESC, word
+          ) t
+        GROUP BY t.area_id
+       ) as y ON t.area_id = y.area_id
+       
+         INNER JOIN (
+            SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu,
+              AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total
+            FROM scotland_tweets
+            WHERE {0}_id = ANY(:ids)
+            AND date >= {1}
+            GROUP by day, {0}_id 
+            ORDER BY day ASC
+           ) as x ON t.date = x.max_date
+        ORDER BY x.day ASC;
+        """.format(group, "'" + start_date.strftime('%Y-%m-%d') + "'")
+    )
 
     return __engine.execute(sql, {'ids': area_ids})
 
@@ -159,19 +174,34 @@ def get_scotland_district_tweets(area_ids, group):
 def get_scotland_tweets():
     start_date = datetime.now() - timedelta(days=14)
 
-    sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, " +
-        "t.text_sentiments, t.text_sentiment_words " +
-        "FROM ( " +
-        "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
-        "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
-        "FROM scotland_tweets " +
-        "WHERE area_id IS NOT NULL " +
-        "AND date >= '" + start_date.strftime('%Y-%m-%d') + "' " +
-        # "AND compound_sent != 0 " +
-        "GROUP by day " +
-        "ORDER BY day DESC " +
-        ") as x INNER JOIN scotland_tweets as t ON t.date = x.max_date ORDER BY x.day DESC")
+    sql = text("""
+      SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
+      t.text_sentiment_words, y.word_arr
+      FROM scotland_tweets as t 
+        INNER JOIN ( 
+          SELECT array_agg(word ||', ' || word_ct::text) word_arr 
+          FROM ( 
+            SELECT word, count(*) word_ct
+            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
+            WHERE  word_score != 0 AND date > {0}
+            GROUP  BY word
+            ORDER  BY count(*) DESC, word
+          ) t
+      ) as y ON t.id = t.id
+       
+         INNER JOIN (
+            SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu,
+              AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total
+            FROM scotland_tweets
+            WHERE area_id IS NOT NULL
+            AND date >= {0}
+            GROUP by day
+            ORDER BY day DESC
+         ) as x ON t.date = x.max_date
+      ORDER BY x.day DESC;
+      """.format("'" + start_date.strftime('%Y-%m-%d') + "'")
+   )
+
     return __engine.execute(sql)
 
 
