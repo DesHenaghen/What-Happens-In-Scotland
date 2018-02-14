@@ -45,3 +45,11 @@
   display: inline-block;
   margin-left: 10px;
 }
+
+.blue_text {
+  color: dodgerblue;
+}
+
+.red_text {
+  color: salmon;
+}
