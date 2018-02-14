@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from datetime import datetime, timedelta
 from server import get_socketio_instance
 import logger as log
@@ -20,30 +20,6 @@ __engine = __db.connect()
 __meta = sqlalchemy.MetaData(__engine)
 
 # Define table schemas
-__geo_tweets = sqlalchemy.Table("geo_tweets", __meta,
-                                Column('id', Integer, primary_key=True),
-                                Column('coordinates', Text),
-                                Column('area_id', Text),
-                                Column('place', JSONB),
-                                Column('text', Text),
-                                Column('date', DateTime),
-                                Column('user', JSONB),
-                                Column('neg_sent', REAL),
-                                Column('neu_sent', REAL),
-                                Column('pos_sent', REAL),
-                                Column('compound_sent', REAL))
-
-__glasgow_tweets = sqlalchemy.Table("glasgow_tweets", __meta,
-                                    Column('id', Integer, primary_key=True),
-                                    Column('place', JSONB),
-                                    Column('text', Text),
-                                    Column('date', DateTime),
-                                    Column('user', JSONB),
-                                    Column('neg_sent', REAL),
-                                    Column('neu_sent', REAL),
-                                    Column('pos_sent', REAL),
-                                    Column('compound_sent', REAL))
-
 __scotland_tweets = sqlalchemy.Table("scotland_tweets", __meta,
                                      Column('id', Integer, primary_key=True),
                                      Column('place', JSONB),
@@ -54,6 +30,8 @@ __scotland_tweets = sqlalchemy.Table("scotland_tweets", __meta,
                                      Column('neu_sent', REAL),
                                      Column('pos_sent', REAL),
                                      Column('compound_sent', REAL),
+                                     Column('text_sentiments', ARRAY(REAL)),
+                                     Column('text_sentiment_words', ARRAY(Text)),
                                      Column('area_id', Text),
                                      Column('ward_id', Text),
                                      Column('coordinates', Text))
@@ -74,6 +52,8 @@ def save_scotland_tweet(tweet):
 
     # Tweet sentiment scores
     scores = __analyser.calculate_sentiment_scores(full_text)
+    sentiment_words = __analyser.get_sentiment_words(full_text)
+    sentiment_word_scores = __analyser.get_sentiment_word_scores(full_text)
 
     if tweet.get('coordinates'):
         coord_array = tweet.get("coordinates").get("coordinates")
@@ -116,7 +96,9 @@ def save_scotland_tweet(tweet):
             'user': tweet.get("user"),
             'ward': area_id,
             'coordinates': coord_array,
-            'score': scores.get('compound')
+            'score': scores.get('compound'),
+            'text_sentiments': sentiment_word_scores,
+            'text_sentiment_words': sentiment_words
         })
 
     if ward_id is not None:
@@ -125,7 +107,9 @@ def save_scotland_tweet(tweet):
             'user': tweet.get("user"),
             'ward': ward_id,
             'coordinates': coord_array,
-            'score': scores.get('compound')
+            'score': scores.get('compound'),
+            'text_sentiments': sentiment_word_scores,
+            'text_sentiment_words': sentiment_words
         })
 
     statement = __scotland_tweets.insert().values(
@@ -138,6 +122,8 @@ def save_scotland_tweet(tweet):
         neu_sent=scores.get('neu'),
         pos_sent=scores.get('pos'),
         compound_sent=scores.get('compound'),
+        text_sentiments=sentiment_word_scores,
+        text_sentiment_words=sentiment_words,
         area_id=area_id,
         ward_id=ward_id
     )
@@ -155,7 +141,7 @@ def get_scotland_district_tweets(area_ids, group):
 
     sql = text(
         "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, " +
-        "t." + group + "_id " +
+        "t.text_sentiments, t.text_sentiment_words, t." + group + "_id " +
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
@@ -174,7 +160,8 @@ def get_scotland_tweets():
     start_date = datetime.now() - timedelta(days=14)
 
     sql = text(
-        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total " +
+        "SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, " +
+        "t.text_sentiments, t.text_sentiment_words " +
         "FROM ( " +
         "SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu, " +
         "AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total " +
@@ -196,22 +183,6 @@ def get_all_scotland_tweets():
     ]).execute()
 
 
-def get_all_glasgow_tweets():
-    return select([
-        __glasgow_tweets.c.id,
-        __glasgow_tweets.c.text,
-        __glasgow_tweets.c.timestamp
-    ]).execute()
-
-
-def get_all_geo_tweets():
-    return select([
-        __geo_tweets.c.id,
-        __geo_tweets.c.text,
-        __geo_tweets.c.timestamp
-    ]).execute()
-
-
 def __update_tweets_sentiment(table, tweet_id, sentiment, date):
     table.update() \
         .values(
@@ -225,11 +196,3 @@ def __update_tweets_sentiment(table, tweet_id, sentiment, date):
 
 def update_scotland_tweets_sentiment(tweet_id, sentiment, date):
     __update_tweets_sentiment(__scotland_tweets, tweet_id, sentiment, date)
-
-
-def update_glasgow_tweets_sentiment(tweet_id, sentiment, date):
-    __update_tweets_sentiment(__glasgow_tweets, tweet_id, sentiment, date)
-
-
-def update_geo_tweets_sentiment(tweet_id, sentiment, date):
-    __update_tweets_sentiment(__geo_tweets, tweet_id, sentiment, date)

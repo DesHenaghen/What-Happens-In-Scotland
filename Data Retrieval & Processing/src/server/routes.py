@@ -21,16 +21,18 @@ def parse_twitter_data(tweets):
     total = 0
     last_tweet_text = tweets[-1].text if len(tweets) > 0 else ""
     last_tweet_user = tweets[-1].user if len(tweets) > 0 else {}
+    last_tweet_words = tweets[-1].text_sentiments if len(tweets) > 0 else []
+    last_tweet_scores = tweets[-1].text_sentiment_words if len(tweets) > 0 else []
 
     epoch = datetime.date.fromtimestamp(0)
     for tweet in tweets:
         values.append({
-            'x': (tweet[2] - epoch).total_seconds() * 1000,
-            'y': tweet[7]
+            'x': (tweet.day - epoch).total_seconds() * 1000,
+            'y': tweet.avg_compound
         })
 
-        total += int(tweet[8])
-        totals.append(int(tweet[8]))
+        total += int(tweet.total)
+        totals.append(int(tweet.total))
 
     return {
         'values': values,
@@ -38,7 +40,9 @@ def parse_twitter_data(tweets):
         'totals': totals,
         'last_tweet': {
             'text': last_tweet_text,
-            'user': last_tweet_user
+            'user': last_tweet_user,
+            'words': last_tweet_words,
+            'scores': last_tweet_scores
         }
    }
 

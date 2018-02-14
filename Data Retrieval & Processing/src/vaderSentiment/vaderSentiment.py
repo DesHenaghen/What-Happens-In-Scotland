@@ -215,8 +215,16 @@ class SentimentIntensityAnalyzer(object):
         Positive values are positive valence, negative value are negative
         valence.
         """
-        sentitext = SentiText(text)
         #text, words_and_emoticons, is_cap_diff = self.preprocess(text)
+
+        sentiments = self.sentiment_words(text)
+
+        valence_dict = self.score_valence(sentiments, text)
+
+        return valence_dict
+
+    def sentiment_words(self, text):
+        sentitext = SentiText(text)
 
         sentiments = []
         words_and_emoticons = sentitext.words_and_emoticons
@@ -232,10 +240,8 @@ class SentimentIntensityAnalyzer(object):
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
         sentiments = self._but_check(words_and_emoticons, sentiments)
-        
-        valence_dict = self.score_valence(sentiments, text)
 
-        return valence_dict
+        return sentiments
 
     def sentiment_valence(self, valence, sentitext, item, i, sentiments):
         is_cap_diff = sentitext.is_cap_diff
