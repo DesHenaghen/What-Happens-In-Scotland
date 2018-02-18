@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text
+from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text, bindparam
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from datetime import datetime, timedelta
 from server import get_socketio_instance
@@ -51,9 +51,11 @@ def save_scotland_tweet(tweet):
     date = datetime.fromtimestamp(float_ts)
 
     # Tweet sentiment scores
-    scores = __analyser.calculate_sentiment_scores(full_text)
-    sentiment_words = __analyser.get_sentiment_words(full_text)
-    sentiment_word_scores = __analyser.get_sentiment_word_scores(full_text)
+    sentiment_text = ' '.join(
+        list(filter(lambda word: not word.startswith(('@', 'http://', 'https://', '&')), full_text.split(' '))))
+    scores = __analyser.calculate_sentiment_scores(sentiment_text)
+    sentiment_words = [word.lower() for word in __analyser.get_sentiment_words(sentiment_text)]
+    sentiment_word_scores = __analyser.get_sentiment_word_scores(sentiment_text)
 
     if tweet.get('coordinates'):
         coord_array = tweet.get("coordinates").get("coordinates")
@@ -144,16 +146,17 @@ def get_scotland_district_tweets(area_ids, group):
       t.text_sentiment_words, t.{0}_id , y.word_arr
       FROM scotland_tweets as t 
         INNER JOIN ( 
-          SELECT t.area_id, array_agg(word ||', ' || word_ct::text) word_arr 
+          SELECT t.{0}_id, array_agg(word ||', ' || word_ct::text) word_arr 
           FROM ( 
-            SELECT area_id, word, count(*) word_ct
+            SELECT {0}_id, word, count(*) word_ct
             FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
-            WHERE  word_score != 0 AND date > {1}
-            GROUP  BY word, area_id
-            ORDER  BY area_id, count(*) DESC, word
+            WHERE  date > {1}
+            AND {0}_id = ANY(:ids)
+            GROUP  BY word, {0}_id
+            ORDER  BY {0}_id, count(*) DESC, word
           ) t
-        GROUP BY t.area_id
-       ) as y ON t.area_id = y.area_id
+        GROUP BY t.{0}_id
+       ) as y ON t.{0}_id = y.{0}_id
        
          INNER JOIN (
             SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu,
@@ -166,7 +169,7 @@ def get_scotland_district_tweets(area_ids, group):
            ) as x ON t.date = x.max_date
         ORDER BY x.day ASC;
         """.format(group, "'" + start_date.strftime('%Y-%m-%d') + "'")
-    )
+               )
 
     return __engine.execute(sql, {'ids': area_ids})
 
@@ -183,7 +186,7 @@ def get_scotland_tweets():
           FROM ( 
             SELECT word, count(*) word_ct
             FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
-            WHERE  word_score != 0 AND date > {0}
+            WHERE  date > {0}
             GROUP  BY word
             ORDER  BY count(*) DESC, word
           ) t
@@ -200,7 +203,7 @@ def get_scotland_tweets():
          ) as x ON t.date = x.max_date
       ORDER BY x.day DESC;
       """.format("'" + start_date.strftime('%Y-%m-%d') + "'")
-   )
+               )
 
     return __engine.execute(sql)
 
@@ -208,8 +211,7 @@ def get_scotland_tweets():
 def get_all_scotland_tweets():
     return select([
         __scotland_tweets.c.id,
-        __scotland_tweets.c.text,
-        __scotland_tweets.c.timestamp
+        __scotland_tweets.c.text
     ]).execute()
 
 
@@ -222,6 +224,17 @@ def __update_tweets_sentiment(table, tweet_id, sentiment, date):
         compound_sent=sentiment.get('compound'),
         date=date
     ).where(table.c.id == tweet_id).execute()
+
+
+def update_scotland_tweets_sentiment_arrays(values):
+    stmt = __scotland_tweets.update(). \
+        where(__scotland_tweets.c.id == bindparam('t_id')). \
+        values({
+            'text_sentiments': bindparam('scores'),
+            'text_sentiment_words': bindparam('words')
+        })
+
+    __engine.execute(stmt, values)
 
 
 def update_scotland_tweets_sentiment(tweet_id, sentiment, date):

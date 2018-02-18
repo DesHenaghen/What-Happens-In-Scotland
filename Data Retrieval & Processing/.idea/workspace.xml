@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_models/AreaData.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_models/AreaData.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_models/District.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_models/District.ts" />
+    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed sql queries to now fetch the count of all emotive words used">
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/generateSentimentScoreArrays.py" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/DatabaseManager.py" afterPath="$PROJECT_DIR$/src/DatabaseManager.py" />
       <change beforePath="$PROJECT_DIR$/src/server/routes.py" afterPath="$PROJECT_DIR$/src/server/routes.py" />
@@ -19,8 +18,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Data_Retrieval___Processing$Dev_Server.coverage" NAME="Dev Server Coverage Results" MODIFIED="1518618305436" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/Data_Retrieval___Processing$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1518613861209" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Data_Retrieval___Processing$generateSentimentScoreArrays.coverage" NAME="generateSentimentScoreArrays Coverage Results" MODIFIED="1518979980326" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Data_Retrieval___Processing$Dev_Server.coverage" NAME="Dev Server Coverage Results" MODIFIED="1518983747519" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Data_Retrieval___Processing$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1518630515846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -35,127 +35,139 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="192" column="48" lean-forward="false" selection-start-line="192" selection-start-column="48" selection-end-line="192" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#17#0" expanded="true" />
-                <marker date="1518617746820" expanded="true" signature="5218:5442" ph="SELECT t.tex... " />
-                <marker date="1518617746820" expanded="true" signature="5453:5538" ph="SELECT t.are... " />
-                <marker date="1518617746820" expanded="true" signature="5551:5831" ph="SELECT area_... scotland_tweets" />
-                <marker date="1518617746820" expanded="true" signature="5551:6378" ph="SELECT area_... " />
-                <marker date="1518617746820" expanded="true" signature="5551:7748" ph="SELECT area_... " />
-                <marker date="1518617746820" expanded="true" signature="5954:6309" ph="SELECT date:... " />
-                <marker date="1518617746820" expanded="true" signature="6611:7680" ph="SELECT t.tex... scotland_tweets" />
-                <marker date="1518617746820" expanded="true" signature="6617:7675" ph="SELECT t.tex... scotland_tweets" />
-                <marker date="1518617746820" expanded="true" signature="6617:7679" ph="SELECT t.tex... scotland_tweets" />
-                <marker date="1518617746820" expanded="true" signature="6841:7195" ph="SELECT t.are... area_id" />
-                <marker date="1518617746820" expanded="true" signature="6928:7181" ph="SELECT area_... scotland_tweets" />
-                <marker date="1518617746820" expanded="true" signature="7266:7610" ph="SELECT date:... " />
-                <marker date="1518617746820" expanded="true" signature="7266:7614" ph="SELECT date:... scotland_tweets" />
-                <marker date="1518617746820" expanded="true" signature="7748:7825" ph="SELECT t.tex...  +&#10;        " />
-                <marker date="1518617746820" expanded="true" signature="7826:8433" ph="select([ __s... " />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SentimentAnalyser.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/SentimentAnalyser.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vaderSentiment.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/vaderSentiment/vaderSentiment.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="153" column="63" lean-forward="false" selection-start-line="153" selection-start-column="63" selection-end-line="153" selection-end-column="63" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scratch.py" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="29" column="119" lean-forward="false" selection-start-line="29" selection-start-column="119" selection-end-line="29" selection-end-column="119" />
-              <folding>
-                <marker date="1518613861129" expanded="true" signature="422:1101" ph="SELECT t.tex... " />
-                <marker date="1518613861129" expanded="true" signature="625:1101" ph="SELECT t.are... area_id" />
-                <marker date="1518613861129" expanded="true" signature="699:1020" ph="SELECT area_... " />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ScotlandTwitterStream.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ScotlandTwitterStream.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="23" column="17" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/server/routes.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="31" column="59" lean-forward="false" selection-start-line="31" selection-start-column="59" selection-end-line="31" selection-end-column="59" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/server.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="18" column="74" lean-forward="false" selection-start-line="18" selection-start-column="74" selection-end-line="18" selection-end-column="74" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/server/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="19" column="32" lean-forward="false" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="configuration.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/configuration.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="34" column="33" lean-forward="false" selection-start-line="34" selection-start-column="21" selection-end-line="34" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="411">
+                  <caret line="173" column="34" lean-forward="true" selection-start-line="173" selection-start-column="34" selection-end-line="173" selection-end-column="34" />
+                  <folding>
+                    <element signature="e#0#17#0" expanded="true" />
+                    <marker date="1518983705276" expanded="true" signature="5415:5639" ph="SELECT t.tex... " />
+                    <marker date="1518983705276" expanded="true" signature="5650:5734" ph="SELECT t.are... " />
+                    <marker date="1518983705276" expanded="true" signature="5747:6039" ph="SELECT area_... scotland_tweets" />
+                    <marker date="1518983705276" expanded="true" signature="5747:6583" ph="SELECT area_... " />
+                    <marker date="1518983705276" expanded="true" signature="6159:6514" ph="SELECT date:... scotland_tweets" />
+                    <marker date="1518983705276" expanded="true" signature="6833:7875" ph="SELECT t.tex... scotland_tweets" />
+                    <marker date="1518983705276" expanded="true" signature="7057:7391" ph="SELECT array... word" />
+                    <marker date="1518983705276" expanded="true" signature="7144:7377" ph="SELECT word,... scotland_tweets" />
+                    <marker date="1518983705276" expanded="true" signature="7462:7810" ph="SELECT date:... scotland_tweets" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="historicSentimentClassifier.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/historicSentimentClassifier.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="238">
+                  <caret line="15" column="52" lean-forward="false" selection-start-line="15" selection-start-column="52" selection-end-line="15" selection-end-column="52" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="SentimentAnalyser.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/SentimentAnalyser.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="255">
+                  <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="vaderSentiment.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/vaderSentiment/vaderSentiment.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="2550">
+                  <caret line="153" column="63" lean-forward="false" selection-start-line="153" selection-start-column="63" selection-end-line="153" selection-end-column="63" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="scratch.py" pinned="false" current-in-tab="false">
+            <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="306">
+                  <caret line="19" column="11" lean-forward="false" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
+                  <folding>
+                    <element signature="e#382#424#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ScotlandTwitterStream.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/ScotlandTwitterStream.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="289">
+                  <caret line="23" column="17" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
+                  <folding>
+                    <element signature="e#0#14#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="routes.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/server/routes.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="235">
+                  <caret line="115" column="44" lean-forward="false" selection-start-line="115" selection-start-column="44" selection-end-line="115" selection-end-column="44" />
+                  <folding>
+                    <element signature="e#0#15#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/server.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="238">
+                  <caret line="18" column="74" lean-forward="false" selection-start-line="18" selection-start-column="74" selection-end-line="18" selection-end-column="74" />
+                  <folding>
+                    <element signature="e#0#28#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/server/__init__.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="238">
+                  <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#0#9#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="generateSentimentScoreArrays.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/generateSentimentScoreArrays.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="51">
+                  <caret line="3" column="7" lean-forward="false" selection-start-line="3" selection-start-column="7" selection-end-line="3" selection-end-column="7" />
+                  <folding>
+                    <element signature="e#0#32#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -167,11 +179,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>yes</find>
-      <find>yas</find>
-      <find>good</find>
-      <find>best</find>
-      <find>friend</find>
       <find>sh</find>
       <find>raging</find>
       <find>wasnt</find>
@@ -197,7 +204,15 @@
       <find>datetim</find>
       <find>group</find>
       <find>+</find>
+      <find>the</find>
+      <find>and</find>
+      <find>ward</find>
+      <find>ward_id</find>
+      <find>area</find>
     </findStrings>
+    <replaceStrings>
+      <replace>{0}</replace>
+    </replaceStrings>
     <dirStrings>
       <dir>D:\Libraries\Documents\University\4th Year\CS408 - Individual Project\Projects\What-Happens-In-Glasgow\Data Retrieval &amp; Processing\src</dir>
     </dirStrings>
@@ -220,12 +235,13 @@
         <option value="$PROJECT_DIR$/src/server.py" />
         <option value="$PROJECT_DIR$/src/ScotlandTwitterStream.py" />
         <option value="$PROJECT_DIR$/src/configuration.py" />
-        <option value="$PROJECT_DIR$/src/server/__init__.py" />
         <option value="$PROJECT_DIR$/src/vaderSentiment/vaderSentiment.py" />
         <option value="$PROJECT_DIR$/src/SentimentAnalyser.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.py" />
-        <option value="$PROJECT_DIR$/src/DatabaseManager.py" />
         <option value="$PROJECT_DIR$/src/server/routes.py" />
+        <option value="$PROJECT_DIR$/src/generateSentimentScoreArrays.py" />
+        <option value="$PROJECT_DIR$/src/DatabaseManager.py" />
+        <option value="$PROJECT_DIR$/src/server/__init__.py" />
       </list>
     </option>
   </component>
@@ -239,6 +255,25 @@
     <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyPep8Inspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -256,6 +291,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -268,23 +304,10 @@
               <item name="Data Retrieval &amp; Processing" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Data Retrieval &amp; Processing" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Data Retrieval &amp; Processing" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="server" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Data Retrieval &amp; Processing" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Data Retrieval &amp; Processing" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="vaderSentiment" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -327,7 +350,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Dev Server">
+  <component name="RunManager" selected="Python.generateSentimentScoreArrays">
     <configuration name="Dev Server" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -385,7 +408,7 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="historicSentimentClassifier" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="generateSentimentScoreArrays" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -398,8 +421,8 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="What-Happens-In-Glasgow" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/historicSentimentClassifier.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/generateSentimentScoreArrays.py" />
+      <option name="PARAMETERS" value="dev" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -444,19 +467,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python.twitterStream" />
-      <item index="1" class="java.lang.String" itemvalue="Python.historicSentimentClassifier" />
-      <item index="2" class="java.lang.String" itemvalue="Python.ScotlandTwitterStream" />
-      <item index="3" class="java.lang.String" itemvalue="Python.Dev Server" />
-      <item index="4" class="java.lang.String" itemvalue="Python.__init__" />
-      <item index="5" class="java.lang.String" itemvalue="Python.scratch" />
+      <item index="1" class="java.lang.String" itemvalue="Python.ScotlandTwitterStream" />
+      <item index="2" class="java.lang.String" itemvalue="Python.Dev Server" />
+      <item index="3" class="java.lang.String" itemvalue="Python.__init__" />
+      <item index="4" class="java.lang.String" itemvalue="Python.scratch" />
+      <item index="5" class="java.lang.String" itemvalue="Python.generateSentimentScoreArrays" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.Dev Server" />
-        <item index="1" class="java.lang.String" itemvalue="Python.scratch" />
-        <item index="2" class="java.lang.String" itemvalue="Python.ScotlandTwitterStream" />
-        <item index="3" class="java.lang.String" itemvalue="Python.__init__" />
-        <item index="4" class="java.lang.String" itemvalue="Python.historicSentimentClassifier" />
+        <item index="1" class="java.lang.String" itemvalue="Python.generateSentimentScoreArrays" />
+        <item index="2" class="java.lang.String" itemvalue="Python.scratch" />
+        <item index="3" class="java.lang.String" itemvalue="Python.ScotlandTwitterStream" />
+        <item index="4" class="java.lang.String" itemvalue="Python.__init__" />
       </list>
     </recent_temporary>
   </component>
@@ -642,7 +665,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518607367742</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Changed sql queries to now fetch the count of all emotive words used">
+      <created>1518620795614</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1518620795614</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TodoView">
@@ -656,19 +686,17 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5021075" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39130434" sideWeight="0.48946258" order="5" side_tool="false" content_ui="tabs" x="320" y="637" width="1380" height="496" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33695653" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32608697" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3894967" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3806999" sideWeight="0.5083333" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.49789253" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3806999" sideWeight="0.49166667" order="5" side_tool="false" content_ui="tabs" x="320" y="637" width="1380" height="496" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3402854" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3890625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40326086" sideWeight="0.49789253" order="2" side_tool="false" content_ui="tabs" />
@@ -677,30 +705,11 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32608697" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="812" y="291" width="779" height="457" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5021075" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.49789253" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3880435" sideWeight="0.48946258" order="5" side_tool="false" content_ui="tabs" x="320" y="637" width="1380" height="496" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33695653" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.60149574" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="812" y="291" width="779" height="457" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40326086" sideWeight="0.49789253" order="2" side_tool="false" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -736,7 +745,8 @@
     <MESSAGE value="Commented out prints" />
     <MESSAGE value="Stopped registering Scotland tweets, need to think of a better solution" />
     <MESSAGE value="Save and send individual words sentiment" />
-    <option name="LAST_COMMIT_MESSAGE" value="Save and send individual words sentiment" />
+    <MESSAGE value="Changed sql queries to now fetch the count of all emotive words used" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed sql queries to now fetch the count of all emotive words used" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -745,13 +755,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/twitterStream.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="28" column="19" lean-forward="false" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/logger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -773,21 +776,15 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <marker date="1518617746820" expanded="true" signature="5218:5442" ph="SELECT t.tex... " />
-            <marker date="1518617746820" expanded="true" signature="5453:5538" ph="SELECT t.are... " />
-            <marker date="1518617746820" expanded="true" signature="5551:5831" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="5551:6378" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5551:7748" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5954:6309" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="6611:7680" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7675" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7679" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6841:7195" ph="SELECT t.are... area_id" />
-            <marker date="1518617746820" expanded="true" signature="6928:7181" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7266:7610" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="7266:7614" ph="SELECT date:... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7748:7825" ph="SELECT t.tex...  +&#10;        " />
-            <marker date="1518617746820" expanded="true" signature="7826:8433" ph="select([ __s... " />
+            <marker date="1518983705276" expanded="true" signature="5415:5639" ph="SELECT t.tex... " />
+            <marker date="1518983705276" expanded="true" signature="5650:5734" ph="SELECT t.are... " />
+            <marker date="1518983705276" expanded="true" signature="5747:6039" ph="SELECT area_... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="5747:6583" ph="SELECT area_... " />
+            <marker date="1518983705276" expanded="true" signature="6159:6514" ph="SELECT date:... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="6833:7875" ph="SELECT t.tex... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7057:7391" ph="SELECT array... word" />
+            <marker date="1518983705276" expanded="true" signature="7144:7377" ph="SELECT word,... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7462:7810" ph="SELECT date:... scotland_tweets" />
           </folding>
         </state>
       </provider>
@@ -862,21 +859,15 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <marker date="1518617746820" expanded="true" signature="5218:5442" ph="SELECT t.tex... " />
-            <marker date="1518617746820" expanded="true" signature="5453:5538" ph="SELECT t.are... " />
-            <marker date="1518617746820" expanded="true" signature="5551:5831" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="5551:6378" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5551:7748" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5954:6309" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="6611:7680" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7675" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7679" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6841:7195" ph="SELECT t.are... area_id" />
-            <marker date="1518617746820" expanded="true" signature="6928:7181" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7266:7610" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="7266:7614" ph="SELECT date:... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7748:7825" ph="SELECT t.tex...  +&#10;        " />
-            <marker date="1518617746820" expanded="true" signature="7826:8433" ph="select([ __s... " />
+            <marker date="1518983705276" expanded="true" signature="5415:5639" ph="SELECT t.tex... " />
+            <marker date="1518983705276" expanded="true" signature="5650:5734" ph="SELECT t.are... " />
+            <marker date="1518983705276" expanded="true" signature="5747:6039" ph="SELECT area_... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="5747:6583" ph="SELECT area_... " />
+            <marker date="1518983705276" expanded="true" signature="6159:6514" ph="SELECT date:... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="6833:7875" ph="SELECT t.tex... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7057:7391" ph="SELECT array... word" />
+            <marker date="1518983705276" expanded="true" signature="7144:7377" ph="SELECT word,... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7462:7810" ph="SELECT date:... scotland_tweets" />
           </folding>
         </state>
       </provider>
@@ -937,21 +928,15 @@
           <caret line="83" column="38" lean-forward="false" selection-start-line="83" selection-start-column="38" selection-end-line="83" selection-end-column="38" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
-            <marker date="1518617746820" expanded="true" signature="5218:5442" ph="SELECT t.tex... " />
-            <marker date="1518617746820" expanded="true" signature="5453:5538" ph="SELECT t.are... " />
-            <marker date="1518617746820" expanded="true" signature="5551:5831" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="5551:6378" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5551:7748" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5954:6309" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="6611:7680" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7675" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7679" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6841:7195" ph="SELECT t.are... area_id" />
-            <marker date="1518617746820" expanded="true" signature="6928:7181" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7266:7610" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="7266:7614" ph="SELECT date:... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7748:7825" ph="SELECT t.tex...  +&#10;        " />
-            <marker date="1518617746820" expanded="true" signature="7826:8433" ph="select([ __s... " />
+            <marker date="1518983705276" expanded="true" signature="5415:5639" ph="SELECT t.tex... " />
+            <marker date="1518983705276" expanded="true" signature="5650:5734" ph="SELECT t.are... " />
+            <marker date="1518983705276" expanded="true" signature="5747:6039" ph="SELECT area_... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="5747:6583" ph="SELECT area_... " />
+            <marker date="1518983705276" expanded="true" signature="6159:6514" ph="SELECT date:... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="6833:7875" ph="SELECT t.tex... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7057:7391" ph="SELECT array... word" />
+            <marker date="1518983705276" expanded="true" signature="7144:7377" ph="SELECT word,... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7462:7810" ph="SELECT date:... scotland_tweets" />
           </folding>
         </state>
       </provider>
@@ -1002,13 +987,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/historicSentimentClassifier.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="23" column="36" lean-forward="false" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/logger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -1049,7 +1027,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="21" column="29" lean-forward="false" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1085,29 +1062,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ScotlandTwitterStream.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="23" column="17" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/server/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="19" column="32" lean-forward="false" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/vaderSentiment/vaderSentiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="2550">
           <caret line="153" column="63" lean-forward="false" selection-start-line="153" selection-start-column="63" selection-end-line="153" selection-end-column="63" />
           <folding />
         </state>
@@ -1121,18 +1078,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="29" column="119" lean-forward="false" selection-start-line="29" selection-start-column="119" selection-end-line="29" selection-end-column="119" />
-          <folding>
-            <marker date="1518613861129" expanded="true" signature="422:1101" ph="SELECT t.tex... " />
-            <marker date="1518613861129" expanded="true" signature="625:1101" ph="SELECT t.are... area_id" />
-            <marker date="1518613861129" expanded="true" signature="699:1020" ph="SELECT area_... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/ccff1239-584f-412b-a566-7c2d6e147ef5/console.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1141,37 +1086,79 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="192" column="48" lean-forward="false" selection-start-line="192" selection-start-column="48" selection-end-line="192" selection-end-column="48" />
+        <state relative-caret-position="306">
+          <caret line="19" column="11" lean-forward="false" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
           <folding>
-            <element signature="e#0#17#0" expanded="true" />
-            <marker date="1518617746820" expanded="true" signature="5218:5442" ph="SELECT t.tex... " />
-            <marker date="1518617746820" expanded="true" signature="5453:5538" ph="SELECT t.are... " />
-            <marker date="1518617746820" expanded="true" signature="5551:5831" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="5551:6378" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5551:7748" ph="SELECT area_... " />
-            <marker date="1518617746820" expanded="true" signature="5954:6309" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="6611:7680" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7675" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6617:7679" ph="SELECT t.tex... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="6841:7195" ph="SELECT t.are... area_id" />
-            <marker date="1518617746820" expanded="true" signature="6928:7181" ph="SELECT area_... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7266:7610" ph="SELECT date:... " />
-            <marker date="1518617746820" expanded="true" signature="7266:7614" ph="SELECT date:... scotland_tweets" />
-            <marker date="1518617746820" expanded="true" signature="7748:7825" ph="SELECT t.tex...  +&#10;        " />
-            <marker date="1518617746820" expanded="true" signature="7826:8433" ph="select([ __s... " />
+            <element signature="e#382#424#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ScotlandTwitterStream.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="23" column="17" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/historicSentimentClassifier.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="15" column="52" lean-forward="false" selection-start-line="15" selection-start-column="52" selection-end-line="15" selection-end-column="52" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/server/routes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="31" column="59" lean-forward="false" selection-start-line="31" selection-start-column="59" selection-end-line="31" selection-end-column="59" />
+        <state relative-caret-position="235">
+          <caret line="115" column="44" lean-forward="false" selection-start-line="115" selection-start-column="44" selection-end-line="115" selection-end-column="44" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DatabaseManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="411">
+          <caret line="173" column="34" lean-forward="true" selection-start-line="173" selection-start-column="34" selection-end-line="173" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+            <marker date="1518983705276" expanded="true" signature="5415:5639" ph="SELECT t.tex... " />
+            <marker date="1518983705276" expanded="true" signature="5650:5734" ph="SELECT t.are... " />
+            <marker date="1518983705276" expanded="true" signature="5747:6039" ph="SELECT area_... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="5747:6583" ph="SELECT area_... " />
+            <marker date="1518983705276" expanded="true" signature="6159:6514" ph="SELECT date:... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="6833:7875" ph="SELECT t.tex... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7057:7391" ph="SELECT array... word" />
+            <marker date="1518983705276" expanded="true" signature="7144:7377" ph="SELECT word,... scotland_tweets" />
+            <marker date="1518983705276" expanded="true" signature="7462:7810" ph="SELECT date:... scotland_tweets" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/generateSentimentScoreArrays.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="7" lean-forward="false" selection-start-line="3" selection-start-column="7" selection-end-line="3" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/server/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -4,6 +4,14 @@ from server import template_dir, get_app_instance, get_socketio_instance
 from flask import render_template, send_from_directory, jsonify, request, Blueprint
 import DatabaseManager as dbMan
 
+from many_stop_words import get_stop_words
+from nltk.corpus import stopwords
+
+__stop_words = list(get_stop_words('en'))  # About 900 stopwords
+__nltk_words = list(stopwords.words('english'))  # About 150 stopwords
+__stop_words.extend(__nltk_words)
+
+
 data_routes = Blueprint('data_routes', __name__, template_folder=template_dir)
 app = get_app_instance()
 socketio = get_socketio_instance()
@@ -25,6 +33,11 @@ def parse_twitter_data(tweets):
     last_tweet_scores = tweets[-1].text_sentiment_words if len(tweets) > 0 else []
 
     common_emote_words = tweets[-1].word_arr if len(tweets) > 0 else []
+    common_emote_words = list(
+        filter(
+            lambda word: word is not None and word.split(',')[0] not in __stop_words, common_emote_words
+        )
+    )
 
     epoch = datetime.date.fromtimestamp(0)
     for tweet in tweets:
