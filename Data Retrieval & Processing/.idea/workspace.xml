@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed sql queries to now fetch the count of all emotive words used">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/generateSentimentScoreArrays.py" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/DatabaseManager.py" afterPath="$PROJECT_DIR$/src/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/src/server/routes.py" afterPath="$PROJECT_DIR$/src/server/routes.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -672,7 +668,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518620795614</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Added script for sentiment word array generating. Fixed sql queries for&#10;word fetching - improved performance.">
+      <created>1518984279672</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1518984279672</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TodoView">
@@ -693,6 +696,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32717392" sideWeight="0.49789253" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3806999" sideWeight="0.49166667" order="5" side_tool="false" content_ui="tabs" x="320" y="637" width="1380" height="496" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3402854" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3890625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -721,7 +725,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Created new twitter stream python file that uses postgresql instead of &#10;mongo" />
     <MESSAGE value="Encapsulated code in try catch to exit on error." />
     <MESSAGE value="Added support for tweets longer than 140 characters. Added vaderSentiment library" />
     <MESSAGE value="Enabled automatic config detection." />
@@ -746,7 +749,8 @@
     <MESSAGE value="Stopped registering Scotland tweets, need to think of a better solution" />
     <MESSAGE value="Save and send individual words sentiment" />
     <MESSAGE value="Changed sql queries to now fetch the count of all emotive words used" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed sql queries to now fetch the count of all emotive words used" />
+    <MESSAGE value="Added script for sentiment word array generating. Fixed sql queries for&#10;word fetching - improved performance." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added script for sentiment word array generating. Fixed sql queries for&#10;word fetching - improved performance." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

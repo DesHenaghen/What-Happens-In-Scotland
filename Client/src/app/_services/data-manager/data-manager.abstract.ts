@@ -73,7 +73,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
     // Highlight emotive words
     tweet.text = tweet.text.split(' ').map(word => {
-      if (tweet.text_sentiment_words[0] && word.startsWith(tweet.text_sentiment_words[0])) {
+      if (tweet.text_sentiment_words[0] && word.toLowerCase().startsWith(tweet.text_sentiment_words[0])) {
         new_words.push(tweet.text_sentiment_words.shift());
         const score = tweet.text_sentiments.shift();
         new_scores.push(score);

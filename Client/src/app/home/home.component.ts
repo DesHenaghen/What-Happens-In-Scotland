@@ -105,5 +105,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public commonWord(index: number) {
+    return (this.district.common_emote_words && this.district.common_emote_words[index])
+      ? this.district.common_emote_words[index].split(',')[0]
+      : '';
+  }
+
 }
 
