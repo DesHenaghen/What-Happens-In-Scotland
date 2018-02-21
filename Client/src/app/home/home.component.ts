@@ -108,7 +108,7 @@ export class HomeComponent implements OnInit {
       });
 
       console.log(this.district);
-      this.filteredTweets = this.getFilteredTweets();
+      this.setFilteredTweets();
 
       console.log(this.tweets, this.filteredTweets);
 
@@ -137,22 +137,24 @@ export class HomeComponent implements OnInit {
     this.endDate = new Date(dateString);
   }
 
-  private getFilteredTweets(limit = 10) {
+  private setFilteredTweets(limit = 10) {
     const filteredTweets = this.tweets;
     for (const [key] of Object.entries(filteredTweets)) {
-      filteredTweets[key] = filteredTweets[key]
-        .filter((item, index) => index < limit )
-        .map(tweet => {
-          const new_words = [], new_scores = [];
-          tweet.text = tweet.text.split(' ').map(word =>
-            this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
-          tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
-          tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
-          return tweet;
-        });
+      this.filterTweets(key, limit, filteredTweets);
     }
+  }
 
-    return filteredTweets;
+  public filterTweets(key, limit, filteredTweets = this.tweets)  {
+    this.filteredTweets[key] = filteredTweets[key]
+      .filter((item, index) => index < limit )
+      .map(tweet => {
+        const new_words = [], new_scores = [];
+        tweet.text = tweet.text.split(' ').map(word =>
+          this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
+        tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
+        tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
+        return tweet;
+      });
   }
 
   public getDateFilteredTweets(tweetDate) {

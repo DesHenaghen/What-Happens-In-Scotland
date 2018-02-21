@@ -73,16 +73,17 @@
                 </div>
                 <mat-card *ngIf="(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded">
                   <div class="tweet_details" *ngFor="let tweet of getDateFilteredTweets(tweetDate)">
-                    <div [ngStyle]="{ 'border': getTweetBorder(tweet.score) }">
+                    <div [ngStyle]="{ 'border': getTweetBorder(tweet.score) }" style="border-radius: 10px;">
                       <mat-card-header>
                         <mat-card-title class="header">{{tweet.name}}</mat-card-title>
                       </mat-card-header>
                       <mat-card-content>
-                        <p [innerHTML]="tweet.text"></p>
+                        <p style="padding: 5px" [innerHTML]="tweet.text"></p>
                       </mat-card-content>
                     </div>
                     <hr>
                   </div>
+                  <button style="width: 100%" class="btn btn-primary" (click)="filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)">Load More</button>
                 </mat-card>
                 <h3 *ngIf="getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded" style="background-color: white">
                   There are no tweets for the selected date and region
