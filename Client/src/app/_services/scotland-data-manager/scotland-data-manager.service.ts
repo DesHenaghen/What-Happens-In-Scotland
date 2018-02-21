@@ -17,16 +17,11 @@ export class ScotlandDataManagerService extends AbstractDataManager {
     this.districtId = 'scotland-boundary';
     this.mapMode = MapModes.Scotland;
     this.allowRegionPulsing = false;
+    this.apiDataRoute = 'all_scotland_district_data';
 
     this.loadDistrictsData();
 
     this.listenOnSockets();
-  }
-
-  protected getDistrictsData(ids: string[]) {
-    return this._http.get<any>('/api/all_scotland_district_data', {
-      params: {ids, region: 'true'}
-    });
   }
 
   protected listenOnSockets(): void {

@@ -28,11 +28,6 @@ html, body {
   overflow-y: auto;
 }
 
-#map-background {
-  height: 100%;
-  background-color: #dadada;
-}
-
 .alfa {
   font-family: "Alfa Slab One", cursive;
 }
@@ -45,19 +40,18 @@ html, body {
   text-align: center;
 }
 
-#districtInfoBox {
-  top: 2%;
+.infoBox {
+  /*top: 2%;*/
   /*right: 1%;*/
-  margin: 5% 2%;
-  background-color: #f6f6f6;
-  max-height: 90vh;
+  /*margin: 5% 2%;*/
+  /*background-color: #f6f6f6;*/
+  max-height: 85vh;
   overflow-y: auto;
 }
 
 @media (min-width: 992px) {
   #districtInfoBox {
     margin: 0;
-    right: 1%;
   }
 }
 
@@ -74,7 +68,6 @@ html, body {
 }
 
 #mapModeTabs {
-  flex-direction: initial;
   width: 100%;
   overflow: auto;
 }

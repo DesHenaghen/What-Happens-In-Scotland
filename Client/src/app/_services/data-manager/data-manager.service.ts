@@ -9,6 +9,8 @@ import {ScotlandDataManagerService} from '../scotland-data-manager/scotland-data
 import {MapModes} from '../../_models/MapModes';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {EdinburghDataManagerService} from '../edinburgh-data-manager/edinburgh-data-manager.service';
+import * as moment from 'moment';
+
 
 @Injectable()
 export class DataManagerService implements DataManagerInterface {
@@ -16,10 +18,14 @@ export class DataManagerService implements DataManagerInterface {
   regionName: string;
   mapType: string;
   dataFile: string;
-  districtId: string;
+  public get districtId(): string {
+    return this._dataManager.districtId;
+  }
   topologyId: string;
   topologyName: string;
-  mapMode: MapModes;
+  public get mapMode(): MapModes {
+    return this._dataManager.mapMode;
+  }
 
   private _dataManager: DataManagerInterface;
   private _dataManagerSubject = new BehaviorSubject<DataManagerInterface>(this._dataManager);
@@ -65,12 +71,36 @@ export class DataManagerService implements DataManagerInterface {
     return this._dataManagerSubject.asObservable();
   }
 
+  getLoadedData(): Observable<boolean> {
+    return this._dataManager.getLoadedData();
+  }
+
   updateLastTweet(tweet: Tweet, id: string): void {
     this._dataManager.updateLastTweet(tweet, id);
   }
 
   loadDistrictsData(): void {
     this._dataManager.loadDistrictsData();
+  }
+
+  getTweets(): Observable<{[id: string]: Tweet[]}> {
+    return this._dataManager.getTweets();
+  }
+
+  fetchDistrictTweets(date: moment.Moment, append: boolean) {
+    this._dataManager.fetchDistrictTweets(date, append);
+  }
+
+  highlightEmotiveWords(word: string, tweet: Tweet, new_words: string[], new_scores: number[]) {
+    return this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores);
+  }
+
+  refreshAllDistrictsData(date: Date, period: number): void {
+    for (const i in this._dataManagers) {
+      if (this._dataManagers.hasOwnProperty(i)) {
+        this._dataManagers[i].refreshAllDistrictsData(date, period);
+      }
+    }
   }
 
   setDistrict(area: string): void {

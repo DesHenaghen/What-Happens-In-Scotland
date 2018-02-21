@@ -1,4 +1,7 @@
 import datetime
+import json
+
+import decimal
 
 from server import template_dir, get_app_instance, get_socketio_instance
 from flask import render_template, send_from_directory, jsonify, request, Blueprint
@@ -15,6 +18,14 @@ __stop_words.extend(__nltk_words)
 data_routes = Blueprint('data_routes', __name__, template_folder=template_dir)
 app = get_app_instance()
 socketio = get_socketio_instance()
+
+
+def alchemyencoder(obj):
+    """JSON encoder function for SQLAlchemy special classes."""
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
 
 
 @data_routes.route('/')
@@ -53,7 +64,7 @@ def parse_twitter_data(tweets):
         'values': values,
         'total': total,
         'totals': totals,
-        'common_emote_words': common_emote_words,
+        'common_emote_words': common_emote_words[:3],
         'last_tweet': {
             'text': last_tweet_text,
             'user': last_tweet_user,
@@ -68,16 +79,18 @@ def all_scotland_district_data():
     # Get parameters from the request
     area_ids = request.args.getlist('ids')
     region = request.args.get('region')
+    date = request.args.get('date')
+    period = request.args.get('period')
 
     ids_dict = {}
 
     # If region data is requested, pop the last id in the list and fetch area data
     if region:
         region_id = area_ids.pop()
-        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_tweets().fetchall())
+        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_tweets(date, period).fetchall())
 
     # Get the tweet data for all tweets from the specified area ids
-    raw_data = dbMan.get_scotland_district_tweets(area_ids, "area").fetchall()
+    raw_data = dbMan.get_scotland_district_tweets(area_ids, "area", date, period).fetchall()
 
     # Initialise tweet arrays
     tweet_dict = {}
@@ -104,16 +117,18 @@ def all_scotland_ward_data():
     # Get parameters from the request
     area_ids = request.args.getlist('ids')
     region = request.args.get('region')
+    date = request.args.get('date')
+    period = request.args.get('period')
 
     ids_dict = {}
 
     # If region data is requested, pop the last id in the list and fetch area data
     if region:
         region_id = area_ids.pop()
-        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_district_tweets([region_id], "area").fetchall())
+        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_district_tweets([region_id], "area", date, period).fetchall())
 
     # Get the tweet data for all tweets from the specified area ids
-    raw_data = dbMan.get_scotland_district_tweets(area_ids, "ward").fetchall()
+    raw_data = dbMan.get_scotland_district_tweets(area_ids, "ward", date, period).fetchall()
 
     # Initialise tweet arrays
     tweet_dict = {}
@@ -130,6 +145,17 @@ def all_scotland_ward_data():
 
     # Send those bad boys away
     return jsonify(ids_dict)
+
+
+@data_routes.route('/api/districts_tweets')
+def get_districts_tweets():
+    date = request.args.get('date')
+
+    print(date)
+    tweets = dbMan.get_districts_tweets(date).fetchall()
+    json_tweets = json.dumps([dict(r) for r in tweets], default=alchemyencoder)
+
+    return json_tweets
 
 
 @data_routes.route('/api/<path:api_route>')

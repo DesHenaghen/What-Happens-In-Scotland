@@ -42,7 +42,7 @@ div.tooltip {
 }
 
 .area-map svg {
-  max-height: 85vh;
+  max-height: 80vh;
   left: 0;
   position: absolute;
   min-height: 50vh;

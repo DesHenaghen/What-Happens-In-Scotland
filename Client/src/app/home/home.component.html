@@ -1,6 +1,13 @@
 <div id="map-background">
   <div class="row">
     <div style="height: 80vh" class="col col-xl-5 col-lg-5 col-md-8 col-sm-12 col-12">
+      <div>
+        Showing data from the
+        <input style="width: 2rem" [(ngModel)]="period" type="number" min="1" max="7"/>
+        days leading up to
+        <input [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="setEndDate($event)" type="date" name="startDate"/>
+        <button class="btn btn-outline-primary" (click)="refreshData()">Refresh</button>
+      </div>
       <mat-tab-group id="mapModeTabs" #mapModeTabs (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Scotland"></mat-tab>
         <mat-tab label="Glasgow"></mat-tab>
@@ -20,44 +27,76 @@
     </div>
     <div
       class="next-page-chevron d-lg-none"
-      [ngx-scroll-to]="'#infoBox'"
+      [ngx-scroll-to]="'#bottom-chevron'"
     ><i class="hidden-lg-up fas fa-angle-down fa-2x"></i></div>
     <div id="infoBox" class="col col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-      <mat-card id="districtInfoBox">
-        <mat-card-header>
-          <mat-card-title class="header">{{district.name}}</mat-card-title>
-          <mat-card-subtitle class="subtitle">{{district.prettyAverage}}% Happy</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <app-happy-timeline [ward]="district"></app-happy-timeline>
-          <div class="row">
-            <div class="col">
-              <h2 class="centre"><b>Most Common Terms</b></h2>
-              <h1 class="centre alfa">
-                {{commonWord(0)}}
-              </h1>
-              <h2 class="centre alfa">
-                {{commonWord(1)}}
-              </h2>
-              <h3 class="centre alfa">
-                {{commonWord(2)}}
-              </h3>
+      <mat-tab-group>
+        <mat-tab label="Overview">
+          <mat-card id="districtInfoBox" class="infoBox">
+          <mat-card-header>
+            <mat-card-title class="header">{{district.name}}</mat-card-title>
+            <mat-card-subtitle class="subtitle">{{district.prettyAverage}}% Happy</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <app-happy-timeline [ward]="district"></app-happy-timeline>
+            <div class="row">
+              <div class="col">
+                <h2 class="centre"><b>Most Common Terms</b></h2>
+                <h1 class="centre alfa">
+                  {{commonWord(0)}}
+                </h1>
+                <h2 class="centre alfa">
+                  {{commonWord(1)}}
+                </h2>
+                <h3 class="centre alfa">
+                  {{commonWord(2)}}
+                </h3>
+              </div>
+              <div class="col">
+                <br>
+                <div class="centre yuge alfa">{{this.district.total}}</div>
+                <h3 class="centre alfa">tweets</h3>
+              </div>
             </div>
-            <div class="col">
-              <br>
-              <div class="centre yuge alfa">{{this.district.total}}</div>
-              <h3 class="centre alfa">tweets</h3>
+            <div class="row">
+              <app-happy-rank [ward]="district" [wards]="districts"></app-happy-rank>
             </div>
+          </mat-card-content>
+        </mat-card>
+        </mat-tab>
+        <mat-tab label="Tweets">
+          <div class="infoBox">
+            <mat-tab-group id="tweetDateTabs" (selectedTabChange)="tweetDateTabChanged($event)">
+              <mat-tab *ngFor="let tweetDate of tweetDates" label="{{tweetDate.title}}">
+                <div *ngIf="!tweetDate.loaded" style="z-index: 9999999; height:75vh; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
+                  <div class="loader"></div>
+                </div>
+                <mat-card *ngIf="(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded">
+                  <div class="tweet_details" *ngFor="let tweet of getDateFilteredTweets(tweetDate)">
+                    <div [ngStyle]="{ 'border': getTweetBorder(tweet.score) }">
+                      <mat-card-header>
+                        <mat-card-title class="header">{{tweet.name}}</mat-card-title>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <p [innerHTML]="tweet.text"></p>
+                      </mat-card-content>
+                    </div>
+                    <hr>
+                  </div>
+                </mat-card>
+                <h3 *ngIf="getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded" style="background-color: white">
+                  There are no tweets for the selected date and region
+                </h3>
+              </mat-tab>
+            </mat-tab-group>
           </div>
-          <div class="row">
-            <app-happy-rank [ward]="district" [wards]="districts"></app-happy-rank>
-          </div>
-        </mat-card-content>
-      </mat-card>
+        </mat-tab>
+      </mat-tab-group>
     </div>
     <div
+      id="bottom-chevron"
       class="next-page-chevron d-lg-none"
-      [ngx-scroll-to]="'#navbarNav'"
+      [ngx-scroll-to]="'#navbar-brand'"
     ><i class="hidden-lg-up fas fa-angle-double-up fa-2x"></i></div>
   </div>
 </div>

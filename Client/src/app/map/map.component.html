@@ -2,5 +2,5 @@
   <div class="loader"></div>
 </div>
 
-<div class="map-title header mat-card-title">{{district.name}}</div>
-<div [id]="regionMap" class="area-map"></div>
+<div [hidden]="!loaded" class="map-title header mat-card-title">{{district.name}}</div>
+<div [hidden]="!loaded" [id]="regionMap" class="area-map"></div>

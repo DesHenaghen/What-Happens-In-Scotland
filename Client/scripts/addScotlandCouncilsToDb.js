@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { Pool } = require('pg');
-const config = require('config.json')('../config/database.json', 'production');
+const config = require('config.json')('../config/database.json', 'development');
 console.log(config.postgres);
 
 const pool = new Pool(config.postgres);

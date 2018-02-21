@@ -17,16 +17,11 @@ export class GlasgowDataManagerService extends AbstractDataManager {
     this.districtId = 'S12000046';
     this.mapMode = MapModes.Glasgow;
     this.allowRegionPulsing = true;
+    this.apiDataRoute = 'all_scotland_ward_data';
 
     this.loadDistrictsData();
 
     this.listenOnSockets();
-  }
-
-  protected getDistrictsData(ids: string[]) {
-    return this._http.get<any>('/api/all_scotland_ward_data', {
-      params: {ids, region: 'true'}
-    });
   }
 
   protected listenOnSockets(): void {

@@ -5,8 +5,10 @@ import {District} from '../_models/District';
 import {MatTabChangeEvent, MatTabGroup} from '@angular/material';
 import {MapModes} from '../_models/MapModes';
 import {Subscription} from 'rxjs/Subscription';
+import {Tweet} from '../_models/Tweet';
 
 declare let d3: any;
+import * as moment from 'moment';
 
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
@@ -22,6 +24,7 @@ declare let d3: any;
 export class HomeComponent implements OnInit {
 
   @ViewChild('mapModeTabs') mapModeTabs: MatTabGroup;
+  @ViewChild('tweetDateTabs') tweetDateTabs: MatTabGroup;
 
   public district: District = new District();
   public districts: {[id: string]: District} = {};
@@ -29,10 +32,21 @@ export class HomeComponent implements OnInit {
   public mapModes = MapModes;
   public currentMode: MapModes;
 
+  public endDate: Date;
+  public period: number;
+  public tweetDates: any[] = [
+    {dateString: '2018-02-21', title: 'Today'},
+    {dateString: '2018-02-20', title: 'Yesterday'}
+  ];
+
   private colour: any;
+
+  protected tweets: {[id: string]: Tweet[]} = {};
+  protected filteredTweets: {[id: string]: Tweet[]} = {};
 
   private districtSubscription: Subscription = new Subscription();
   private districtsSubscription: Subscription = new Subscription();
+  private tweetsSubscription: Subscription = new Subscription();
 
   constructor(
     private _http: HttpClient,
@@ -41,6 +55,9 @@ export class HomeComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
+    this.endDate = new Date();
+    this.period = 7;
+
     this.currentMode = MapModes.Scotland;
 
     this._dataManager.getDataManager().subscribe(dm => {
@@ -72,6 +89,77 @@ export class HomeComponent implements OnInit {
     this.districtsSubscription = this._dataManager.getDistricts().subscribe(
       (districts: {[id: string]: District}) => this.districts = districts
     );
+
+    if (!this.tweetsSubscription.closed) {
+      this.tweetsSubscription.unsubscribe();
+    }
+    this.tweetsSubscription = this._dataManager.getTweets().subscribe((tweets: {[id: string]: Tweet[]}) => {
+      for (const key of Object.keys(tweets)) {
+        // If we don't already have tweets for this date, add them
+        if (!this.tweets.hasOwnProperty(key)) {
+          this.tweets[key] = tweets[key]
+            .filter(item => (item.area === this._dataManager.districtId || this._dataManager.mapMode === MapModes.Scotland))
+            .sort((a, b) => (moment(a.date).isAfter(moment(b.date))) ? -1 : 1);
+        }
+      }
+
+      Object.keys(this.tweets).forEach(key => {
+        if (!tweets.hasOwnProperty(key)) delete this.tweets[key];
+      });
+
+      console.log(this.district);
+      this.filteredTweets = this.getFilteredTweets();
+
+      console.log(this.tweets, this.filteredTweets);
+
+      this.tweetDates = [];
+      const date = moment(this.endDate);
+
+      while (date.isAfter(moment(this.endDate).subtract(this.period, 'days'))) {
+        this.tweetDates.push({
+          dateString: date.format('YYYY-MM-DD'),
+          title: date.format('Do MMM'),
+          loaded: tweets.hasOwnProperty(date.format('YYYY-MM-DD'))
+        });
+
+        date.subtract(1, 'days');
+      }
+
+      console.log(this.tweetDates);
+    });
+  }
+
+  public refreshData(): void {
+    this._dataManager.refreshAllDistrictsData(this.endDate, this.period);
+  }
+
+  public setEndDate(dateString: string) {
+    this.endDate = new Date(dateString);
+  }
+
+  private getFilteredTweets(limit = 10) {
+    const filteredTweets = this.tweets;
+    for (const [key] of Object.entries(filteredTweets)) {
+      filteredTweets[key] = filteredTweets[key]
+        .filter((item, index) => index < limit )
+        .map(tweet => {
+          const new_words = [], new_scores = [];
+          tweet.text = tweet.text.split(' ').map(word =>
+            this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
+          tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
+          tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
+          return tweet;
+        });
+    }
+
+    return filteredTweets;
+  }
+
+  public getDateFilteredTweets(tweetDate) {
+    const key = tweetDate.dateString;
+    return (this.filteredTweets.hasOwnProperty(key))
+      ? this.filteredTweets[key]
+      : [];
   }
 
   /**
@@ -111,5 +199,15 @@ export class HomeComponent implements OnInit {
       : '';
   }
 
+  public tweetDateTabChanged(event) {
+    console.log(event);
+    if (!this.tweetDates[event.index].loaded) {
+      this._dataManager.fetchDistrictTweets(moment(this.tweetDates[event.index].dateString), true);
+    }
+  }
+
+  public getTweetBorder(score: number): string {
+    return '2px solid ' + this.colour(score);
+  }
 }
 

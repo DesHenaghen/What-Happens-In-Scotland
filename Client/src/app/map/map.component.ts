@@ -40,10 +40,12 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
     this._dataManager.getDistricts()
       .subscribe((districts: { [id: string]: District }) => {
         this.districts = districts;
-        if (districts) {
-          this.loaded = true;
-        }
       });
+
+    this._dataManager.getLoadedData()
+      .subscribe((loaded: boolean) => {
+        this.loaded = loaded;
+      })
 
     this._dataManager.getDistrict().subscribe((district: District) => this.district = district);
 
