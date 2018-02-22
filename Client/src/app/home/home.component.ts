@@ -45,6 +45,7 @@ export class HomeComponent implements OnInit {
   public tweetDates: any[] = [];
 
   public sorting: TweetSorting = TweetSorting.DATE_DESC;
+  public searchTerm: string = '';
 
   private colour: any;
 
@@ -135,17 +136,21 @@ export class HomeComponent implements OnInit {
     this._dataManager.refreshAllDistrictsData(this.endDate, this.period);
   }
 
-  private setFilteredTweets(limit = 10, sorting = TweetSorting.DATE_DESC) {
+  private setFilteredTweets(limit = 10) {
     const filteredTweets = this.tweets;
     for (const [key] of Object.entries(filteredTweets)) {
-      this.filterTweets(key, limit, sorting, filteredTweets);
+      this.filterTweets(key, limit);
     }
   }
 
-  public filterTweets(key: string, limit: number, sorting: TweetSorting, filteredTweets: {[id: string]: Tweet[]} = this.tweets)  {
+  public filterTweets(key: string, limit: number)  {
+    const filteredTweets = Object.assign({}, this.tweets);
+    const searchTermLower = this.searchTerm.toLowerCase();
+    console.log(this.searchTerm, key, limit);
+    let i = 0;
     this.filteredTweets[key] = filteredTweets[key]
       .sort((a, b) => {
-        switch (sorting) {
+        switch (this.sorting) {
           case TweetSorting.DATE_DESC:
             return b.date < a.date ? -1 : 1;
           case TweetSorting.DATE_ASC:
@@ -158,7 +163,16 @@ export class HomeComponent implements OnInit {
             return 0;
         }
       })
-      .filter((item, index) => index < limit )
+      .filter(tweet => {
+        if (tweet.name.toLowerCase().includes(searchTermLower) || tweet.text.toLowerCase().includes(searchTermLower)) {
+          if (i < limit) {
+            i++;
+            return true;
+          }
+          return false;
+        }
+        return false;
+      })
       .map((tweet: Tweet) => {
         const new_words = [], new_scores = [];
         tweet.text = tweet.text.split(' ').map(word =>
@@ -234,8 +248,8 @@ export class HomeComponent implements OnInit {
     return this.colour(score);
   }
 
-  public sortTweets(dateTweet, sorting) {
-    this.filterTweets(dateTweet.dateString, this.getDateFilteredTweets(dateTweet).length, sorting.value);
+  public sortTweets(dateTweet) {
+    this.filterTweets(dateTweet.dateString, this.getDateFilteredTweets(dateTweet).length);
   }
 }
 
