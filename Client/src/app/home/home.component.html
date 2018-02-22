@@ -3,11 +3,14 @@
     <div style="height: 80vh" class="col col-xl-5 col-lg-5 col-md-8 col-sm-12 col-12">
       <div>
         Showing data from the
-        <input style="width: 2rem" [(ngModel)]="period" type="number" min="1" max="7"/>
+        <mat-form-field style="width: 2rem">
+          <mat-select [(value)]="period">
+            <mat-option *ngFor="let i of [1,2,3,4,5,6,7]" [value]="i">{{i}}</mat-option>
+          </mat-select>
+        </mat-form-field>
         days leading up to
-        <!--<input [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="setEndDate($event)" type="date" name="startDate"/>-->
         <mat-form-field style="width: 7rem">
-          <input [(ngModel)]="endDate" matInput [matDatepicker]="picker" placeholder="Choose a date">
+          <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>

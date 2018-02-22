@@ -160,6 +160,7 @@ def get_scotland_district_tweets(area_ids, group, date, period):
             FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
             WHERE  date > {1}
             AND    date <= {2} 
+            AND compound_sent != 0
             AND {0}_id = ANY(:ids)
             GROUP  BY word, {0}_id
             ORDER  BY {0}_id, count(*) DESC, word
@@ -174,6 +175,7 @@ def get_scotland_district_tweets(area_ids, group, date, period):
             WHERE {0}_id = ANY(:ids)
             AND date > {1}
             AND date <= {2}
+            AND compound_sent != 0
             GROUP by day, {0}_id 
             ORDER BY day ASC
            ) as x ON t.date = x.max_date
@@ -205,6 +207,7 @@ def get_scotland_tweets(date, period):
             FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
             WHERE  date > {0}
             AND date <= {1}
+            AND compound_sent != 0
             AND area_id IS NOT NULL
             GROUP  BY word
             ORDER  BY count(*) DESC, word
@@ -218,6 +221,7 @@ def get_scotland_tweets(date, period):
             WHERE area_id IS NOT NULL
             AND date > {0}
             AND date <= {1}
+            AND compound_sent != 0
             GROUP by day
             ORDER BY day DESC
          ) as x ON t.date = x.max_date
@@ -279,5 +283,6 @@ def get_districts_tweets(udate):
         ]).where(
             (__scotland_tweets.c.date >= start_date) &
             (__scotland_tweets.c.date < end_date) &
-            (__scotland_tweets.c.area_id.isnot(None))
+            (__scotland_tweets.c.area_id.isnot(None) &
+            (__scotland_tweets.c.compound_sent != 0))
         ).execute()

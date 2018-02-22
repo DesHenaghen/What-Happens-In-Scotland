@@ -43,9 +43,12 @@ export class HomeComponent implements OnInit {
   public endDate: Date;
   public period: number;
   public tweetDates: any[] = [];
+  public minDate = new Date(2017, 11, 1);
+  public maxDate = new Date();
 
   public sorting: TweetSorting = TweetSorting.DATE_DESC;
-  public searchTerm: string = '';
+  public searchTerm = '';
+
 
   private colour: any;
 
