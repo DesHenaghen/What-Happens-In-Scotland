@@ -6,7 +6,7 @@
         <input style="width: 2rem" [(ngModel)]="period" type="number" min="1" max="7"/>
         days leading up to
         <!--<input [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="setEndDate($event)" type="date" name="startDate"/>-->
-        <mat-form-field>
+        <mat-form-field style="width: 7rem">
           <input [(ngModel)]="endDate" matInput [matDatepicker]="picker" placeholder="Choose a date">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
@@ -85,7 +85,7 @@
                   <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{getDateTweets(tweetDate).length}}. </span>
                   <span>
                     Sort By
-                    <mat-form-field>
+                    <mat-form-field style="width: 7rem">
                       <mat-select [(value)]="sorting" (selectionChange)="sortTweets(tweetDate)">
                         <mat-option [value]="TweetSorting.DATE_DESC">Date Desc</mat-option>
                         <mat-option [value]="TweetSorting.DATE_ASC">Date Asc</mat-option>

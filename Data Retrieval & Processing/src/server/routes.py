@@ -6,7 +6,7 @@ import decimal
 from server import template_dir, get_app_instance, get_socketio_instance
 from flask import render_template, send_from_directory, jsonify, request, Blueprint
 import DatabaseManager as dbMan
-
+from collections import deque
 from many_stop_words import get_stop_words
 from nltk.corpus import stopwords
 
@@ -151,11 +151,37 @@ def all_scotland_ward_data():
 def get_districts_tweets():
     date = request.args.get('date')
 
-    print(date)
     tweets = dbMan.get_districts_tweets(date).fetchall()
-    json_tweets = json.dumps([dict(r) for r in tweets], default=alchemyencoder)
+    json_tweets = list(map(format_html_text, tweets))
+    json_tweets = json.dumps([dict(r) for r in json_tweets], default=alchemyencoder)
 
     return json_tweets
+
+
+def format_html_text(r):
+    row = dict(r)
+    sentiment = deque(row['text_sentiments'])
+    words = deque(row['text_sentiment_words'])
+    word_array = row['text'].split(' ')
+    row['text'] = " ".join(list(map((lambda x: format_word(x, sentiment, words)), word_array)))
+
+    del row['text_sentiments']
+    del row['text_sentiment_words']
+
+    return row
+
+
+def format_word(word, sentiment, words):
+    if len(words) > 0 and word.lower().startswith(words[0]):
+        score = sentiment.popleft()
+        words.popleft()
+
+        if score > 0:
+            word = "<span class='good_word'>" + word + "</span>"
+        elif score < 0:
+            word = "<span class='bad_word'>" + word + "</span>"
+
+    return word
 
 
 @data_routes.route('/api/<path:api_route>')

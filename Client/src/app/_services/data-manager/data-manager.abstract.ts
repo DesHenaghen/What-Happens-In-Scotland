@@ -82,13 +82,13 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   public updateLastTweet(tweet: Tweet, id: string): void {
 
-    const new_scores = [];
-    const new_words = [];
+    // const new_scores = [];
+    // const new_words = [];
 
     // Highlight emotive words
-    tweet.text = tweet.text.split(' ').map(word => this.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
-    tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
-    tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
+    // ....tweet.text = tweet.text.split(' ').map(word => this.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
+    // tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
+    // tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
 
     // If the tweet belongs to the whole map area, set the id accordingly
     id = (this.districtId === id) ? this.mapType + '-boundary' : id;

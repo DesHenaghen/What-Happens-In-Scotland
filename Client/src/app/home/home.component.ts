@@ -173,14 +173,14 @@ export class HomeComponent implements OnInit {
         }
         return false;
       })
-      .map((tweet: Tweet) => {
-        const new_words = [], new_scores = [];
-        tweet.text = tweet.text.split(' ').map(word =>
-          this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
-        tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
-        tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
-        return tweet;
-      });
+      // .map((tweet: Tweet) => {
+      //   const new_words = [], new_scores = [];
+      //   tweet.text = tweet.text.split(' ').map(word =>
+      //     this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
+      //   tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
+      //   tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
+      //   return tweet;
+      // });
   }
 
   public getDateFilteredTweets(tweetDate) {
