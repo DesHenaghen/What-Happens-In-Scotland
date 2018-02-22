@@ -226,7 +226,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     if (this.mapMode === MapModes.Scotland) {
       this.getDistrictsTweets(date).subscribe(
         results => {
-          console.log(results);
+          // results.map(t => t.date = new Date(t.date));
           this._tweet.setTweets(results, date, append);
         }
       );
@@ -285,7 +285,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         this.loadedData.next(true);
         this.districtsSubject.next(this.districts);
         this.setDistrict(this.mapType + '-boundary');
-        this.fetchDistrictTweets(this.targetDate,false);
+        this.fetchDistrictTweets(this.targetDate, false);
       }
     );
   }

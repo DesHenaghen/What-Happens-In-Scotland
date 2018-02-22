@@ -6,6 +6,9 @@ import {HttpClientModule} from '@angular/common/http';
 import { NvD3Module } from 'ng2-nvd3';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatCardModule} from '@angular/material/card';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
@@ -31,6 +34,7 @@ import {
 
 // Pipes
 import { ReversePipe } from './_pipes/reverse.pipe';
+import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -52,6 +56,10 @@ import { ReversePipe } from './_pipes/reverse.pipe';
     AppRoutingModule,
     MatTabsModule,
     MatCardModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
     BrowserAnimationsModule,
     ScrollToModule.forRoot()
   ],
@@ -61,7 +69,8 @@ import { ReversePipe } from './_pipes/reverse.pipe';
     GlasgowDataManagerService,
     ScotlandDataManagerService,
     EdinburghDataManagerService,
-    DataManagerService
+    DataManagerService,
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

@@ -5,8 +5,13 @@
         Showing data from the
         <input style="width: 2rem" [(ngModel)]="period" type="number" min="1" max="7"/>
         days leading up to
-        <input [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="setEndDate($event)" type="date" name="startDate"/>
-        <button class="btn btn-outline-primary" (click)="refreshData()">Refresh</button>
+        <!--<input [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="setEndDate($event)" type="date" name="startDate"/>-->
+        <mat-form-field>
+          <input [(ngModel)]="endDate" matInput [matDatepicker]="picker" placeholder="Choose a date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <button class="btn btn-primary" (click)="refreshData()">Refresh</button>
       </div>
       <mat-tab-group id="mapModeTabs" #mapModeTabs (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Scotland"></mat-tab>
@@ -72,13 +77,29 @@
                   <div class="loader"></div>
                 </div>
                 <mat-card *ngIf="(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded">
+                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{getDateTweets(tweetDate).length}}. </span>
+                  <span>
+                    Sort By
+                    <mat-form-field>
+                      <mat-select [(value)]="sorting" (selectionChange)="sortTweets(tweetDate, $event)">
+                        <mat-option [value]="TweetSorting.DATE_DESC">Date Desc</mat-option>
+                        <mat-option [value]="TweetSorting.DATE_ASC">Date Asc</mat-option>
+                        <mat-option [value]="TweetSorting.SCORE_DESC">Score Desc</mat-option>
+                        <mat-option [value]="TweetSorting.SCORE_ASC">Score Asc</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </span>
                   <div class="tweet_details" *ngFor="let tweet of getDateFilteredTweets(tweetDate)">
-                    <div [ngStyle]="{ 'border': getTweetBorder(tweet.score) }" style="border-radius: 10px;">
+                    <div style="border-radius: 10px;">
                       <mat-card-header>
-                        <mat-card-title class="header">{{tweet.name}}</mat-card-title>
+                        <score-mark [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number}}</score-mark>
+                        <mat-card-title class="header">
+                          {{tweet.name}}
+                          <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>
+                        </mat-card-title>
                       </mat-card-header>
                       <mat-card-content>
-                        <p style="padding: 5px" [innerHTML]="tweet.text"></p>
+                        <p style="padding: 0 5px" [innerHTML]="tweet.text"></p>
                       </mat-card-content>
                     </div>
                     <hr>

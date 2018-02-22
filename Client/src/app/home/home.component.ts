@@ -10,6 +10,13 @@ import {Tweet} from '../_models/Tweet';
 declare let d3: any;
 import * as moment from 'moment';
 
+enum TweetSorting {
+  DATE_DESC = 'Date Desc',
+  DATE_ASC = 'Date Asc',
+  SCORE_DESC = 'Score Desc',
+  SCORE_ASC = 'Score Asc'
+}
+
 /**
  * The base component for the home screen. Manages the styling of the page as well as the loading and modification
  * of wards data.
@@ -26,6 +33,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('mapModeTabs') mapModeTabs: MatTabGroup;
   @ViewChild('tweetDateTabs') tweetDateTabs: MatTabGroup;
 
+  public TweetSorting = TweetSorting;
   public district: District = new District();
   public districts: {[id: string]: District} = {};
 
@@ -34,14 +42,13 @@ export class HomeComponent implements OnInit {
 
   public endDate: Date;
   public period: number;
-  public tweetDates: any[] = [
-    {dateString: '2018-02-21', title: 'Today'},
-    {dateString: '2018-02-20', title: 'Yesterday'}
-  ];
+  public tweetDates: any[] = [];
+
+  public sorting: TweetSorting = TweetSorting.DATE_DESC;
 
   private colour: any;
 
-  protected tweets: {[id: string]: Tweet[]} = {};
+  public tweets: {[id: string]: Tweet[]} = {};
   protected filteredTweets: {[id: string]: Tweet[]} = {};
 
   private districtSubscription: Subscription = new Subscription();
@@ -107,10 +114,7 @@ export class HomeComponent implements OnInit {
         if (!tweets.hasOwnProperty(key)) delete this.tweets[key];
       });
 
-      console.log(this.district);
       this.setFilteredTweets();
-
-      console.log(this.tweets, this.filteredTweets);
 
       this.tweetDates = [];
       const date = moment(this.endDate);
@@ -124,8 +128,6 @@ export class HomeComponent implements OnInit {
 
         date.subtract(1, 'days');
       }
-
-      console.log(this.tweetDates);
     });
   }
 
@@ -133,21 +135,31 @@ export class HomeComponent implements OnInit {
     this._dataManager.refreshAllDistrictsData(this.endDate, this.period);
   }
 
-  public setEndDate(dateString: string) {
-    this.endDate = new Date(dateString);
-  }
-
-  private setFilteredTweets(limit = 10) {
+  private setFilteredTweets(limit = 10, sorting = TweetSorting.DATE_DESC) {
     const filteredTweets = this.tweets;
     for (const [key] of Object.entries(filteredTweets)) {
-      this.filterTweets(key, limit, filteredTweets);
+      this.filterTweets(key, limit, sorting, filteredTweets);
     }
   }
 
-  public filterTweets(key, limit, filteredTweets = this.tweets)  {
+  public filterTweets(key: string, limit: number, sorting: TweetSorting, filteredTweets: {[id: string]: Tweet[]} = this.tweets)  {
     this.filteredTweets[key] = filteredTweets[key]
+      .sort((a, b) => {
+        switch (sorting) {
+          case TweetSorting.DATE_DESC:
+            return b.date < a.date ? -1 : 1;
+          case TweetSorting.DATE_ASC:
+            return a.date > b.date ? 1 : -1;
+          case TweetSorting.SCORE_DESC:
+            return b.score - a.score;
+          case TweetSorting.SCORE_ASC:
+            return a.score - b.score;
+          default:
+            return 0;
+        }
+      })
       .filter((item, index) => index < limit )
-      .map(tweet => {
+      .map((tweet: Tweet) => {
         const new_words = [], new_scores = [];
         tweet.text = tweet.text.split(' ').map(word =>
           this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
@@ -161,6 +173,13 @@ export class HomeComponent implements OnInit {
     const key = tweetDate.dateString;
     return (this.filteredTweets.hasOwnProperty(key))
       ? this.filteredTweets[key]
+      : [];
+  }
+
+  public getDateTweets(tweetDate) {
+    const key = tweetDate.dateString;
+    return (this.tweets.hasOwnProperty(key))
+      ? this.tweets[key]
       : [];
   }
 
@@ -202,7 +221,6 @@ export class HomeComponent implements OnInit {
   }
 
   public tweetDateTabChanged(event) {
-    console.log(event);
     if (!this.tweetDates[event.index].loaded) {
       this._dataManager.fetchDistrictTweets(moment(this.tweetDates[event.index].dateString), true);
     }
@@ -210,6 +228,14 @@ export class HomeComponent implements OnInit {
 
   public getTweetBorder(score: number): string {
     return '2px solid ' + this.colour(score);
+  }
+
+  public getTweetColour(score: number): string {
+    return this.colour(score);
+  }
+
+  public sortTweets(dateTweet, sorting) {
+    this.filterTweets(dateTweet.dateString, this.getDateFilteredTweets(dateTweet).length, sorting.value);
   }
 }
 

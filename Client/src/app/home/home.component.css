@@ -82,3 +82,26 @@ html, body {
   text-align: center;
   z-index: 999;
 }
+
+score-mark {
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  border: 2px solid #FFF;
+  width: 40px;
+  height: 30px;
+  background-color: #dadada;
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  font-size: 12px;
+  line-height: 25px;
+  font-family: 'Roboto', sans-serif;
+  color: #FFF;
+  font-weight: 700;
+  text-align: center;
+}
+
+mat-card-header {
+  position: relative;
+}
