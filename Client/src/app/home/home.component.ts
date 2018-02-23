@@ -67,7 +67,7 @@ export class HomeComponent implements OnInit {
 
   public ngOnInit(): void {
     this.endDate = new Date();
-    this.period = 7;
+    this.period = 3;
 
     this.currentMode = MapModes.Scotland;
 

@@ -22,8 +22,8 @@ export class HappyRankComponent implements OnInit, OnChanges {
   @Input() ward: District;
   @Input() wards: {[id: string]: District};
 
-  public barOptions: any;
-  public barData: any[];
+  public barOptions: any = {};
+  public barData: any[] = [];
 
   constructor(private _dataManager: DataManagerService) { }
 
@@ -50,7 +50,6 @@ export class HappyRankComponent implements OnInit, OnChanges {
         discretebar: {
           dispatch: {
             elementClick: e => this._dataManager.setDistrict(e.data.id)
-
           }
         },
         useInteractiveGuideline: true,
@@ -67,10 +66,11 @@ export class HappyRankComponent implements OnInit, OnChanges {
         y: d => d.value,
         showValues: true,
         valueFormat: d => d.toFixed(1),
-        duration: 500,
+        duration: 250,
+        wrapLabels: true,
         xAxis: {
           axisLabel: 'Wards (Ranked)',
-          tickFormat: (d, i) => (i === 0 || i === 20) ? d : ''
+          tickFormat: (d, i) => (i === 0 || i === this.barData[0].values.length) ? d : ''
         },
         yAxis: {
           axisLabel: 'Happiness',
@@ -108,6 +108,8 @@ export class HappyRankComponent implements OnInit, OnChanges {
 
     barData[0].values.sort((a, b) => b.value - a.value);
     this.barData = barData;
+    if (this.barOptions.chart)
+      this.barOptions.chart.xAxis.tickFormat = (d, i) => (i === 0 || i === barData[0].values.length - 1) ? d : '';
   }
 
 }
