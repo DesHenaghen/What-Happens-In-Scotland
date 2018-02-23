@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed sql queries to now fetch the count of all emotive words used">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-    </list>
+    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed sql queries to now fetch the count of all emotive words used" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -298,7 +298,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     this.district.next(this.districts[area]);
   }
 
-  protected getDistrictsData(ids: string[], date: Date = new Date(), period: number = 7) {
+  protected getDistrictsData(ids: string[], date: Date = new Date(), period: number = 3) {
     const dateString: string = moment(date).format('YYYY-MM-DD');
     return this._http.get<any>('/api/' + this.apiDataRoute, {
       params: {ids, region: 'true', date: dateString, period: '' + period}
