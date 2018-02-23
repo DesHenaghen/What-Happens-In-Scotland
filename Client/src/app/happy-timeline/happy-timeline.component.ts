@@ -45,7 +45,9 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
   }
 
   public refreshChart() {
-    this.chart.chart.update();
+    if (this.chart && this.chart.chart && this.chart.chart.update) {
+      this.chart.chart.update();
+    }
   }
 
   /**

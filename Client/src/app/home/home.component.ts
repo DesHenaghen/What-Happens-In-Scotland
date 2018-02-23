@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
 
   public sorting: TweetSorting = TweetSorting.DATE_DESC;
   public searchTerm = '';
-
+  public currentKey: string;
 
   private colour: any;
 
@@ -96,6 +96,7 @@ export class HomeComponent implements OnInit {
     this.districtSubscription = this._dataManager.getDistrict().subscribe((district: District) => {
       this.district = district;
       this.setStyling(district.id);
+      this.filterTweets(this.currentKey, this.getDateFilteredTweets({dateString: this.currentKey}).length);
     });
 
     // Manage Districts Subscription
@@ -106,6 +107,7 @@ export class HomeComponent implements OnInit {
       (districts: {[id: string]: District}) => this.districts = districts
     );
 
+    // Manage Tweets Subscription
     if (!this.tweetsSubscription.closed) {
       this.tweetsSubscription.unsubscribe();
     }
@@ -132,7 +134,8 @@ export class HomeComponent implements OnInit {
         this.tweetDates.push({
           dateString: date.format('YYYY-MM-DD'),
           title: date.format('Do MMM'),
-          loaded: tweets.hasOwnProperty(date.format('YYYY-MM-DD'))
+          loaded: tweets.hasOwnProperty(date.format('YYYY-MM-DD')),
+          total: 0
         });
 
         date.subtract(1, 'days');
@@ -152,56 +155,54 @@ export class HomeComponent implements OnInit {
   }
 
   public filterTweets(key: string, limit: number)  {
+    this.currentKey = key;
+    const ward = this.district.id;
     const filteredTweets = Object.assign({}, this.tweets);
     const searchTermLower = this.searchTerm.toLowerCase();
-    console.log(this.searchTerm, key, limit);
+    
     let i = 0;
-    this.filteredTweets[key] = filteredTweets[key]
-      .sort((a, b) => {
-        switch (this.sorting) {
-          case TweetSorting.DATE_DESC:
-            return b.date < a.date ? -1 : 1;
-          case TweetSorting.DATE_ASC:
-            return a.date > b.date ? 1 : -1;
-          case TweetSorting.SCORE_DESC:
-            return b.score - a.score;
-          case TweetSorting.SCORE_ASC:
-            return a.score - b.score;
-          default:
-            return 0;
-        }
-      })
-      .filter(tweet => {
-        if (tweet.name.toLowerCase().includes(searchTermLower) || tweet.text.toLowerCase().includes(searchTermLower)) {
-          if (i < limit) {
-            i++;
-            return true;
+    let totalTweets = 0;
+    if (filteredTweets.hasOwnProperty(key)) {
+      this.filteredTweets[key] = filteredTweets[key]
+        .sort((a, b) => {
+          switch (this.sorting) {
+            case TweetSorting.DATE_DESC:
+              return b.date < a.date ? -1 : 1;
+            case TweetSorting.DATE_ASC:
+              return a.date > b.date ? 1 : -1;
+            case TweetSorting.SCORE_DESC:
+              return b.score - a.score;
+            case TweetSorting.SCORE_ASC:
+              return a.score - b.score;
+            default:
+              return 0;
+          }
+        })
+        .filter(tweet => {
+          if ((ward === this._dataManager.getMapBoundaryId() || ward === tweet.ward || ward === tweet.area) &&
+            (tweet.name.toLowerCase().includes(searchTermLower) || tweet.text.toLowerCase().includes(searchTermLower))) {
+            totalTweets++;
+            if (i < limit) {
+              i++;
+              return true;
+            }
+            return false;
           }
           return false;
-        }
-        return false;
-      })
-      // .map((tweet: Tweet) => {
-      //   const new_words = [], new_scores = [];
-      //   tweet.text = tweet.text.split(' ').map(word =>
-      //     this._dataManager.highlightEmotiveWords(word, tweet, new_words, new_scores)).join(' ');
-      //   tweet.text_sentiment_words = [...new_words, ...tweet.text_sentiment_words];
-      //   tweet.text_sentiments = [...new_scores, ...tweet.text_sentiments];
-      //   return tweet;
-      // });
+        });
+    }
+
+    for (const k in Object.keys(this.tweetDates)) {
+      if (this.tweetDates[k].dateString === key) {
+        this.tweetDates[k].total = totalTweets;
+      }
+    }
   }
 
   public getDateFilteredTweets(tweetDate) {
     const key = tweetDate.dateString;
     return (this.filteredTweets.hasOwnProperty(key))
       ? this.filteredTweets[key]
-      : [];
-  }
-
-  public getDateTweets(tweetDate) {
-    const key = tweetDate.dateString;
-    return (this.tweets.hasOwnProperty(key))
-      ? this.tweets[key]
       : [];
   }
 
@@ -213,7 +214,6 @@ export class HomeComponent implements OnInit {
     if (area !== undefined) {
       this.clearSelectedClass();
       document.getElementById(area).classList.add('selected');
-      // document.getElementById('districtInfoBox').style.border = '6px solid ' + this.colour(this.district.average);
     }
   }
 
@@ -252,10 +252,6 @@ export class HomeComponent implements OnInit {
     this.timelineChart.refreshChart();
     this.rankChart.refreshChart();
 
-  }
-
-  public getTweetBorder(score: number): string {
-    return '2px solid ' + this.colour(score);
   }
 
   public getTweetColour(score: number): string {

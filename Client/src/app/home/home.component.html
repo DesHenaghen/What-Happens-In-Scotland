@@ -84,7 +84,7 @@
                     placeholder="Search"
                     [(ngModel)]="searchTerm"
                     (input)="filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)">
-                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{getDateTweets(tweetDate).length}}. </span>
+                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>
                   <span>
                     Sort By
                     <mat-form-field style="width: 7rem">
