@@ -9,6 +9,8 @@ import {Tweet} from '../_models/Tweet';
 
 declare let d3: any;
 import * as moment from 'moment';
+import {HappyTimelineComponent} from '../happy-timeline/happy-timeline.component';
+import {HappyRankComponent} from '../happy-rank/happy-rank.component';
 
 enum TweetSorting {
   DATE_DESC = 'Date Desc',
@@ -31,7 +33,10 @@ enum TweetSorting {
 export class HomeComponent implements OnInit {
 
   @ViewChild('mapModeTabs') mapModeTabs: MatTabGroup;
+  @ViewChild('infoBoxTabs') infoBoxTabs: MatTabGroup;
   @ViewChild('tweetDateTabs') tweetDateTabs: MatTabGroup;
+  @ViewChild(HappyTimelineComponent) timelineChart;
+  @ViewChild(HappyRankComponent) rankChart;
 
   public TweetSorting = TweetSorting;
   public district: District = new District();
@@ -208,7 +213,7 @@ export class HomeComponent implements OnInit {
     if (area !== undefined) {
       this.clearSelectedClass();
       document.getElementById(area).classList.add('selected');
-      document.getElementById('districtInfoBox').style.border = '6px solid ' + this.colour(this.district.average);
+      // document.getElementById('districtInfoBox').style.border = '6px solid ' + this.colour(this.district.average);
     }
   }
 
@@ -241,6 +246,12 @@ export class HomeComponent implements OnInit {
     if (!this.tweetDates[event.index].loaded) {
       this._dataManager.fetchDistrictTweets(moment(this.tweetDates[event.index].dateString), true);
     }
+  }
+
+  public infoBoxTabChanged(event) {
+    this.timelineChart.refreshChart();
+    this.rankChart.refreshChart();
+
   }
 
   public getTweetBorder(score: number): string {

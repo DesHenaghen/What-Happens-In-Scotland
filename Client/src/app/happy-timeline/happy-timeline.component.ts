@@ -1,4 +1,7 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewChecked, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 
 declare let d3: any;
 import 'nvd3';
@@ -20,6 +23,7 @@ import {District} from '../_models/District';
 export class HappyTimelineComponent implements OnInit, OnChanges {
 
   @Input() ward: District;
+  @ViewChild('timelineChart') chart;
 
   public lineOptions: any;
   public lineData: any[];
@@ -38,6 +42,10 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     if (changes['ward']) {
       this.setData();
     }
+  }
+
+  public refreshChart() {
+    this.chart.chart.update();
   }
 
   /**

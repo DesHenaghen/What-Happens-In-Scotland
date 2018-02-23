@@ -38,12 +38,13 @@
       [ngx-scroll-to]="'#bottom-chevron'"
     ><i class="hidden-lg-up fas fa-angle-down fa-2x"></i></div>
     <div id="infoBox" class="col col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
-      <mat-tab-group>
+      <mat-tab-group id="infoBoxTabs" (animationDone)="infoBoxTabChanged($event)">
         <mat-tab label="Overview">
           <mat-card id="districtInfoBox" class="infoBox">
           <mat-card-header>
             <mat-card-title class="header">{{district.name}}</mat-card-title>
-            <mat-card-subtitle class="subtitle">{{district.prettyAverage}}% Happy</mat-card-subtitle>
+            <!--<mat-card-subtitle class="subtitle">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->
+            <score-mark>{{district.prettyAverage}}</score-mark>
           </mat-card-header>
           <mat-card-content>
             <app-happy-timeline [ward]="district"></app-happy-timeline>

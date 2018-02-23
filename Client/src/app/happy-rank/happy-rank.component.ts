@@ -1,5 +1,5 @@
 import {
-  Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation
+  Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import {DataManagerService} from '../_services';
 import {District} from '../_models/District';
@@ -21,6 +21,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
 
   @Input() ward: District;
   @Input() wards: {[id: string]: District};
+  @ViewChild('rankChart') chart;
 
   public barOptions: any = {};
   public barData: any[] = [];
@@ -39,6 +40,10 @@ export class HappyRankComponent implements OnInit, OnChanges {
     if (changes['ward']) {
       this.setData();
     }
+  }
+
+  public refreshChart() {
+    this.chart.chart.update();
   }
 
   /**
