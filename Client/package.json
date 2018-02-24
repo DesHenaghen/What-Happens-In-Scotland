@@ -7,7 +7,7 @@
     "start-prod": "set NODE_ENV=development&& node server.js",
     "start": "set NODE_ENV=development&& nodemon server.js --exec babel-node --presets env,stage-2",
     "serve": "ng serve --aot",
-    "build-dev": "ng build -op dist -w",
+    "build-dev": "ng build",
     "build-prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",

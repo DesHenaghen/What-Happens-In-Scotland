@@ -117,7 +117,7 @@ export class HomeComponent implements OnInit {
         if (!this.tweets.hasOwnProperty(key)) {
           this.tweets[key] = tweets[key]
             .filter(item => (item.area === this._dataManager.districtId || this._dataManager.mapMode === MapModes.Scotland))
-            .sort((a, b) => (moment(a.date).isAfter(moment(b.date))) ? -1 : 1);
+            .sort((a, b) => (a.date < b.date) ? -1 : 1);
         }
       }
 
@@ -159,7 +159,7 @@ export class HomeComponent implements OnInit {
     const ward = this.district.id;
     const filteredTweets = Object.assign({}, this.tweets);
     const searchTermLower = this.searchTerm.toLowerCase();
-    
+
     let i = 0;
     let totalTweets = 0;
     if (filteredTweets.hasOwnProperty(key)) {
