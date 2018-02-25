@@ -26,6 +26,9 @@ export class HappyRankComponent implements OnInit, OnChanges {
   public barOptions: any = {};
   public barData: any[] = [];
 
+  public minValue: number;
+  public maxValue: number;
+
   constructor(private _dataManager: DataManagerService) { }
 
   public ngOnInit(): void {
@@ -72,7 +75,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
         x: d => d.label,
         y: d => d.value,
         showValues: true,
-        valueFormat: d => d.toFixed(1),
+        valueFormat: d => (d === this.minValue || d === this.maxValue) ? d.toFixed(1) : '' ,
         duration: 250,
         wrapLabels: true,
         xAxis: {
@@ -101,12 +104,14 @@ export class HappyRankComponent implements OnInit, OnChanges {
       for (const [key, ward] of Object.entries(this.wards)) {
         if ('average' in ward) {
           // Line chart data should be sent as an array of series objects.
+          if (!this.minValue || ward.average < this.minValue) this.minValue = ward.average;
+          if (!this.maxValue || ward.average > this.maxValue) this.maxValue = ward.average;
           barData[0].values.push(
             {
               value: ward.average,
               id: key,
               label: ward.name,
-              color: (this.ward === ward) ? '#7cff6c' : (key === this._dataManager.getMapBoundaryId()) ? '#48BFFF' : '#b8b9ac'
+              color: this.getBarColour(key, ward)
             }
           );
         }
@@ -117,6 +122,19 @@ export class HappyRankComponent implements OnInit, OnChanges {
     this.barData = barData;
     if (this.barOptions.chart)
       this.barOptions.chart.xAxis.tickFormat = (d, i) => (i === 0 || i === barData[0].values.length - 1) ? d : '';
+  }
+
+  private getBarColour(key, ward) {
+    if (this.ward === ward)
+      return '#7CFF6C';
+    else if (key === this._dataManager.getMapBoundaryId())
+      return '#48BFFF';
+    else if (ward.average > 0.5)
+      return 'rgb(135, 141, 210)';
+    else if (ward.average < -0.5)
+      return 'rgb(195, 132, 132)';
+    else
+      return '#B8B9AC';
   }
 
 }

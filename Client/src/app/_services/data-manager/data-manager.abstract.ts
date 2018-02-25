@@ -137,12 +137,13 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     let sum = district.average * district.totals[district.totals.length - 1];
     sum += tweet.score;
 
-    tweet.date = new Date().toDateString();
+    tweet.date = new Date().toISOString();
 
     district.total++;
     district.totals[district.totals.length - 1]++;
     district.average = sum / district.totals[district.totals.length - 1];
-    district.values[district.values.length - 1].y = district.average;
+    if (district.values && district.values.length > 0 && district.values[district.values.length - 1])
+      district.values[district.values.length - 1].y = district.average;
     district.prettyAverage = Math.round(district.average * 10) / 10;
 
     if (district.last_tweets.length >= 10) {
