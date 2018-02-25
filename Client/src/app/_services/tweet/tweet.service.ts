@@ -4,7 +4,8 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
 import {Tweet} from '../../_models/Tweet';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {District} from '../../_models/District';
+
+import * as moment from 'moment';
 
 
 @Injectable()
@@ -31,10 +32,20 @@ export class TweetService {
       });
   }
 
+  /**
+   * Returns an Observable of the dictionary of tweet arrays
+   * @returns {Observable<{[p: string]: Tweet[]}>}
+   */
   public getTweets() {
     return this.tweetsObserver.asObservable();
   }
 
+  /**
+   * Sets the whole tweet array for the specified day
+   * @param {Tweet[]} tweets
+   * @param date
+   * @param {boolean} append
+   */
   public setTweets(tweets: Tweet[], date, append: boolean) {
     if (!append) {
       this.tweets = {};
@@ -43,5 +54,18 @@ export class TweetService {
     this.tweets[date.format('YYYY-MM-DD')] = tweets;
 
     this.tweetsObserver.next(this.tweets);
+  }
+
+  /**
+   * Adds a tweet to the tweet array for the specified day, if possible
+   * @param {Tweet} tweet
+   * @param {Date} date
+   */
+  public addTweet(tweet: Tweet, date: Date = new Date()) {
+    const mDate = moment(date);
+    if (this.tweets[mDate.format('YYYY-MM-DD')]) {
+      this.tweets[mDate.format('YYYY-MM-DD')].push(tweet);
+      this.tweetsObserver.next(this.tweets);
+    }
   }
 }

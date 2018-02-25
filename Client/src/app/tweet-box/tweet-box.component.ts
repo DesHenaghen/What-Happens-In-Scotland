@@ -33,4 +33,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
     return '2px solid ' + this.colour(score);
   }
 
+  public getTweetColour(score: number): string {
+    return this.colour(score);
+  }
 }
