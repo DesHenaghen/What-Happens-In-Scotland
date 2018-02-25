@@ -102,6 +102,18 @@ score-mark {
   text-align: center;
 }
 
+score-mark.wide {
+  width: 60px;
+}
+
+score-mark.big {
+  width: 80px;
+  height: 60px;
+  border-radius: 30px;
+  line-height: 55px;
+  font-size: 30px;
+}
+
 mat-card-header {
   position: relative;
 }

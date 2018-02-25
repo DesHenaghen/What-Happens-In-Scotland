@@ -44,7 +44,9 @@
           <mat-card-header>
             <mat-card-title class="header">{{district.name}}</mat-card-title>
             <!--<mat-card-subtitle class="subtitle">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->
-            <score-mark>{{district.prettyAverage}}</score-mark>
+            <score-mark class="big" [ngStyle]="{ 'background-color': getTweetColour(district.prettyAverage) }">
+              {{district.prettyAverage}}
+            </score-mark>
           </mat-card-header>
           <mat-card-content>
             <app-happy-timeline [ward]="district"></app-happy-timeline>
@@ -105,7 +107,7 @@
                       *ngFor="let tweet of getDateFilteredTweets(tweetDate)">
                       <div style="border-radius: 10px;">
                         <mat-card-header>
-                          <score-mark [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.1-2'}}</score-mark>
+                          <score-mark class="wide" [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.1-2'}}</score-mark>
                           <mat-card-title class="header">
                             {{tweet.name}}
                             <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>
