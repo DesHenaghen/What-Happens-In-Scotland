@@ -32,8 +32,6 @@ import {
   ScotlandDataManagerService, EdinburghDataManagerService
 } from './_services';
 
-// Pipes
-import { ReversePipe } from './_pipes/reverse.pipe';
 import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material';
 
 @NgModule({
@@ -45,8 +43,7 @@ import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material';
     GlasgowMapComponent,
     TweetBoxComponent,
     ScotlandMapComponent,
-    EdinburghMapComponent,
-    ReversePipe
+    EdinburghMapComponent
   ],
   imports: [
     BrowserModule,

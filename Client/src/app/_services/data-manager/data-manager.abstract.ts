@@ -146,9 +146,9 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     district.prettyAverage = Math.round(district.average * 10) / 10;
 
     if (district.last_tweets.length >= 10) {
-      district.last_tweets.shift();
+      district.last_tweets.pop();
     }
-    district.last_tweets.push(tweet);
+    district.last_tweets.unshift(tweet);
 
     return district;
   }
