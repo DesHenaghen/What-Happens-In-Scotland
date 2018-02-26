@@ -3,21 +3,28 @@ import json
 
 import decimal
 
-from server import template_dir, get_app_instance, get_socketio_instance
+from server import get_app_instance, get_socketio_instance
 from flask import render_template, send_from_directory, jsonify, request, Blueprint
 import DatabaseManager as dbMan
 from collections import deque
 from many_stop_words import get_stop_words
-from nltk.corpus import stopwords
 
 __stop_words = list(get_stop_words('en'))  # About 900 stopwords
-__nltk_words = list(stopwords.words('english'))  # About 150 stopwords
+__nltk_words = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
 __stop_words.extend(__nltk_words)
 
 
-data_routes = Blueprint('data_routes', __name__, template_folder=template_dir)
+data_routes = Blueprint('data_routes', __name__)
 app = get_app_instance()
 socketio = get_socketio_instance()
+
+
+def filterstopwords(words):
+    return list(
+        filter(
+            lambda word: word is not None and word.split(',')[0] not in __stop_words, words
+        )
+    )
 
 
 def alchemyencoder(obj):
@@ -40,15 +47,8 @@ def parse_twitter_data(tweets):
     total = 0
     last_tweet_text = tweets[-1].text if len(tweets) > 0 else ""
     last_tweet_user = tweets[-1].user if len(tweets) > 0 else {}
-    last_tweet_words = tweets[-1].text_sentiments if len(tweets) > 0 else []
-    last_tweet_scores = tweets[-1].text_sentiment_words if len(tweets) > 0 else []
-
-    common_emote_words = tweets[-1].word_arr if len(tweets) > 0 else []
-    common_emote_words = list(
-        filter(
-            lambda word: word is not None and word.split(',')[0] not in __stop_words, common_emote_words
-        )
-    )
+    last_tweet_words = tweets[-1].text_sentiments if (len(tweets) > 0 and tweets[-1].text_sentiments is not None) else []
+    last_tweet_scores = tweets[-1].text_sentiment_words if (len(tweets) > 0 and tweets[-1].text_sentiment_words is not None) else []
 
     epoch = datetime.date.fromtimestamp(0)
     for tweet in tweets:
@@ -64,7 +64,6 @@ def parse_twitter_data(tweets):
         'values': values,
         'total': total,
         'totals': totals,
-        'common_emote_words': common_emote_words[:3],
         'last_tweet': {
             'text': last_tweet_text,
             'user': last_tweet_user,
@@ -147,6 +146,38 @@ def all_scotland_ward_data():
     return jsonify(ids_dict)
 
 
+@data_routes.route('/api/common_words')
+def get_common_words():
+    # Get parameters from the request
+    area_ids = request.args.getlist('ids')
+    group = request.args.get('group')
+    date = request.args.get('date')
+    period = request.args.get('period')
+    region = request.args.get('region')
+    region_id = request.args.getlist('region_id')
+
+    ids_dict = {}
+
+    rawData = dbMan.get_scotland_district_common_words(area_ids, group, date, period).fetchall()
+
+    print(region_id)
+
+    if region and len(region_id) > 0:
+        regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchone()
+        ids_dict['region'] = filterstopwords(regionData.word_arr
+                                             if regionData is not None and regionData.word_arr is not None
+                                             else [])[:3]
+
+    elif region:
+        regionData = dbMan.get_scotland_common_words(date, period).fetchone()[0]
+        ids_dict['region'] = filterstopwords(regionData if regionData is not None else [])[:3]
+
+    for row in rawData:
+        ids_dict[row.group_id] = filterstopwords(row.word_arr if row.word_arr is not None else [])[:3]
+
+    return jsonify(ids_dict)
+
+
 @data_routes.route('/api/districts_tweets')
 def get_districts_tweets():
     date = request.args.get('date')
@@ -160,8 +191,8 @@ def get_districts_tweets():
 
 def format_html_text(r):
     row = dict(r)
-    sentiment = deque(row['text_sentiments'])
-    words = deque(row['text_sentiment_words'])
+    sentiment = deque(row['text_sentiments'] if row['text_sentiments'] else [])
+    words = deque(row['text_sentiment_words'] if row['text_sentiment_words'] else [])
     word_array = row['text'].split(' ')
     row['text'] = " ".join(list(map((lambda x: format_word(x, sentiment, words)), word_array)))
 

@@ -1,5 +1,6 @@
 import sqlalchemy
-from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text, bindparam, and_, cast, Date, any_
+import sys
+from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text, bindparam, and_, cast, Date, any_, or_
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from datetime import datetime, timedelta, date
 from server import get_socketio_instance
@@ -133,8 +134,9 @@ def save_scotland_tweet(tweet):
     __engine.execute(statement)
 
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
-    log.logger.info("added to scotland_tweets")
+    # log.logger.info("added to scotland_tweets")
     # print("added to scotland tweets")
+    # sys.stderr.write('added to scotland tweets \n')
     # print(tweet)
 
 
@@ -142,32 +144,15 @@ def get_scotland_district_tweets(area_ids, group, date, period):
     if date is None:
         date = datetime.now().strftime('%Y-%m-%d')
     if period is None:
-        period = 7
+        period = 3
 
     end_date = datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
     start_date = end_date - timedelta(days=int(period))
 
-    print(start_date, end_date)
-
     sql = text("""
       SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
-      t.text_sentiment_words, t.{0}_id , y.word_arr
-      FROM scotland_tweets as t 
-        INNER JOIN ( 
-          SELECT t.{0}_id, array_agg(word ||', ' || word_ct::text) word_arr 
-          FROM ( 
-            SELECT {0}_id, word, count(*) word_ct
-            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
-            WHERE  date > {1}
-            AND    date <= {2} 
-            AND compound_sent != 0
-            AND {0}_id = ANY(:ids)
-            GROUP  BY word, {0}_id
-            ORDER  BY {0}_id, count(*) DESC, word
-          ) t
-        GROUP BY t.{0}_id
-       ) as y ON t.{0}_id = y.{0}_id
-       
+      t.text_sentiment_words, t.{0}_id
+      FROM scotland_tweets as t        
          INNER JOIN (
             SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu,
               AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total
@@ -185,35 +170,51 @@ def get_scotland_district_tweets(area_ids, group, date, period):
     return __engine.execute(sql, {'ids': area_ids})
 
 
+def get_scotland_district_common_words(ids, group, rdate, period):
+    if rdate is None:
+        rdate = datetime.now().strftime('%Y-%m-%d')
+    if period is None:
+        period = 3
+
+    end_date = datetime.strptime(rdate, '%Y-%m-%d') + timedelta(days=1)
+    start_date = end_date - timedelta(days=int(period))
+
+    sql = text("""
+          SELECT t.{0}_id as group_id, array_agg(word ||', ' || word_ct::text) word_arr
+          FROM (
+            SELECT {0}_id, word, count(*) word_ct
+            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
+            WHERE  date > {1}
+            AND    date <= {2}
+            AND compound_sent != 0
+            AND {0}_id = ANY(:ids)
+            GROUP  BY word, {0}_id
+            ORDER  BY {0}_id, count(*) DESC, word
+          ) t
+        GROUP BY t.{0}_id
+    """.format(
+        group,
+        "'" + start_date.strftime('%Y-%m-%d') + "'",
+        "'" + end_date.strftime('%Y-%m-%d') + "'"
+        )
+    )
+
+    return __engine.execute(sql, {'ids': ids})
+
+
 def get_scotland_tweets(date, period):
     if date is None:
         date = datetime.now().strftime('%Y-%m-%d')
     if period is None:
-        period = 7
+        period = 3
 
     end_date = datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
     start_date = end_date - timedelta(days=int(period))
 
-    print(start_date, end_date)
-
     sql = text("""
       SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
-      t.text_sentiment_words, y.word_arr
+      t.text_sentiment_words
       FROM scotland_tweets as t 
-        INNER JOIN ( 
-          SELECT array_agg(word ||', ' || word_ct::text) word_arr 
-          FROM ( 
-            SELECT word, count(*) word_ct
-            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
-            WHERE  date > {0}
-            AND date <= {1}
-            AND compound_sent != 0
-            AND area_id IS NOT NULL
-            GROUP  BY word
-            ORDER  BY count(*) DESC, word
-          ) t
-      ) as y ON t.id = t.id
-       
          INNER JOIN (
             SELECT date::date as day, MAX(date) as max_date, AVG(neg_sent) as avg_neg, AVG(neu_sent) as avg_neu,
               AVG(pos_sent) as avg_pos, AVG(compound_sent) as avg_compound, COUNT(*) as total
@@ -223,10 +224,35 @@ def get_scotland_tweets(date, period):
             AND date <= {1}
             AND compound_sent != 0
             GROUP by day
-            ORDER BY day DESC
+            ORDER BY day ASC
          ) as x ON t.date = x.max_date
-      ORDER BY x.day DESC;
+      ORDER BY x.day ASC;
       """.format("'" + start_date.strftime('%Y-%m-%d') + "'", "'" + end_date.strftime('%Y-%m-%d') + "'"))
+
+    return __engine.execute(sql)
+
+
+def get_scotland_common_words(rdate, period):
+    if rdate is None:
+        rdate = datetime.now().strftime('%Y-%m-%d')
+    if period is None:
+        period = 3
+
+    end_date = datetime.strptime(rdate, '%Y-%m-%d') + timedelta(days=1)
+    start_date = end_date - timedelta(days=int(period))
+
+    sql = text(""" 
+          SELECT array_agg(word ||', ' || word_ct::text) word_arr
+          FROM (
+            SELECT word, count(*) word_ct
+            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
+            WHERE  date > {0}
+            AND date <= {1}
+            AND compound_sent != 0
+            AND area_id IS NOT NULL
+            GROUP  BY word
+            ORDER  BY count(*) DESC, word
+          ) t""".format("'" + start_date.strftime('%Y-%m-%d') + "'", "'" + end_date.strftime('%Y-%m-%d') + "'"))
 
     return __engine.execute(sql)
 
@@ -235,7 +261,9 @@ def get_all_scotland_tweets():
     return select([
         __scotland_tweets.c.id,
         __scotland_tweets.c.text
-    ]).execute()
+    ])\
+        .where(__scotland_tweets.c.area_id.isnot(None))\
+        .execute()
 
 
 def __update_tweets_sentiment(table, tweet_id, sentiment, date):
@@ -283,6 +311,6 @@ def get_districts_tweets(udate):
         ]).where(
             (__scotland_tweets.c.date >= start_date) &
             (__scotland_tweets.c.date < end_date) &
-            (__scotland_tweets.c.area_id.isnot(None) &
-            (__scotland_tweets.c.compound_sent != 0))
+            (__scotland_tweets.c.area_id.isnot(None)) &
+            (__scotland_tweets.c.compound_sent != 0)
         ).execute()
