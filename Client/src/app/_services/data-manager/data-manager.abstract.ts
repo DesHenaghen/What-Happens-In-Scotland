@@ -179,6 +179,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         areaIds.push(this.districtId);
         areaNames[this.districtId] = this.regionName;
 
+        this.fetchCommonWords(areaIds);
         this.getDistrictsData(areaIds).subscribe(
           results => {
             for (let i = 0; i < areaIds.length; i++) {
@@ -215,7 +216,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
             this.mapTopology.next(topology);
             this.setDistrict(this.mapType + '-boundary');
             this.fetchDistrictTweets(this.targetDate, false);
-            this.fetchCommonWords(areaIds);
           }
         );
       }
@@ -261,6 +261,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     areaIds.push(this.districtId);
     areaNames[this.districtId] = this.regionName;
 
+    this.fetchCommonWords(areaIds, period);
     this.getDistrictsData(areaIds, date, period).subscribe(
       results => {
         for (let i = 0; i < areaIds.length; i++) {
@@ -296,7 +297,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         this.districtsSubject.next(this.districts);
         this.setDistrict(this.mapType + '-boundary');
         this.fetchDistrictTweets(this.targetDate, false);
-        this.fetchCommonWords(areaIds, period);
       }
     );
   }
