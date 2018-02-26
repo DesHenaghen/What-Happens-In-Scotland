@@ -161,7 +161,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
    */
   public loadDistrictsData(): void {
     this.loadedData.next(false);
-    // d3.json('./assets/json/glasgow-districts.json', (error, topology) => {
     d3.json('./assets/json/' + this.dataFile, (error, topology: FeatureCollection<any>) => {
       if (error) {
         console.error(error);
@@ -190,7 +189,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
               const name = areaNames[id];
               const average = (values.length > 0) ? values[values.length - 1].y : 0;
               const prettyAverage = Math.round(average * 10) / 10;
-              const common_emote_words = wardData.common_emote_words;
               const last_tweets: Tweet[] = (wardData.last_tweet) ?
                 [wardData.last_tweet] :
                 [];
@@ -202,7 +200,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
                 values,
                 average,
                 prettyAverage,
-                common_emote_words,
                 last_tweets,
                 total: wardData.total,
                 totals: wardData.totals
@@ -218,10 +215,23 @@ export abstract class AbstractDataManager implements DataManagerInterface {
             this.mapTopology.next(topology);
             this.setDistrict(this.mapType + '-boundary');
             this.fetchDistrictTweets(this.targetDate, false);
+            this.fetchCommonWords(areaIds);
           }
         );
       }
     });
+  }
+
+  private fetchCommonWords(ids: string[], period = 3) {
+    this.getCommonWords(ids, this.targetDate, period).subscribe(
+      results => {
+        for (let [key, value] of Object.entries(results)) {
+          key = (key === 'region') ? this.districtId : key;
+          if (this.districts[key])
+            this.districts[key].common_emote_words = value;
+        }
+      });
+    this.districtsSubject.next(this.districts);
   }
 
   public fetchDistrictTweets(date: moment.Moment, append: boolean) {
@@ -261,7 +271,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
           const name = areaNames[id];
           const average = (values.length > 0) ? values[values.length - 1].y : 0;
           const prettyAverage = Math.round(average * 10) / 10;
-          const common_emote_words = wardData.common_emote_words;
           const last_tweets: Tweet[] = (wardData.last_tweet) ?
             [wardData.last_tweet] :
             [];
@@ -273,7 +282,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
             values,
             average,
             prettyAverage,
-            common_emote_words,
             last_tweets,
             total: wardData.total,
             totals: wardData.totals
@@ -288,6 +296,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         this.districtsSubject.next(this.districts);
         this.setDistrict(this.mapType + '-boundary');
         this.fetchDistrictTweets(this.targetDate, false);
+        this.fetchCommonWords(areaIds, period);
       }
     );
   }
@@ -305,6 +314,21 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     return this._http.get<any>('/api/' + this.apiDataRoute, {
       params: {ids, region: 'true', date: dateString, period: '' + period}
     });
+  }
+
+  protected getCommonWords(ids: string[], date: moment.Moment = moment(), period: number = 3) {
+    const dateString: string = date.format('YYYY-MM-DD');
+    const params = {
+        ids,
+        region: 'true',
+        group: (this.districtId.includes('boundary')) ? 'area' : 'ward',
+        date: dateString,
+        period: '' + period
+    };
+
+    if (!this.districtId.includes('boundary'))  params['region_id'] = this.districtId;
+
+    return this._http.get<any>('/api/common_words', { params });
   }
 
   protected getDistrictsTweets(date: moment.Moment) {
