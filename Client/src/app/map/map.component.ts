@@ -40,12 +40,14 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
     this._dataManager.getDistricts()
       .subscribe((districts: { [id: string]: District }) => {
         this.districts = districts;
+        if (this.districts)
+          this.updateMapColours();
       });
 
     this._dataManager.getLoadedData()
       .subscribe((loaded: boolean) => {
         this.loaded = loaded;
-      })
+      });
 
     this._dataManager.getDistrict().subscribe((district: District) => this.district = district);
 
@@ -154,6 +156,15 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       .on('mouseout', () => {
         this.tooltip.classed('hidden', true);
       });
+  }
+
+  private updateMapColours() {
+    for (const [key, value] of Object.entries(this.districts)) {
+
+      this.svg
+        .select('path#' + key)
+        .attr('fill', () => this.colour(value.average));
+    }
   }
 
   /**

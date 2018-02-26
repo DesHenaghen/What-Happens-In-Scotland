@@ -113,12 +113,9 @@ export class HomeComponent implements OnInit {
     }
     this.tweetsSubscription = this._dataManager.getTweets().subscribe((tweets: {[id: string]: Tweet[]}) => {
       for (const key of Object.keys(tweets)) {
-        // If we don't already have tweets for this date, add them
-        if (!this.tweets.hasOwnProperty(key)) {
-          this.tweets[key] = tweets[key]
-            .filter(item => (item.area === this._dataManager.districtId || this._dataManager.mapMode === MapModes.Scotland))
-            .sort((a, b) => (a.date < b.date) ? -1 : 1);
-        }
+        this.tweets[key] = tweets[key]
+          .filter(item => (item.area === this._dataManager.districtId || this._dataManager.mapMode === MapModes.Scotland))
+          .sort((a, b) => (a.date < b.date) ? -1 : 1);
       }
 
       Object.keys(this.tweets).forEach(key => {
@@ -180,7 +177,7 @@ export class HomeComponent implements OnInit {
         })
         .filter(tweet => {
           if ((ward === this._dataManager.getMapBoundaryId() || ward === tweet.ward || ward === tweet.area) &&
-            (tweet.name.toLowerCase().includes(searchTermLower) || tweet.text.toLowerCase().includes(searchTermLower))) {
+            ((tweet.name && tweet.name.toLowerCase().includes(searchTermLower)) || (tweet.text && tweet.text.toLowerCase().includes(searchTermLower)))) {
             totalTweets++;
             if (i < limit) {
               i++;
@@ -246,6 +243,14 @@ export class HomeComponent implements OnInit {
     if (!this.tweetDates[event.index].loaded) {
       this._dataManager.fetchDistrictTweets(moment(this.tweetDates[event.index].dateString), true);
     }
+  }
+
+  public trackByFn(index, tweet: Tweet) {
+    return tweet.id;
+  }
+
+  public trackByTweetDate(index, tweetDate) {
+    return tweetDate.dateString;
   }
 
   public infoBoxTabChanged(event) {

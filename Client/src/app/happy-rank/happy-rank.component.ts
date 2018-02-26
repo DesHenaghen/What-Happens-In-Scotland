@@ -129,9 +129,9 @@ export class HappyRankComponent implements OnInit, OnChanges {
       return '#7CFF6C';
     else if (key === this._dataManager.getMapBoundaryId())
       return '#48BFFF';
-    else if (ward.average > 0.5)
+    else if (ward.average > 0.3)
       return 'rgb(135, 141, 210)';
-    else if (ward.average < -0.5)
+    else if (ward.average < -0.3)
       return 'rgb(195, 132, 132)';
     else
       return '#B8B9AC';

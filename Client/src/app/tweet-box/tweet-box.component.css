@@ -53,3 +53,9 @@
 .bad_word {
   color: salmon;
 }
+
+.pause-tweets {
+  margin-bottom: 30px;
+  height: 30px;
+  line-height: 18px;
+}

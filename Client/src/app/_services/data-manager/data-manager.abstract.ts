@@ -45,6 +45,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   public topologyName: string;
 
   private targetDate = moment();
+  private updateTweets = true;
 
 
   constructor(injector: Injector) {
@@ -123,9 +124,9 @@ export abstract class AbstractDataManager implements DataManagerInterface {
       new_scores.push(score);
 
       if (score > 0 ) {
-        word = '<span class="blue_text">' + word + '</span>';
+        word = '<span class="good_word">' + word + '</span>';
       } else if (score < 0) {
-        word = '<span class="red_text">' + word + '</span>';
+        word = '<span class="bad_word">' + word + '</span>';
       }
 
     }
@@ -134,23 +135,31 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   }
 
   private updateDistrict(district: District, tweet: Tweet): District {
-    let sum = district.average * district.totals[district.totals.length - 1];
-    sum += tweet.score;
+    if (this.updateTweets) {
+      tweet.name = tweet.user.name;
 
-    tweet.date = new Date().toISOString();
+      let sum = district.average * district.totals[district.totals.length - 1];
+      sum = (!isNaN(sum)) ? sum + tweet.score : tweet.score;
 
-    district.total++;
-    district.totals[district.totals.length - 1]++;
-    district.average = sum / district.totals[district.totals.length - 1];
-    if (district.values && district.values.length > 0 && district.values[district.values.length - 1])
-      district.values[district.values.length - 1].y = district.average;
-    district.prettyAverage = Math.round(district.average * 10) / 10;
+      tweet.date = new Date().toISOString();
 
-    if (district.last_tweets.length >= 10) {
-      district.last_tweets.pop();
+      district.total++;
+      district.totals[district.totals.length - 1]++;
+      district.average = sum / district.totals[district.totals.length - 1];
+      if (district.values && district.values.length > 0 && district.values[district.values.length - 1])
+        district.values[district.values.length - 1].y = district.average;
+      district.prettyAverage = Math.round(district.average * 10) / 10;
+
+      if (district.last_tweets.length >= 10) {
+        district.last_tweets.pop();
+      }
+
+      district.last_tweets.unshift(tweet);
+      if (this.mapMode === MapModes.Scotland && district.id === this.districtId) {
+        console.log(district);
+        this._tweet.addTweet(tweet);
+      }
     }
-
-    district.last_tweets.unshift(tweet);
 
     return district;
   }
@@ -335,6 +344,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     return this._http.get<any>('/api/districts_tweets', {
       params: {date: date.format('YYYY-MM-DD')}
     });
+  }
+
+  public setUpdateTweets(bool: boolean) {
+    this.updateTweets = bool;
   }
 
   protected abstract listenOnSockets(): void;

@@ -3,7 +3,10 @@
   <!--<h5 style="margin-left: 30px;">{{ward.last_tweet.text}}</h5>-->
 <!--</div>-->
 <mat-card id="tweet_box">
-  <div class="tweet_details" *ngFor="let tweet of ward.last_tweets">
+  <button class="btn btn-secondary pause-tweets" (click)="toggleLiveTweets()"
+          [innerHTML]="pauseButtonText">
+  </button>
+  <div class="tweet_details" *ngFor="let tweet of ward.last_tweets; trackBy: trackByFn">
     <div>
       <mat-card-header>
         <score-mark [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.1-2'}}</score-mark>

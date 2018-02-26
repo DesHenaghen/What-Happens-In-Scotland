@@ -76,7 +76,7 @@
         <mat-tab label="Tweets">
           <div class="infoBox">
             <mat-tab-group id="tweetDateTabs" (selectedTabChange)="tweetDateTabChanged($event)">
-              <mat-tab *ngFor="let tweetDate of tweetDates" label="{{tweetDate.title}}">
+              <mat-tab *ngFor="let tweetDate of tweetDates; trackBy: trackByTweetDate" label="{{tweetDate.title}}">
                 <div *ngIf="!tweetDate.loaded" style="z-index: 9999999; height:75vh; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
                   <div class="loader"></div>
                 </div>
@@ -104,7 +104,7 @@
                   <div *ngIf="(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded">
                     <div
                       class="tweet_details"
-                      *ngFor="let tweet of getDateFilteredTweets(tweetDate)">
+                      *ngFor="let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn">
                       <div style="border-radius: 10px;">
                         <mat-card-header>
                           <score-mark class="wide" [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.1-2'}}</score-mark>

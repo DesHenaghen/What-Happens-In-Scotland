@@ -4,8 +4,8 @@ export class District {
   id: string;
   name: string;
   values: {x: number, y: number}[];
-  average: number;
-  prettyAverage: number;
+  average = 0;
+  prettyAverage = 0;
   common_emote_words?: string[];
   total: number;
   totals: number[];

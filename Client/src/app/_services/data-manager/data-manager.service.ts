@@ -111,4 +111,8 @@ export class DataManagerService implements DataManagerInterface {
     return this._dataManager.getMapBoundaryId();
   }
 
+  public setUpdateTweets(bool: boolean) {
+    this._dataManager.setUpdateTweets(bool);
+  }
+
 }
