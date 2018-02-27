@@ -25,6 +25,33 @@ footer {
   margin-top: 5px;
 }
 
+#intro-box {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999999999999999;
+  background-color: rgba(0, 0, 0, 0.66);
+}
+
+#intro-message {
+  text-align: center;
+  position: absolute;
+  top: 30%;
+  bottom: 50%;
+  width: 100%;
+}
+
+#text-box {
+  background-color: aliceblue;
+  width: 30%;
+  position: absolute;
+  right: 35%;
+  border-radius: 13px;
+  padding: 20px;
+}
+
 /* The slider itself */
 .slider {
   -webkit-appearance: none;  /* Override default CSS styles */

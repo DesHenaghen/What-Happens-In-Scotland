@@ -25,4 +25,8 @@ export class AppComponent implements OnInit {
   public togglePaused(): void {
     this.paused = !this.paused;
   }
+
+  public hideIntroBox() {
+    document.getElementById('intro-box').style.display = 'none';
+  }
 }
