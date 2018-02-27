@@ -50,7 +50,7 @@ div.tooltip {
 
 @media (min-width: 992px) {
   .area-map svg {
-    max-width: 40vw;
+    /*max-width: 40vw;*/
   }
 }
 
@@ -62,7 +62,7 @@ div.tooltip {
 
 @media (max-width: 767px) {
   .area-map svg {
-    width: 100vw;
+    width: 130vw;
     height: 85vh;
   }
 }

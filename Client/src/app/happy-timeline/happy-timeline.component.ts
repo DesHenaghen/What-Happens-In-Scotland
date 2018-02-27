@@ -72,7 +72,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
         },
         yAxis: {
           axisLabel: 'Happiness',
-          tickFormat: d => d,
+          tickFormat: d => d.toFixed(2),
           axisLabelDistance: -10
         }
       }

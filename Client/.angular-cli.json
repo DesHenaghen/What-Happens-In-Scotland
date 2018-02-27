@@ -22,7 +22,10 @@
         "styles.css"
       ],
       "scripts": [
-        "assets/js/fontawesome-all.min.js"
+        "assets/js/fontawesome-all.min.js",
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/popper.js/dist/umd/popper.min.js",
+        "../node_modules/bootstrap/dist/js/bootstrap.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

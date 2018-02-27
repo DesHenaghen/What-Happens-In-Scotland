@@ -1,14 +1,14 @@
 <div id="map-background">
   <div class="row">
-    <div style="height: 80vh" class="col col-xl-5 col-lg-5 col-md-8 col-sm-12 col-12">
+    <div style="height: 800px" class="col col-xl-5 col-lg-5 col-md-8 col-sm-12 col-12">
       <div>
-        Showing data from the
+        Showing the
         <mat-form-field style="width: 2rem">
           <mat-select [(value)]="period">
             <mat-option *ngFor="let i of [1,2,3,4,5,6,7]" [value]="i">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
-        days leading up to
+        days up to
         <mat-form-field style="width: 7rem">
           <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -137,6 +137,8 @@
       id="bottom-chevron"
       class="next-page-chevron d-lg-none"
       [ngx-scroll-to]="'#navbar-brand'"
+      [ngx-scroll-to-duration]="1"
+      [ngx-scroll-to-easing]="'easeOutQuint'"
     ><i class="hidden-lg-up fas fa-angle-double-up fa-2x"></i></div>
   </div>
 </div>

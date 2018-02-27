@@ -14,6 +14,17 @@ footer {
   display: flex;
 }
 
+.nav-link.feedback {
+  color: white !important;
+  background-color: cadetblue;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 5px;
+  text-align: center;
+  margin-top: 5px;
+}
+
 /* The slider itself */
 .slider {
   -webkit-appearance: none;  /* Override default CSS styles */
