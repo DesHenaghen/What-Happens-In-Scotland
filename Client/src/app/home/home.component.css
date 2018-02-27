@@ -114,6 +114,10 @@ score-mark.big {
   font-size: 30px;
 }
 
+.btn.disabled {
+  opacity: 0.25;
+}
+
 mat-card-header {
   position: relative;
 }

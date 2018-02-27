@@ -22,7 +22,7 @@
         <mat-tab label="Edinburgh"></mat-tab>
       </mat-tab-group>
 
-      <app-glasgow-map [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
+      <app-glasgow-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
       <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
       <app-edinburgh-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Edinburgh"></app-edinburgh-map>
     </div>

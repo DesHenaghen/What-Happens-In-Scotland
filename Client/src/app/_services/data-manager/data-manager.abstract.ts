@@ -156,7 +156,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
       district.last_tweets.unshift(tweet);
       if (this.mapMode === MapModes.Scotland && district.id === this.districtId) {
-        console.log(district);
         this._tweet.addTweet(tweet);
       }
     }

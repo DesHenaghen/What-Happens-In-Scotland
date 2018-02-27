@@ -122,8 +122,6 @@ export class HomeComponent implements OnInit {
         if (!tweets.hasOwnProperty(key)) delete this.tweets[key];
       });
 
-      this.setFilteredTweets();
-
       this.tweetDates = [];
       const date = moment(this.endDate);
 
@@ -137,6 +135,7 @@ export class HomeComponent implements OnInit {
 
         date.subtract(1, 'days');
       }
+      this.setFilteredTweets();
     });
   }
 
@@ -219,6 +218,7 @@ export class HomeComponent implements OnInit {
   }
 
   public setMode(index: MapModes): void {
+    console.log(index);
     this.mapModeTabs.selectedIndex = index;
     this.currentMode = index;
     this._dataManager.selectDataManager(this.currentMode);

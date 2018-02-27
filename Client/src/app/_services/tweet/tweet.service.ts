@@ -66,7 +66,6 @@ export class TweetService {
     if (this.tweets[mDate.format('YYYY-MM-DD')]) {
       this.tweets[mDate.format('YYYY-MM-DD')].push(tweet);
       this.tweetsObserver.next(this.tweets);
-      console.log(this.tweets[mDate.format('YYYY-MM-DD')]);
     }
   }
 }

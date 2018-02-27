@@ -2,5 +2,9 @@
   <div class="loader"></div>
 </div>
 
-<div [hidden]="!loaded" class="map-title header mat-card-title">{{district.name}}</div>
+<div [hidden]="!loaded" class="map-title header mat-card-title">
+  {{district.name}}
+  <button *ngIf="regionMap === 'scotland-map'" class="btn btn-secondary zoom" [class.disabled]="!canZoomIn()" (click)="zoomMapIn()"><i class="fas fa-search-plus fa-2x"></i></button>
+  <button *ngIf="regionMap !== 'scotland-map'" class="btn btn-secondary zoom" (click)="zoomMapOut()"><i class="fas fa-search-minus fa-2x"></i></button>
+</div>
 <div [hidden]="!loaded" [id]="regionMap" class="area-map"></div>

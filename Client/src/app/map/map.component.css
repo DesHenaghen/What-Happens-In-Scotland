@@ -77,6 +77,12 @@ div.tooltip {
   animation-timing-function: linear;
 }
 
+.btn.zoom {
+  float: right;
+  margin-right: 2vw;
+  border-radius: 3vw;
+}
+
 @keyframes regionPulsate {
   0%    { stroke-width: 4vh; }
   50%   { stroke-width: 6vh; }

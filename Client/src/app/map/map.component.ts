@@ -7,6 +7,7 @@ import {Feature, FeatureCollection, MultiLineString} from 'geojson';
 import {Tweet} from '../_models/Tweet';
 import {isNumber} from 'util';
 import {DataManagerInterface} from '../_interfaces/data-manager.interface';
+import {MapModes} from '../_models/MapModes';
 
 export abstract class MapComponent implements OnInit, AfterViewInit {
 
@@ -28,6 +29,11 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   protected path: number;
   protected tooltip: any;
   protected offsetT: number;
+
+  protected mapModeMapping = {
+    'S12000046': MapModes.Glasgow,
+    'S12000036': MapModes.Edinburgh
+  };
 
   protected _dataManager: DataManagerInterface;
 
@@ -70,6 +76,20 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.initVariables();
     this.sharedInit();
+  }
+
+  public canZoomIn() {
+    return this.mapModeMapping.hasOwnProperty(this.district.id);
+  }
+
+  public zoomMapIn() {
+    if (this.mapModeMapping.hasOwnProperty(this.district.id)) {
+      this.mapMode.emit(this.mapModeMapping[this.district.id]);
+    }
+  }
+
+  public zoomMapOut() {
+    this.mapMode.emit(MapModes.Scotland);
   }
 
   private sharedInit() {
