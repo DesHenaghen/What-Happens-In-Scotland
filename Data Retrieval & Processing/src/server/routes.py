@@ -45,26 +45,31 @@ def index():
     return render_template('index.html')
 
 
+def convert_score_to_percentage(score):
+    return (score + 1) * 50
+
+
 def parse_twitter_data(tweets, date, period):
     start_date = datetime.datetime.strptime(date, '%Y-%m-%d') - datetime.timedelta(days=(int(period)-1))
     totals = {}
     values = {}
     epoch = datetime.date.fromtimestamp(0)
     while start_date <= datetime.datetime.strptime(date, '%Y-%m-%d'):
-        values[start_date.strftime('%Y-%m-%d')] = {'x': (start_date - datetime.datetime.combine(epoch, datetime.time())).total_seconds() * 1000, 'y': 0}
+        values[start_date.strftime('%Y-%m-%d')] = {'x': (start_date - datetime.datetime.combine(epoch, datetime.time())).total_seconds() * 1000, 'y': 50}
         totals[start_date.strftime('%Y-%m-%d')] = 0
         start_date += datetime.timedelta(days=1)
 
     total = 0
-    last_tweet_text = tweets[-1].text if len(tweets) > 0 else ""
+    last_tweet_text = format_html_text(tweets[-1])['text'] if len(tweets) > 0 else ""
     last_tweet_user = tweets[-1].user if len(tweets) > 0 else {}
     last_tweet_words = tweets[-1].text_sentiments if (len(tweets) > 0 and tweets[-1].text_sentiments is not None) else []
     last_tweet_scores = tweets[-1].text_sentiment_words if (len(tweets) > 0 and tweets[-1].text_sentiment_words is not None) else []
+    last_tweet_score = convert_score_to_percentage(tweets[-1].compound_sent) if (len(tweets) > 0 and tweets[-1].compound_sent is not None) else 50
 
     for i, tweet in enumerate(tweets):
         values[tweet.day.strftime('%Y-%m-%d')] = {
             'x': (tweet.day - epoch).total_seconds() * 1000,
-            'y': tweet.avg_compound
+            'y': convert_score_to_percentage(tweet.avg_compound)
         }
 
         total += int(tweet.total)
@@ -75,6 +80,7 @@ def parse_twitter_data(tweets, date, period):
         'total': total,
         'totals': [v for k,v in totals.items()],
         'last_tweet': {
+            'score': last_tweet_score,
             'text': last_tweet_text,
             'user': last_tweet_user,
             'words': last_tweet_words,

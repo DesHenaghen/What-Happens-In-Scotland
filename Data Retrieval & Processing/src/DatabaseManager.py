@@ -43,6 +43,11 @@ __scotland_tweets = sqlalchemy.Table("scotland_tweets", __meta,
 __meta.create_all()
 
 
+
+def convert_score_to_percentage(score):
+    return (score + 1) * 50
+
+
 def save_scotland_tweet(tweet):
     if 'extended_tweet' in tweet:
         full_text = tweet.get('extended_tweet').get('full_text')
@@ -101,7 +106,7 @@ def save_scotland_tweet(tweet):
             'user': tweet.get("user"),
             'ward': area_id,
             'coordinates': coord_array,
-            'score': scores.get('compound'),
+            'score': convert_score_to_percentage(scores.get('compound')),
             'text_sentiments': sentiment_word_scores,
             'text_sentiment_words': sentiment_words
         })
@@ -112,7 +117,7 @@ def save_scotland_tweet(tweet):
             'user': tweet.get("user"),
             'ward': ward_id,
             'coordinates': coord_array,
-            'score': scores.get('compound'),
+            'score': convert_score_to_percentage(scores.get('compound')),
             'text_sentiments': sentiment_word_scores,
             'text_sentiment_words': sentiment_words
         })
@@ -152,7 +157,7 @@ def get_scotland_district_tweets(area_ids, group, date, period):
     start_date = end_date - timedelta(days=int(period))
 
     sql = text("""
-      SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
+      SELECT t.text, t.user, t.compound_sent, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
       t.text_sentiment_words, t.{0}_id
       FROM scotland_tweets as t        
          INNER JOIN (
@@ -214,7 +219,7 @@ def get_scotland_tweets(date, period):
     start_date = end_date - timedelta(days=int(period))
 
     sql = text("""
-      SELECT t.text, t.user, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
+      SELECT t.text, t.user, t.compound_sent, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
       t.text_sentiment_words
       FROM scotland_tweets as t 
          INNER JOIN (
@@ -283,12 +288,12 @@ def update_scotland_tweets_sentiment_arrays(values):
     stmt = __scotland_tweets.update(). \
         where(__scotland_tweets.c.id == bindparam('t_id')). \
         values({
-        'neg_sent': bindparam('neg'),
-        'pos_sent': bindparam('pos'),
-        'neu_sent': bindparam('neu'),
-        'compound_sent': bindparam('compound'),
-        'text_sentiments': bindparam('scores'),
-        'text_sentiment_words': bindparam('words')
+            'neg_sent': bindparam('neg'),
+            'pos_sent': bindparam('pos'),
+            'neu_sent': bindparam('neu'),
+            'compound_sent': bindparam('compound'),
+            'text_sentiments': bindparam('scores'),
+            'text_sentiment_words': bindparam('words')
         })
 
     t0 = time.time()
