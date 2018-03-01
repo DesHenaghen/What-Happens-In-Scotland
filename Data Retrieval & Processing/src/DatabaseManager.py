@@ -1,5 +1,6 @@
 import sqlalchemy
-import sys
+import psycopg2
+import time
 from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text, bindparam, and_, cast, Date, any_, or_
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from datetime import datetime, timedelta, date
@@ -7,6 +8,7 @@ from server import get_socketio_instance
 import logger as log
 import configuration
 from SentimentAnalyser import SentimentAnalyser
+import sqlite3
 
 __socketio = get_socketio_instance()
 
@@ -262,7 +264,7 @@ def get_all_scotland_tweets():
         __scotland_tweets.c.id,
         __scotland_tweets.c.text
     ])\
-        .where(__scotland_tweets.c.area_id.isnot(None))\
+        .where((__scotland_tweets.c.area_id.isnot(None)) & (__scotland_tweets.c.id >= 800000))\
         .execute()
 
 
@@ -281,11 +283,69 @@ def update_scotland_tweets_sentiment_arrays(values):
     stmt = __scotland_tweets.update(). \
         where(__scotland_tweets.c.id == bindparam('t_id')). \
         values({
+        'neg_sent': bindparam('neg'),
+        'pos_sent': bindparam('pos'),
+        'neu_sent': bindparam('neu'),
+        'compound_sent': bindparam('compound'),
         'text_sentiments': bindparam('scores'),
         'text_sentiment_words': bindparam('words')
-    })
+        })
 
+    t0 = time.time()
+    print("Before update", datetime.now())
     __engine.execute(stmt, values)
+
+    print(
+        "BULK UPDATE: Total time for " + str(len(values)) +
+        " records " + str(time.time() - t0) + " sec")
+    print("After update", datetime.now())
+
+
+def update_scotland_tweets_sentiment_arrays_testu(values):
+    conn = psycopg2.connect("host='%s' dbname='%s' user='%s' password='%s'" % (__config.PSQL_HOSTNAME, __config.PSQL_DATABASE, __config.PSQL_USERNAME, __config.PSQL_PASSWORD))
+    c = conn.cursor()
+
+    t0 = time.time()
+    for i in values:
+        row = (i['neu'], i['neg'], i['pos'], i['compound'], i['scores'], i['words'], i['t_id'])
+        c.execute("UPDATE scotland_tweets " +
+                  "SET neu_sent = %s, neg_sent = %s, pos_sent = %s, compound_sent = %s, text_sentiments = %s, text_sentiment_words = %s " +
+                  "WHERE id = %s", row)
+    conn.commit()
+
+    print(
+        "psycopg2: Total time for " + str(len(values)) +
+        " records " + str(time.time() - t0) + " sec")
+
+
+def init_psycopg2(connection_string):
+    conn = psycopg2.connect(connection_string)
+    c = conn.cursor()
+    c.execute("DROP TABLE IF EXISTS test_tweets")
+    c.execute(
+        "CREATE TABLE test_tweets (id INTEGER NOT NULL, "
+        "neu_sent REAL, neg_sent REAL, pos_sent REAL, compound_sent REAL, text_sentiments REAL[], "
+        "text_sentiment_words VARCHAR[], PRIMARY KEY(id))")
+    conn.commit()
+    return conn
+
+
+def update_scotland_tweets_sentiment_arrays_testi(values):
+    connect_string = "host='%s' dbname='%s' user='%s' password='%s'" % (__config.PSQL_HOSTNAME, __config.PSQL_DATABASE, __config.PSQL_USERNAME, __config.PSQL_PASSWORD)
+    init_psycopg2(connect_string)
+    conn = psycopg2.connect(connect_string)
+    c = conn.cursor()
+
+    t0 = time.time()
+    for i in values:
+        row = ( i['t_id'], i['neu'], i['neg'], i['pos'], i['compound'], i['scores'], i['words'])
+        c.execute("INSERT INTO test_tweets (id, neu_sent, neg_sent, pos_sent, compound_sent, text_sentiments, text_sentiment_words) "
+                  "VALUES (%s, %s, %s, %s, %s, %s, %s)", row)
+    conn.commit()
+
+    print(
+        "psycopg2 INSERT NEW TABLE: Total time for " + str(len(values)) +
+        " records " + str(time.time() - t0) + " sec")
 
 
 def update_scotland_tweets_sentiment(tweet_id, sentiment, date):

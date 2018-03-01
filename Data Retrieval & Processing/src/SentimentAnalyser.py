@@ -1,4 +1,4 @@
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer, SentiText
+from mcVaderSentiment.mcVaderSentiment import SentimentIntensityAnalyzer, SentiText
 
 
 class SentimentAnalyser:
@@ -14,6 +14,7 @@ class SentimentAnalyser:
     def get_sentiment_word_scores(self, text):
         return self.__analyser.sentiment_words(text)
 
-    def get_sentiment_words(self, text):
+    @staticmethod
+    def get_sentiment_words(text):
         sentitext = SentiText(text)
         return sentitext.words_and_emoticons

@@ -1,5 +1,8 @@
 import DatabaseManager as db_man
 from SentimentAnalyser import SentimentAnalyser
+from datetime import datetime
+
+print('Start time:', datetime.now())
 
 __analyser = SentimentAnalyser()
 scotland_tweets = db_man.get_all_scotland_tweets().fetchall()
@@ -14,7 +17,14 @@ for i, t in enumerate(scotland_tweets):
     sentiment_words = [word.lower() for word in __analyser.get_sentiment_words(sentiment_text)]
     sentiment_word_scores = __analyser.get_sentiment_word_scores(sentiment_text)
 
-    values.append({'t_id': t['id'], 'scores': sentiment_word_scores, 'words': sentiment_words})
+    values.append(
+        {
+            't_id': t['id'],
+            'scores': sentiment_word_scores,
+            'words': sentiment_words,
+            **scores
+        }
+    )
     print(str(i)+"/"+str(len(scotland_tweets)))
 
 print("Starting update process")

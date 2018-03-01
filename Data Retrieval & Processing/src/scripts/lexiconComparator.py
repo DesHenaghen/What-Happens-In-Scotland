@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 import enchant
 
 # Custom Modules
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from mcVaderSentiment.mcVaderSentiment import SentimentIntensityAnalyzer
 import DatabaseManager as db_man
 
 nltk.download('stopwords')

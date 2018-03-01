@@ -1,6 +1,6 @@
 import datetime
 import json
-
+import string
 import decimal
 
 from server import get_app_instance, get_socketio_instance
@@ -12,6 +12,7 @@ from many_stop_words import get_stop_words
 __stop_words = list(get_stop_words('en'))  # About 900 stopwords
 __nltk_words = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
 __stop_words.extend(__nltk_words)
+__translation = str.maketrans("", "", string.punctuation)
 
 
 data_routes = Blueprint('data_routes', __name__)
@@ -22,7 +23,10 @@ socketio = get_socketio_instance()
 def filterstopwords(words):
     return list(
         filter(
-            lambda word: word is not None and word.split(',')[0] not in __stop_words, words
+            lambda word: word is not None
+                         and word.split(',')[0].translate(__translation) not in __stop_words
+                         and (len(word.split(',')[0].strip()) > 1)
+                         and not word.split(',')[0].isspace(), words
         )
     )
 
@@ -41,29 +45,35 @@ def index():
     return render_template('index.html')
 
 
-def parse_twitter_data(tweets):
-    values = []
-    totals = []
+def parse_twitter_data(tweets, date, period):
+    start_date = datetime.datetime.strptime(date, '%Y-%m-%d') - datetime.timedelta(days=(int(period)-1))
+    totals = {}
+    values = {}
+    epoch = datetime.date.fromtimestamp(0)
+    while start_date <= datetime.datetime.strptime(date, '%Y-%m-%d'):
+        values[start_date.strftime('%Y-%m-%d')] = {'x': (start_date - datetime.datetime.combine(epoch, datetime.time())).total_seconds() * 1000, 'y': 0}
+        totals[start_date.strftime('%Y-%m-%d')] = 0
+        start_date += datetime.timedelta(days=1)
+
     total = 0
     last_tweet_text = tweets[-1].text if len(tweets) > 0 else ""
     last_tweet_user = tweets[-1].user if len(tweets) > 0 else {}
     last_tweet_words = tweets[-1].text_sentiments if (len(tweets) > 0 and tweets[-1].text_sentiments is not None) else []
     last_tweet_scores = tweets[-1].text_sentiment_words if (len(tweets) > 0 and tweets[-1].text_sentiment_words is not None) else []
 
-    epoch = datetime.date.fromtimestamp(0)
-    for tweet in tweets:
-        values.append({
+    for i, tweet in enumerate(tweets):
+        values[tweet.day.strftime('%Y-%m-%d')] = {
             'x': (tweet.day - epoch).total_seconds() * 1000,
             'y': tweet.avg_compound
-        })
+        }
 
         total += int(tweet.total)
-        totals.append(int(tweet.total))
+        totals[tweet.day.strftime('%Y-%m-%d')] = int(tweet.total)
 
     return {
-        'values': values,
+        'values': [v for k,v in values.items()],
         'total': total,
-        'totals': totals,
+        'totals': [v for k,v in totals.items()],
         'last_tweet': {
             'text': last_tweet_text,
             'user': last_tweet_user,
@@ -86,7 +96,7 @@ def all_scotland_district_data():
     # If region data is requested, pop the last id in the list and fetch area data
     if region:
         region_id = area_ids.pop()
-        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_tweets(date, period).fetchall())
+        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_tweets(date, period).fetchall(), date, period)
 
     # Get the tweet data for all tweets from the specified area ids
     raw_data = dbMan.get_scotland_district_tweets(area_ids, "area", date, period).fetchall()
@@ -105,7 +115,7 @@ def all_scotland_district_data():
 
     # Parse twitter data and store to id dictionary
     for key, tweets in tweet_dict.items():
-        ids_dict[key] = parse_twitter_data(tweets)
+        ids_dict[key] = parse_twitter_data(tweets, date, period)
 
     # Send those bad boys away
     return jsonify(ids_dict)
@@ -124,7 +134,11 @@ def all_scotland_ward_data():
     # If region data is requested, pop the last id in the list and fetch area data
     if region:
         region_id = area_ids.pop()
-        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_district_tweets([region_id], "area", date, period).fetchall())
+        ids_dict[region_id] = parse_twitter_data(
+            dbMan.get_scotland_district_tweets([region_id], "area", date, period).fetchall(),
+            date,
+            period
+        )
 
     # Get the tweet data for all tweets from the specified area ids
     raw_data = dbMan.get_scotland_district_tweets(area_ids, "ward", date, period).fetchall()
@@ -136,11 +150,12 @@ def all_scotland_ward_data():
 
     # Sort and group tweets by area_id
     for tweet in raw_data:
-        tweet_dict[tweet["ward_id"]].append(tweet)
+        if tweet["ward_id"] is not None:
+            tweet_dict[tweet["ward_id"]].append(tweet)
 
     # Parse twitter data and store to id dictionary
     for key, tweets in tweet_dict.items():
-        ids_dict[key] = parse_twitter_data(tweets)
+        ids_dict[key] = parse_twitter_data(tweets, date, period)
 
     # Send those bad boys away
     return jsonify(ids_dict)
@@ -159,8 +174,6 @@ def get_common_words():
     ids_dict = {}
 
     rawData = dbMan.get_scotland_district_common_words(area_ids, group, date, period).fetchall()
-
-    print(region_id)
 
     if region and len(region_id) > 0:
         regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchone()

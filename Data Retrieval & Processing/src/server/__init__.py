@@ -38,6 +38,6 @@ def create_app(debug=False):
 
     __socketio.init_app(app)
 
-    # __start_twitterstream_thread()
+    __start_twitterstream_thread()
 
     return app

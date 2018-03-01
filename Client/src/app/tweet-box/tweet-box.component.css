@@ -47,11 +47,13 @@
 }
 
 .good_word {
-  color: dodgerblue;
+  color: #3e3e86;
+  filter: drop-shadow(0 0 3px dodgerblue);
 }
 
 .bad_word {
-  color: salmon;
+  color: #bf4545;
+  filter: drop-shadow(0 0 3px salmon);
 }
 
 .pause-tweets {
