@@ -24,7 +24,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
 
   constructor(private _dataManager: DataManagerService) {
     this.colour = d3.scale.linear()
-      .domain([-1, /*-0.1, 0.1,*/0, 1])
+      .domain([0, 50, 100])
       .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
   }
 

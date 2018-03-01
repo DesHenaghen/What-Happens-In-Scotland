@@ -57,7 +57,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
     this.lineOptions = {
       chart: {
         type: 'lineChart',
-        yDomain: [-1, 1],
+        yDomain: [0, 100],
         height: 250,
         margin : {
           top: 20,
@@ -71,8 +71,8 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
           tickFormat: d =>  d3.time.format('%b %d')(new Date(d))
         },
         yAxis: {
-          axisLabel: 'Happiness',
-          tickFormat: d => d.toFixed(2),
+          axisLabel: 'Positivity',
+          tickFormat: d => d.toFixed(0) + '%',
           axisLabelDistance: -10
         }
       }
@@ -88,7 +88,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges {
       this.lineData = [
         {
           values: this.ward.values,
-          key: 'Happiness',
+          key: 'Positivity',
           color: '#7cff6c',
           area: true      // area - set to true if you want this line to turn into a filled area chart.
         }

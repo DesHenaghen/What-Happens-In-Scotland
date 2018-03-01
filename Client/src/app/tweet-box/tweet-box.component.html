@@ -9,7 +9,7 @@
   <div class="tweet_details" *ngFor="let tweet of ward.last_tweets; trackBy: trackByFn">
     <div>
       <mat-card-header>
-        <score-mark [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.1-2'}}</score-mark>
+        <score-mark [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.0-0'}}%</score-mark>
         <mat-card-title class="header">
           {{tweet.user.name}}
           <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>

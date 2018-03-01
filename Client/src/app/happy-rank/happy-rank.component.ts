@@ -64,7 +64,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
         },
         useInteractiveGuideline: true,
         type: 'discreteBarChart',
-        yDomain: [-1, 1],
+        yDomain: [0, 100],
         height: 250,
         margin : {
           top: 20,
@@ -75,7 +75,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
         x: d => d.label,
         y: d => d.value,
         showValues: true,
-        valueFormat: d => (d === this.minValue || d === this.maxValue) ? d.toFixed(1) : '' ,
+        valueFormat: d => (d === this.minValue || d === this.maxValue) ? d.toFixed(0) + '%' : '' ,
         duration: 250,
         wrapLabels: true,
         xAxis: {
@@ -83,7 +83,8 @@ export class HappyRankComponent implements OnInit, OnChanges {
           tickFormat: (d, i) => (i === 0 || i === this.barData[0].values.length) ? d : ''
         },
         yAxis: {
-          axisLabel: 'Happiness',
+          axisLabel: 'Positivity',
+          tickFormat: d => d.toFixed(0) + '%',
           axisLabelDistance: -10
         }
       }
@@ -129,9 +130,9 @@ export class HappyRankComponent implements OnInit, OnChanges {
       return '#7CFF6C';
     else if (key === this._dataManager.getMapBoundaryId())
       return '#48BFFF';
-    else if (ward.average > 0.3)
+    else if (ward.average > 65)
       return 'rgb(135, 141, 210)';
-    else if (ward.average < -0.3)
+    else if (ward.average < 40)
       return 'rgb(195, 132, 132)';
     else
       return '#B8B9AC';

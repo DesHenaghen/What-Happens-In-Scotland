@@ -83,7 +83,7 @@ export class HomeComponent implements OnInit {
     });
 
     this.colour = d3.scale.linear()
-      .domain([-1, /*-0.1, 0.1,*/0, 1])
+      .domain([0, 50, 100])
       .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
   }
 

@@ -94,7 +94,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
 
   private sharedInit() {
     this.colour = d3.scale.linear()
-      .domain([-1, /*-0.1, 0.1,*/0, 1])
+      .domain([0, 50, 100])
       .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
 
 
@@ -259,7 +259,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   private showTooltip = (d: any): void => {
     const id = d.properties ? d.properties[this._dataManager.topologyId] : this._dataManager.getMapBoundaryId();
     const label = (d.properties ? d.properties[this._dataManager.topologyName] : this._dataManager.regionName) +
-      '<br> ' + this.districts[id].prettyAverage + '% Happy';
+      '<br> ' + this.districts[id].prettyAverage + '% Positive';
 
     const e = d3.event;
     this.tooltip.classed('hidden', false)

@@ -744,7 +744,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519908261192</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html.">
+      <created>1519911773433</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1519911773433</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TodoView">
@@ -831,7 +838,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Enabled automatic config detection." />
     <MESSAGE value="Integrated sentiment analysis to tweet collection. Added modules for &#10;historic sentiment updating and lexicon generation. Tidied up modules&#10;to ensure good software development practices adherence." />
     <MESSAGE value="Updated Database Manager to use new database schema. Area_id is now assigned&#10;when a tweet is added to the database" />
     <MESSAGE value="Attempted to use asynchronous methods" />
@@ -856,7 +862,8 @@
     <MESSAGE value="Added script for sentiment word array generating. Fixed sql queries for&#10;word fetching - improved performance." />
     <MESSAGE value="Refactored application structure to work with Elastic Beanstalk. Separated&#10;common words retrieval from main data retrieval." />
     <MESSAGE value="Implemented McVader. Implemented emoji support. Provided default zero values for date values." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented McVader. Implemented emoji support. Provided default zero values for date values." />
+    <MESSAGE value="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
