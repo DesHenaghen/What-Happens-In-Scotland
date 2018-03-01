@@ -180,10 +180,9 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
 
   private updateMapColours() {
     for (const [key, value] of Object.entries(this.districts)) {
-
       this.svg
         .select('path#' + key)
-        .attr('fill', () => this.colour(value.average));
+        .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => this.colour(value.average));
     }
   }
 

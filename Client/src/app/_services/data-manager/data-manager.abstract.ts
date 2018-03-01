@@ -135,7 +135,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   }
 
   private updateDistrict(district: District, tweet: Tweet): District {
-    if (this.updateTweets) {
+    if (this.updateTweets && new Date(district.values[district.values.length - 1].x).toDateString() === new Date().toDateString()) {
       tweet.name = tweet.user.name;
 
       let sum = district.average * district.totals[district.totals.length - 1];
