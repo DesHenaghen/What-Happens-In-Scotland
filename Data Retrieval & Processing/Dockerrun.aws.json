@@ -1,0 +1,13 @@
+{
+  "AWSEBDockerrunVersion": 1,
+  "containerDefinitions": [
+    {
+      "name": "flask-app",
+      "Ports": [
+        {
+          "ContainerPort": 8080
+	    }
+      ]
+    }
+  ]
+}

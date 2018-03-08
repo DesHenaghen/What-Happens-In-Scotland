@@ -187,7 +187,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         areaIds.push(this.districtId);
         areaNames[this.districtId] = this.regionName;
 
-        this.fetchCommonWords(areaIds);
         this.getDistrictsData(areaIds).subscribe(
           results => {
             for (let i = 0; i < areaIds.length; i++) {
@@ -219,6 +218,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
             console.error(err);
           },
           () => {
+            this.fetchCommonWords(areaIds);
             this.loadedData.next(true);
             this.districtsSubject.next(this.districts);
             this.mapTopology.next(topology);
@@ -234,7 +234,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     this.getCommonWords(ids, this.targetDate, period).subscribe(
       results => {
         for (let [key, value] of Object.entries(results)) {
-          key = (key === 'region') ? this.districtId : key;
+          key = (key === 'region') ? this.getMapBoundaryId() : key;
           if (this.districts[key])
             this.districts[key].common_emote_words = value;
         }
@@ -269,7 +269,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     areaIds.push(this.districtId);
     areaNames[this.districtId] = this.regionName;
 
-    this.fetchCommonWords(areaIds, period);
     this.getDistrictsData(areaIds, date, period).subscribe(
       results => {
         for (let i = 0; i < areaIds.length; i++) {
@@ -301,6 +300,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         console.error(err);
       },
       () => {
+        this.fetchCommonWords(areaIds, period);
         this.loadedData.next(true);
         this.districtsSubject.next(this.districts);
         this.setDistrict(this.mapType + '-boundary');

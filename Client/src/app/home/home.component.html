@@ -1,7 +1,11 @@
 <div id="map-background">
   <div class="row">
-    <div style="height: 800px" class="col col-xl-5 col-lg-5 col-md-8 col-sm-12 col-12">
-      <div>
+    <div style="height: 800px" class="col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12">
+      <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#date-box">
+        Select Dates
+        <i class="fas fa-angle-down"></i>
+      </button>
+      <div id="date-box" class="collapse">
         Showing the
         <mat-form-field style="width: 2rem">
           <mat-select [(value)]="period">
@@ -30,14 +34,14 @@
       class="next-page-chevron d-md-none"
       [ngx-scroll-to]="'#tweets_box'"
     ><i class="fas fa-angle-down fa-2x"></i></div>
-    <div id="tweets_box" style="height: 90vh" class="col col-xl-2 col-lg-2 col-md-4 col-sm-12 col-12">
+    <div id="tweets_box" style="height: 90vh" class="col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12">
       <app-tweet-box [ward]="district"></app-tweet-box>
     </div>
     <div
       class="next-page-chevron d-lg-none"
       [ngx-scroll-to]="'#bottom-chevron'"
     ><i class="hidden-lg-up fas fa-angle-down fa-2x"></i></div>
-    <div id="infoBox" class="col col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+    <div id="infoBox" class="col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12">
       <mat-tab-group id="infoBoxTabs" (animationDone)="infoBoxTabChanged($event)">
         <mat-tab label="Overview">
           <mat-card id="districtInfoBox" class="infoBox">
@@ -52,21 +56,21 @@
             <app-happy-timeline [ward]="district"></app-happy-timeline>
             <div class="row">
               <div class="col">
-                <h2 class="centre"><b>Most Common Terms</b></h2>
-                <h1 class="centre alfa">
+                <h3 class="centre"><b>Common Words</b></h3>
+                <h4 class="centre alfa">
                   {{commonWord(0)}}
-                </h1>
-                <h2 class="centre alfa">
+                </h4>
+                <h4 class="centre alfa">
                   {{commonWord(1)}}
-                </h2>
-                <h3 class="centre alfa">
+                </h4>
+                <h4 class="centre alfa">
                   {{commonWord(2)}}
-                </h3>
+                </h4>
               </div>
               <div class="col">
                 <br>
                 <div class="centre yuge alfa">{{this.district.total}}</div>
-                <h3 class="centre alfa">tweets</h3>
+                <h4 class="centre alfa">tweets</h4>
               </div>
             </div>
             <app-happy-rank [ward]="district" [wards]="districts"></app-happy-rank>

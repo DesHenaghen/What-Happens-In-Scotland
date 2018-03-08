@@ -11,6 +11,7 @@ declare let d3: any;
 import * as moment from 'moment';
 import {HappyTimelineComponent} from '../happy-timeline/happy-timeline.component';
 import {HappyRankComponent} from '../happy-rank/happy-rank.component';
+import {Colour} from '../_models/Colour';
 
 enum TweetSorting {
   DATE_DESC = 'Date Desc',
@@ -82,9 +83,7 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    this.colour = d3.scale.linear()
-      .domain([0, 50, 100])
-      .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
+    this.colour = Colour.getColour;
   }
 
   private subscribeForDistrictData(): void {
@@ -209,7 +208,8 @@ export class HomeComponent implements OnInit {
   private setStyling(area: string): void {
     if (area !== undefined) {
       this.clearSelectedClass();
-      document.getElementById(area).classList.add('selected');
+      if (document.getElementById(area))
+        document.getElementById(area).classList.add('selected');
     }
   }
 

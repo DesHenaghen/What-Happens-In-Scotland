@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} f
 import {District} from '../_models/District';
 import {Tweet} from '../_models/Tweet';
 import {DataManagerService} from '../_services';
+import {Colour} from '../_models/Colour';
 
 declare let d3: any;
 
@@ -23,9 +24,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
   public liveTweets = true;
 
   constructor(private _dataManager: DataManagerService) {
-    this.colour = d3.scale.linear()
-      .domain([0, 50, 100])
-      .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
+    this.colour = Colour.getColour;
   }
 
   public ngOnInit() {

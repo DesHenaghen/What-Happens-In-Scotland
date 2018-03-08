@@ -8,6 +8,7 @@ import {Tweet} from '../_models/Tweet';
 import {isNumber} from 'util';
 import {DataManagerInterface} from '../_interfaces/data-manager.interface';
 import {MapModes} from '../_models/MapModes';
+import {Colour} from '../_models/Colour';
 
 export abstract class MapComponent implements OnInit, AfterViewInit {
 
@@ -24,7 +25,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   protected height: number;
   protected width: number;
   protected svg: any;
-  protected colour: any;
+  protected colour = Colour.getColour;
   protected projection;
   protected path: number;
   protected tooltip: any;
@@ -93,10 +94,6 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   }
 
   private sharedInit() {
-    this.colour = d3.scale.linear()
-      .domain([0, 50, 100])
-      .range(['#ff000c', /*'#8f8f8f',*/ '#b2b2b2', '#0500ff']);
-
 
     // Create svg for graph to be drawn in
     this.svg = d3.select('#' + this.regionMap)
@@ -263,7 +260,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
 
     const e = d3.event;
     this.tooltip.classed('hidden', false)
-      .attr('style', 'left:' + (e.layerX) + 'px;top:' + (e.layerY + this.offsetT) + 'px')
+      .attr('style', 'left:' + (e.layerX + 10) + 'px;top:' + (e.layerY + this.offsetT) + 'px')
       .html(label);
   }
 
