@@ -1,14 +1,14 @@
 import sqlalchemy
 import psycopg2
 import time
-from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text, bindparam, and_, cast, Date, any_, or_
-from sqlalchemy.dialects.postgresql import JSONB, ARRAY
-from datetime import datetime, timedelta, date
+from sqlalchemy import Column, Text, Integer, REAL, DateTime, select, text, bindparam, ForeignKey
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY, TIMESTAMP
+from datetime import datetime, timedelta
 from server import get_socketio_instance
-import logger as log
 import configuration
 from SentimentAnalyser import SentimentAnalyser
-import sqlite3
+from geoalchemy2 import Geometry
+from PsqlPoint import Point
 
 __socketio = get_socketio_instance()
 
@@ -25,7 +25,7 @@ __scotland_tweets = None
 
 
 def connect_to_db():
-    global __db, __engine, __meta, __scotland_tweets
+    global __db, __engine, __meta, __scotland_tweets, __scotland_districts, __scotland_wards
 
     if __db is None:
         __db = sqlalchemy.create_engine(__connection_string)
@@ -33,11 +33,21 @@ def connect_to_db():
         __meta = sqlalchemy.MetaData(__engine)
 
         # Define table schemas
+        __scotland_wards = sqlalchemy.Table("scotland_wards", __meta,
+                                            Column('id', Text, primary_key=True),
+                                            Column('name', Text),
+                                            Column('area', Geometry('MultiPolygon')))
+
+        __scotland_districts = sqlalchemy.Table("scotland_districts", __meta,
+                                                Column('id', Text, primary_key=True),
+                                                Column('name', Text),
+                                                Column('area', Geometry('MultiPolygon')))
+
         __scotland_tweets = sqlalchemy.Table("scotland_tweets", __meta,
                                              Column('id', Integer, primary_key=True),
                                              Column('place', JSONB),
                                              Column('text', Text),
-                                             Column('date', DateTime),
+                                             Column('date', TIMESTAMP, index=True),
                                              Column('user', JSONB),
                                              Column('neg_sent', REAL),
                                              Column('neu_sent', REAL),
@@ -45,9 +55,14 @@ def connect_to_db():
                                              Column('compound_sent', REAL),
                                              Column('text_sentiments', ARRAY(REAL)),
                                              Column('text_sentiment_words', ARRAY(Text)),
-                                             Column('area_id', Text),
-                                             Column('ward_id', Text),
-                                             Column('coordinates', Text))
+                                             Column('area_id', Text, ForeignKey(__scotland_districts.c.id), index=True),
+                                             Column('ward_id', Text, ForeignKey(__scotland_wards.c.id), index=True),
+                                             Column('coordinates', Point))
+
+        __meta.create_all()
+
+
+connect_to_db()
 
 
 def convert_score_to_percentage(score):
@@ -162,9 +177,11 @@ def get_scotland_district_tweets(area_ids, group, date, period):
     if period is None:
         period = 3
 
+    # Calculate start and end dates for query
     end_date = datetime.strptime(date, '%Y-%m-%d') + timedelta(days=1)
     start_date = end_date - timedelta(days=int(period))
 
+    # Generate SQL query
     sql = text("""
       SELECT t.text, t.user, t.compound_sent, x.day, x.avg_neg, x.avg_neu, x.avg_neg, x.avg_pos, x.avg_compound, x.total, t.text_sentiments,
       t.text_sentiment_words, t.{0}_id
@@ -193,9 +210,11 @@ def get_scotland_district_common_words(ids, group, rdate, period):
     if period is None:
         period = 3
 
+    # Calculate start and end dates for query
     end_date = datetime.strptime(rdate, '%Y-%m-%d') + timedelta(days=1)
     start_date = end_date - timedelta(days=int(period))
 
+    # Generate SQL query
     sql = text("""
           SELECT t.{0}_id as group_id, array_agg(word ||', ' || word_ct::text) word_arr
           FROM (
@@ -281,8 +300,8 @@ def get_all_scotland_tweets():
     return select([
         __scotland_tweets.c.id,
         __scotland_tweets.c.text
-    ])\
-        .where((__scotland_tweets.c.area_id.isnot(None)) & (__scotland_tweets.c.id >= 800000))\
+    ]) \
+        .where(__scotland_tweets.c.area_id.isnot(None)) \
         .execute()
 
 
@@ -303,13 +322,13 @@ def update_scotland_tweets_sentiment_arrays(values):
     stmt = __scotland_tweets.update(). \
         where(__scotland_tweets.c.id == bindparam('t_id')). \
         values({
-            'neg_sent': bindparam('neg'),
-            'pos_sent': bindparam('pos'),
-            'neu_sent': bindparam('neu'),
-            'compound_sent': bindparam('compound'),
-            'text_sentiments': bindparam('scores'),
-            'text_sentiment_words': bindparam('words')
-        })
+        'neg_sent': bindparam('neg'),
+        'pos_sent': bindparam('pos'),
+        'neu_sent': bindparam('neu'),
+        'compound_sent': bindparam('compound'),
+        'text_sentiments': bindparam('scores'),
+        'text_sentiment_words': bindparam('words')
+    })
 
     t0 = time.time()
     print("Before update", datetime.now())
@@ -322,7 +341,8 @@ def update_scotland_tweets_sentiment_arrays(values):
 
 
 def update_scotland_tweets_sentiment_arrays_testu(values):
-    conn = psycopg2.connect("host='%s' dbname='%s' user='%s' password='%s'" % (__config.PSQL_HOSTNAME, __config.PSQL_DATABASE, __config.PSQL_USERNAME, __config.PSQL_PASSWORD))
+    conn = psycopg2.connect("host='%s' dbname='%s' user='%s' password='%s'" % (
+        __config.PSQL_HOSTNAME, __config.PSQL_DATABASE, __config.PSQL_USERNAME, __config.PSQL_PASSWORD))
     c = conn.cursor()
 
     t0 = time.time()
@@ -351,16 +371,18 @@ def init_psycopg2(connection_string):
 
 
 def update_scotland_tweets_sentiment_arrays_testi(values):
-    connect_string = "host='%s' dbname='%s' user='%s' password='%s'" % (__config.PSQL_HOSTNAME, __config.PSQL_DATABASE, __config.PSQL_USERNAME, __config.PSQL_PASSWORD)
+    connect_string = "host='%s' dbname='%s' user='%s' password='%s'" % (
+        __config.PSQL_HOSTNAME, __config.PSQL_DATABASE, __config.PSQL_USERNAME, __config.PSQL_PASSWORD)
     init_psycopg2(connect_string)
     conn = psycopg2.connect(connect_string)
     c = conn.cursor()
 
     t0 = time.time()
     for i in values:
-        row = ( i['t_id'], i['neu'], i['neg'], i['pos'], i['compound'], i['scores'], i['words'])
-        c.execute("INSERT INTO test_tweets (id, neu_sent, neg_sent, pos_sent, compound_sent, text_sentiments, text_sentiment_words) "
-                  "VALUES (%s, %s, %s, %s, %s, %s, %s)", row)
+        row = (i['t_id'], i['neu'], i['neg'], i['pos'], i['compound'], i['scores'], i['words'])
+        c.execute(
+            "INSERT INTO test_tweets (id, neu_sent, neg_sent, pos_sent, compound_sent, text_sentiments, text_sentiment_words) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s)", row)
     conn.commit()
 
     print(
@@ -381,18 +403,18 @@ def get_districts_tweets(udate):
     start_date = datetime.strptime(udate, '%Y-%m-%d')
     end_date = start_date + timedelta(days=1)
     return select([
-            __scotland_tweets.c.id,
-            __scotland_tweets.c.area_id.label('area'),
-            __scotland_tweets.c.ward_id.label('ward'),
-            __scotland_tweets.c.text,
-            __scotland_tweets.c.date,
-            __scotland_tweets.c.user['name'].label('name'),
-            __scotland_tweets.c.compound_sent.label('score'),
-            __scotland_tweets.c.text_sentiments,
-            __scotland_tweets.c.text_sentiment_words
-        ]).where(
-            (__scotland_tweets.c.date >= start_date) &
-            (__scotland_tweets.c.date < end_date) &
-            (__scotland_tweets.c.area_id.isnot(None)) &
-            (__scotland_tweets.c.compound_sent != 0)
-        ).execute()
+        __scotland_tweets.c.id,
+        __scotland_tweets.c.area_id.label('area'),
+        __scotland_tweets.c.ward_id.label('ward'),
+        __scotland_tweets.c.text,
+        __scotland_tweets.c.date,
+        __scotland_tweets.c.user['name'].label('name'),
+        __scotland_tweets.c.compound_sent.label('score'),
+        __scotland_tweets.c.text_sentiments,
+        __scotland_tweets.c.text_sentiment_words
+    ]).where(
+        (__scotland_tweets.c.date >= start_date) &
+        (__scotland_tweets.c.date < end_date) &
+        (__scotland_tweets.c.area_id.isnot(None)) &
+        (__scotland_tweets.c.compound_sent != 0)
+    ).execute()

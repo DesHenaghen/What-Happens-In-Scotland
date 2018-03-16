@@ -14,12 +14,12 @@ __twitter = twMan.TwitterManager()
 
 def main():
     try:
-        # Search for tweets in Glasgow
+        # Search for tweets in Scotland
         print("Getting twitter stream")
         tweet_stream = __twitter.get_scotland_twitter_stream()
-        # log.logger.info("Listening for tweets...")
-        print("Listening for tweets...")
+
         if tweet_stream is not None:
+            print("Listening for tweets...")
             for tweet in tweet_stream:
                 dbMan.save_scotland_tweet(tweet)
 
@@ -36,3 +36,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -66,7 +66,6 @@ export class HomeComponent implements OnInit {
   private tweetsSubscription: Subscription = new Subscription();
 
   constructor(
-    private _http: HttpClient,
     private _tweet: TweetService,
     private _dataManager: DataManagerService
   ) { }
@@ -175,7 +174,8 @@ export class HomeComponent implements OnInit {
         })
         .filter(tweet => {
           if ((ward === this._dataManager.getMapBoundaryId() || ward === tweet.ward || ward === tweet.area) &&
-            ((tweet.name && tweet.name.toLowerCase().includes(searchTermLower)) || (tweet.text && tweet.text.toLowerCase().includes(searchTermLower)))) {
+            ((tweet.name && tweet.name.toLowerCase().includes(searchTermLower))
+              || (tweet.text && tweet.text.toLowerCase().includes(searchTermLower)))) {
             totalTweets++;
             if (i < limit) {
               i++;

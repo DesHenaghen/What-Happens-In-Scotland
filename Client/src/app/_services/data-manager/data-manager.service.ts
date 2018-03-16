@@ -46,6 +46,10 @@ export class DataManagerService implements DataManagerInterface {
     this._dataManagerSubject.next(this._dataManager);
   }
 
+  /**
+   * Sets the current MapMode(State)
+   * @param {number} mode - Enum value of MapModes
+   */
   public selectDataManager(mode: number) {
     this._dataManager = this._dataManagers[mode];
     this._dataManagerSubject.next(this._dataManager);

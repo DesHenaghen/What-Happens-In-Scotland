@@ -4,7 +4,7 @@ import {AbstractDataManager} from '../data-manager/data-manager.abstract';
 import {MapModes} from '../../_models/MapModes';
 
 @Injectable()
-export class EdinburghDataManagerService extends AbstractDataManager{
+export class EdinburghDataManagerService extends AbstractDataManager {
 
   constructor(injector: Injector) {
     super(injector);
@@ -25,7 +25,7 @@ export class EdinburghDataManagerService extends AbstractDataManager{
   }
 
   protected listenOnSockets(): void {
-    this._tweet.scotland_district_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
-    this._tweet.scotland_ward_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
+    this._tweet.getScotlandDistrictTweets().subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
+    this._tweet.getScotlandWardTweets().subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
   }
 }

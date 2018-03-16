@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,25 +6,8 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./app.component.css',
   '../assets/css/sticky-footer.css']
 })
-export class AppComponent implements OnInit {
-  public value = 0;
-  public paused = true;
-
+export class AppComponent {
   constructor() { }
-
-  public ngOnInit(): void {
-    setInterval(() => {
-      if (this.paused && this.value > 0) {
-        this.value--;
-      } else if (!this.paused && this.value < 100) {
-        this.value++;
-      }
-    }, 1000);
-  }
-
-  public togglePaused(): void {
-    this.paused = !this.paused;
-  }
 
   public hideIntroBox() {
     document.getElementById('intro-box').style.display = 'none';

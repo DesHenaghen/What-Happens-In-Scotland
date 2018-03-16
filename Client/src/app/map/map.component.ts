@@ -18,8 +18,8 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   // Map variables
   public regionMap: string;
   public loaded = false;
-  public district: District;
-  public districts: { [id: string]: District };
+  public district: District = new District();
+  public districts: { [id: string]: District } = {};
 
   protected margin = {top: 20, right: 20, bottom: 0, left: 50};
   protected height: number;

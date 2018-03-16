@@ -31,6 +31,8 @@ export class ScotlandMapComponent extends MapComponent {
       .scale(8000)
       .translate([this.width / 2, this.height / 2]);
 
-    this.offsetT = document.getElementById('map-background').offsetTop ;
+    this.offsetT = document.getElementById('map-background')
+                  ? document.getElementById('map-background').offsetTop
+                  : 0;
   }
 }

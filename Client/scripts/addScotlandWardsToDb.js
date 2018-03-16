@@ -1,11 +1,11 @@
+const path = require('path');
 const fs = require('fs');
+const cwd = path.dirname(fs.realpathSync(__filename));
 const { Pool } = require('pg');
-const config = require('config.json')('../config/database.json', 'production');
-console.log(config.postgres);
-
+const config = require('config.json')(cwd+'/../config/database.json', (process.argv[2]) ? process.argv[2] : 'development');
 const pool = new Pool(config.postgres);
 
-fs.readFile('../src/assets/json/scotland-wards.json', 'utf8', (err, topology) => {
+fs.readFile(cwd+'/../src/assets/json/scotland-wards.json', 'utf8', (err, topology) => {
   let features = JSON.parse(topology).features;
 
   features.forEach(feature => {

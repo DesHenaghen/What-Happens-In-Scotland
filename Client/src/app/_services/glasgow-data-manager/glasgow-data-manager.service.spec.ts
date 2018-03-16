@@ -1,11 +1,34 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { GlasgowDataManagerService } from './glasgow-data-manager.service';
+import {Tweet} from '../../_models/Tweet';
+import {TweetService} from '../index';
+import {HttpClientModule} from '@angular/common/http';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {of} from 'rxjs/observable/of';
 
 describe('GlasgowDataManagerService', () => {
   beforeEach(() => {
+    const tweetsSpy = jasmine.createSpyObj('TweetService',
+      [
+        'getTweets',
+        'getScotlandDistrictTweets',
+        'getScotlandWardTweets'
+      ]
+    );
+
+    tweetsSpy.getScotlandDistrictTweets.and.returnValue(of(new Tweet()));
+    tweetsSpy.getScotlandWardTweets.and.returnValue(of(new Tweet()));
+
     TestBed.configureTestingModule({
-      providers: [GlasgowDataManagerService]
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule
+      ],
+      providers: [
+        GlasgowDataManagerService,
+        {provide: TweetService, useValue: tweetsSpy}
+      ]
     });
   });
 

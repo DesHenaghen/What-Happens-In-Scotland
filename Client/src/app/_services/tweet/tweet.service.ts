@@ -14,8 +14,8 @@ export class TweetService {
   private tweets: {[id: string]: Tweet[]} = {};
   private tweetsObserver = new BehaviorSubject<{[id: string]: Tweet[]}>({});
 
-  public scotland_ward_tweets: Subject<Tweet>;
-  public scotland_district_tweets: Subject<Tweet>;
+  private scotland_ward_tweets: Subject<Tweet>;
+  private scotland_district_tweets: Subject<Tweet>;
 
   // Our constructor calls our wsService connect method
   constructor(private wsService: WebSocketService) {
@@ -38,6 +38,14 @@ export class TweetService {
    */
   public getTweets() {
     return this.tweetsObserver.asObservable();
+  }
+
+  public getScotlandDistrictTweets(): Subject<Tweet> {
+    return this.scotland_district_tweets;
+  }
+
+  public getScotlandWardTweets(): Subject<Tweet> {
+    return this.scotland_ward_tweets;
   }
 
   /**

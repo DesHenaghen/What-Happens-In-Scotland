@@ -43,25 +43,8 @@ class ProductionConfig(Config):
     ACCESS_TOKEN_SECRET = 'ggQSp6fdat3vGVe4MYnnvR4LBmQanYcMGhFW1E3lRrGnt'
 
 
-class ScotlandConfig(Config):
-    DEBUG = False
-
-    PSQL_USERNAME = 'whig'
-    PSQL_PASSWORD = '382FkjBoQPfk'
-    PSQL_HOSTNAME = 'whathappensinglasgow.cszk7qzakguv.eu-west-2.rds.amazonaws.com'
-    PSQL_PORT = '5432'
-    PSQL_DATABASE = 'tweets'
-
-    CONSUMER_KEY = 'qUy64uUpmIeM2ARBPCxTIPFB6'
-    CONSUMER_SECRET = 'Hvshcc57G2hsnAV34xnyxTX7DrHS0TOoVTw4I38pCqsBEsHjDe'
-    ACCESS_TOKEN_KEY = '924952244293955584-fsZZrlCy331SOwfj37qzOeqVyOLg3k9'
-    ACCESS_TOKEN_SECRET = 'CpVNZJY73P89vu1SMeLplV0yI36X86HTKSwtaGQLTYwYO'
-
-
 if 'dev' in sys.argv:
     config = DevelopmentConfig()
-elif 'scotland' in sys.argv:
-    config = ScotlandConfig()
 else:
     config = ProductionConfig()
 

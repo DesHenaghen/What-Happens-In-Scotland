@@ -2,7 +2,6 @@ from TwitterAPI import TwitterAPI
 
 import os
 import configuration
-import logger as log
 
 
 class TwitterManager:
@@ -10,23 +9,19 @@ class TwitterManager:
     __api = None
     __master_pid = os.getpid()
 
+    # Connect to the Twitter API using the stored credentials
     def connect_api(self):
-        if self.__api is None and os.environ.get("APP_WORKER_ID") is not None:
+        # Check to ensure that only a single thread opens a connection to the API
+        # Used for Gunicorn in production deployments
+        if self.__api is None and os.environ.get("APP_WORKER_ID") is None:
             self.__api = TwitterAPI(
                 self.__config.CONSUMER_KEY,
                 self.__config.CONSUMER_SECRET,
                 self.__config.ACCESS_TOKEN_KEY,
                 self.__config.ACCESS_TOKEN_SECRET)
 
-    def get_twitter_stream(self):
-        #                                                                   SW                    NE
-        self.connect_api()
-        if self.__api is not None:
-            return self.__api.request('statuses/filter', {'locations': '-4.393285,55.796184, -4.090421,55.920421'})
-        else:
-            return None
-
     def get_scotland_twitter_stream(self):
+        # Return a stream request from the Twitter API. Coordinates are for the bounding box of Scotland.
         #                                                                   SW                     NE
         self.connect_api()
         if self.__api is not None:

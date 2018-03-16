@@ -25,6 +25,6 @@ export class ScotlandDataManagerService extends AbstractDataManager {
   }
 
   protected listenOnSockets(): void {
-    this._tweet.scotland_district_tweets.subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
+    this._tweet.getScotlandDistrictTweets().subscribe((msg: Tweet) => this.updateLastTweet(msg, msg.ward));
   }
 }

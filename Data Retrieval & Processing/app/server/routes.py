@@ -76,9 +76,9 @@ def parse_twitter_data(tweets, date, period):
         totals[tweet.day.strftime('%Y-%m-%d')] = int(tweet.total)
 
     return {
-        'values': [v for k,v in values.items()],
+        'values': [v for k, v in values.items()],
         'total': total,
-        'totals': [v for k,v in totals.items()],
+        'totals': [v for k, v in totals.items()],
         'last_tweet': {
             'score': last_tweet_score,
             'text': last_tweet_text,
@@ -237,8 +237,7 @@ def format_word(word, sentiment, words):
 
 
 @data_routes.route('/api/<path:api_route>')
-def route(api_route):
-    # print(api_route)
+def route():
     return 'This api route does not exist'
 
 

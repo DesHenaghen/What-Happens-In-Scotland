@@ -40,7 +40,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
    * @param {SimpleChanges} changes
    */
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['ward']) {
+    if (changes['ward'] || changes['wards']) {
       this.setData();
     }
   }
