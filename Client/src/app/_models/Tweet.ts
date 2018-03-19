@@ -1,10 +1,10 @@
 export class Tweet {
-  id?: string;
-  text = '';
+  id? = '';
+  text = ' ';
   user: any = {};
   name?: string;
-  ward?: string;
-  area?: string;
+  ward? = '';
+  area? = '';
   coordinates?: number[];
   score?: number;
   text_sentiments: number[] = [];

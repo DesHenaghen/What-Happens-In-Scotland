@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
   private colour: any;
 
   public tweets: {[id: string]: Tweet[]} = {};
-  protected filteredTweets: {[id: string]: Tweet[]} = {};
+  public filteredTweets: {[id: string]: Tweet[]} = {};
 
   private districtSubscription: Subscription = new Subscription();
   private districtsSubscription: Subscription = new Subscription();
@@ -93,7 +93,6 @@ export class HomeComponent implements OnInit {
     }
     this.districtSubscription = this._dataManager.getDistrict().subscribe((district: District) => {
       this.district = district;
-      this.setStyling(district.id);
       this.filterTweets(this.currentKey, this.getDateFilteredTweets({dateString: this.currentKey}).length);
     });
 
@@ -133,6 +132,7 @@ export class HomeComponent implements OnInit {
 
         date.subtract(1, 'days');
       }
+
       this.setFilteredTweets();
     });
   }
@@ -201,36 +201,14 @@ export class HomeComponent implements OnInit {
       : [];
   }
 
-  /**
-   * Sets the css styling based on which ward is selected.
-   * @param {string} area - id of the selected ward
-   */
-  private setStyling(area: string): void {
-    if (area !== undefined) {
-      this.clearSelectedClass();
-      if (document.getElementById(area))
-        document.getElementById(area).classList.add('selected');
-    }
-  }
-
   public tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     this.setMode(tabChangeEvent.index);
   }
 
   public setMode(index: MapModes): void {
-    console.log(index);
     this.mapModeTabs.selectedIndex = index;
     this.currentMode = index;
     this._dataManager.selectDataManager(this.currentMode);
-  }
-
-  /**
-   * Removes the selected class from all wards drawn on the map
-   */
-  private clearSelectedClass(): void {
-    for (const [key] of Object.entries(this.districts)) {
-      document.getElementById(key).classList.remove('selected');
-    }
   }
 
   public commonWord(index: number) {

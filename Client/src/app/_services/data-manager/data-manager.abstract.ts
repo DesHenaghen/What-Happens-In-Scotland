@@ -170,6 +170,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   public loadDistrictsData(): void {
     this.loadedData.next(false);
     d3.json('./assets/json/' + this.dataFile, (error, topology: FeatureCollection<any>) => {
+      console.log(this.regionName, topology);
       if (error) {
         console.error(error);
       } else {

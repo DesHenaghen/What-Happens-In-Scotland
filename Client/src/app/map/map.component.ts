@@ -24,7 +24,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   protected margin = {top: 20, right: 20, bottom: 0, left: 50};
   protected height: number;
   protected width: number;
-  protected svg: any;
+  public svg: any;
   protected colour = Colour.getColour;
   protected projection;
   protected path: number;
@@ -36,7 +36,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
     'S12000036': MapModes.Edinburgh
   };
 
-  protected _dataManager: DataManagerInterface;
+  public _dataManager: DataManagerInterface;
 
   constructor() {
     this.width = 1000 - this.margin.left - this.margin.right;
@@ -56,12 +56,19 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
         this.loaded = loaded;
       });
 
-    this._dataManager.getDistrict().subscribe((district: District) => this.district = district);
+    this._dataManager.getDistrict().subscribe((district: District) => {
+      this.district = district;
+
+      if (district)
+        this.setStyling(district.id);
+    });
 
     this._dataManager.getLatestTweet().subscribe((tweet: Tweet) => {
       if (tweet !== undefined) {
         if (tweet.id !== (this._dataManager.getMapBoundaryId())) {
-          this.drawPoint(tweet.coordinates);
+          if (tweet.coordinates)
+            this.drawPoint(tweet.coordinates);
+
           this.pulsateDistrictElement(tweet.id);
         }
 
@@ -71,7 +78,10 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this._dataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => this.drawMap(topology));
+    this._dataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => {
+      if (topology)
+        this.drawMap(topology);
+    });
   }
 
   ngAfterViewInit() {
@@ -165,7 +175,13 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       // Define the outline of the shape based on the defined projection and polygon shape
       .attr('d', this.path)
       // Fill the polygon in with a colour from a range
-      .attr('fill', d => this.colour(this.districts[d.properties[this._dataManager.topologyId]].average))
+      .attr('fill', d => {
+        const average = (this.districts.hasOwnProperty(d.properties[this._dataManager.topologyId]))
+                          ? this.districts[d.properties[this._dataManager.topologyId]].average
+                          : 0;
+
+        this.colour(average);
+      })
       .attr('id', d => d.properties[this._dataManager.topologyId])
       .on('click', this.setData)
       .on('dblclick', this.changeMap)
@@ -176,10 +192,12 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   }
 
   private updateMapColours() {
-    for (const [key, value] of Object.entries(this.districts)) {
-      this.svg
-        .select('path#' + key)
-        .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => this.colour(value.average));
+    if (this.svg) {
+      for (const [key, value] of Object.entries(this.districts)) {
+        this.svg
+          .select('path#' + key)
+          .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => this.colour(value.average));
+      }
     }
   }
 
@@ -266,5 +284,27 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
 
   private isFeature(object: any): object is Feature<any> {
     return 'properties' in object;
+  }
+
+  /**
+   * Sets the css styling based on which ward is selected.
+   * @param {string} area - id of the selected ward
+   */
+  private setStyling(area: string): void {
+    if (area !== undefined) {
+      this.clearSelectedClass();
+      if (document.getElementById(area))
+        document.getElementById(area).classList.add('selected');
+    }
+  }
+
+  /**
+   * Removes the selected class from all wards drawn on the map
+   */
+  private clearSelectedClass(): void {
+    for (const [key] of Object.entries(this.districts)) {
+      if (document.getElementById(key))
+        document.getElementById(key).classList.remove('selected');
+    }
   }
 }

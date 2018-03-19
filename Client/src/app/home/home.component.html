@@ -77,7 +77,7 @@
           </mat-card-content>
         </mat-card>
         </mat-tab>
-        <mat-tab label="Tweets">
+        <mat-tab id="tweet_box_tab" label="Tweets">
           <div class="infoBox">
             <mat-tab-group id="tweetDateTabs" (selectedTabChange)="tweetDateTabChanged($event)">
               <mat-tab *ngFor="let tweetDate of tweetDates; trackBy: trackByTweetDate" label="{{tweetDate.title}}">
@@ -87,6 +87,7 @@
                 <mat-card>
                   <input
                     matInput
+                    id="tweet-search-box"
                     placeholder="Search"
                     [(ngModel)]="searchTerm"
                     (input)="filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)">
@@ -94,7 +95,7 @@
                   <span>
                     Sort By
                     <mat-form-field style="width: 7rem">
-                      <mat-select [(value)]="sorting" (selectionChange)="sortTweets(tweetDate)">
+                      <mat-select id="sort_tweets" [(value)]="sorting" (selectionChange)="sortTweets(tweetDate)">
                         <mat-option [value]="TweetSorting.DATE_DESC">Date Desc</mat-option>
                         <mat-option [value]="TweetSorting.DATE_ASC">Date Asc</mat-option>
                         <mat-option [value]="TweetSorting.SCORE_DESC">Score Desc</mat-option>
@@ -105,7 +106,7 @@
                   <h3 *ngIf="getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded" style="background-color: white">
                     There are no tweets for the selected date, region and filters
                   </h3>
-                  <div *ngIf="(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded">
+                  <div id="fwoop" *ngIf="(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded">
                     <div
                       class="tweet_details"
                       *ngFor="let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn">
