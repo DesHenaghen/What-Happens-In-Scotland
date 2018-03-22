@@ -78,15 +78,21 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this._dataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => {
-      if (topology)
-        this.drawMap(topology);
-    });
+    this._dataManager.getMapTopology().subscribe((topology: FeatureCollection<any>) => this.topologySubscription(topology));
   }
 
   ngAfterViewInit() {
     this.initVariables();
     this.sharedInit();
+  }
+
+  private topologySubscription(topology: FeatureCollection<any>) {
+    if (topology) {
+      if (this.districts)
+        this.drawMap(topology);
+      else
+        setInterval(this.topologySubscription(topology), 500);
+    }
   }
 
   public canZoomIn() {
@@ -109,6 +115,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
     this.svg = d3.select('#' + this.regionMap)
       .append('svg')
       .attr('id', this._dataManager.mapType + '-mapp')
+      .attr('class', 'svgMap')
       // Makes map resizeable
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', '0 0 ' + this.width + ' ' + this.height);
@@ -178,9 +185,8 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       .attr('fill', d => {
         const average = (this.districts.hasOwnProperty(d.properties[this._dataManager.topologyId]))
                           ? this.districts[d.properties[this._dataManager.topologyId]].average
-                          : 0;
-
-        this.colour(average);
+                          : 50;
+        return this.colour(average);
       })
       .attr('id', d => d.properties[this._dataManager.topologyId])
       .on('click', this.setData)
@@ -291,7 +297,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
    * @param {string} area - id of the selected ward
    */
   private setStyling(area: string): void {
-    if (area !== undefined) {
+    if (area) {
       this.clearSelectedClass();
       if (document.getElementById(area))
         document.getElementById(area).classList.add('selected');
@@ -302,9 +308,11 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
    * Removes the selected class from all wards drawn on the map
    */
   private clearSelectedClass(): void {
-    for (const [key] of Object.entries(this.districts)) {
-      if (document.getElementById(key))
-        document.getElementById(key).classList.remove('selected');
+    if (this.districts) {
+      for (const [key] of Object.entries(this.districts)) {
+        if (document.getElementById(key))
+          document.getElementById(key).classList.remove('selected');
+      }
     }
   }
 }

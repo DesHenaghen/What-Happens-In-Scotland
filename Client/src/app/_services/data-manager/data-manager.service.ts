@@ -118,5 +118,4 @@ export class DataManagerService implements DataManagerInterface {
   public setUpdateTweets(bool: boolean) {
     this._dataManager.setUpdateTweets(bool);
   }
-
 }

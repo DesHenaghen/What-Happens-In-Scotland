@@ -25,14 +25,14 @@ export class ScotlandMapComponent extends MapComponent {
   protected initVariables (): void {
 
     this.projection = d3.geo.albers()
-      .center([-0.0959, 57.60153])
+      .center([-0.9959, 57.80153])
       .rotate([3.1, 0])
       .parallels([50, 60])
-      .scale(8000)
+      .scale(8500)
       .translate([this.width / 2, this.height / 2]);
 
     this.offsetT = document.getElementById('map-background')
-                  ? document.getElementById('map-background').offsetTop
+                  ? document.getElementById('map-background').offsetTop - 20
                   : 0;
   }
 }

@@ -50,14 +50,13 @@ def convert_score_to_percentage(score):
 
 
 def parse_twitter_data(tweets, date, period):
-    start_date = datetime.datetime.strptime(date, '%Y-%m-%d') - datetime.timedelta(days=(int(period)-1))
+    start_date = datetime.datetime.strptime(date, '%Y-%m-%d %H') - datetime.timedelta(days=(int(period)-1))
     totals = {}
     values = {}
-    epoch = datetime.date.fromtimestamp(0)
-    while start_date <= datetime.datetime.strptime(date, '%Y-%m-%d'):
-        values[start_date.strftime('%Y-%m-%d')] = {'x': (start_date - datetime.datetime.combine(epoch, datetime.time())).total_seconds() * 1000, 'y': 50}
-        totals[start_date.strftime('%Y-%m-%d')] = 0
-        start_date += datetime.timedelta(days=1)
+    while start_date <= datetime.datetime.strptime(date, '%Y-%m-%d %H'):
+        values[start_date.strftime('%Y-%m-%d %H')] = {'x': start_date.timestamp() * 1000, 'y': 50}
+        totals[start_date.strftime('%Y-%m-%d %H')] = 0
+        start_date += datetime.timedelta(hours=1)
 
     total = 0
     last_tweet_text = format_html_text(tweets[-1])['text'] if len(tweets) > 0 else ""
@@ -67,13 +66,13 @@ def parse_twitter_data(tweets, date, period):
     last_tweet_score = convert_score_to_percentage(tweets[-1].compound_sent) if (len(tweets) > 0 and tweets[-1].compound_sent is not None) else 50
 
     for i, tweet in enumerate(tweets):
-        values[tweet.day.strftime('%Y-%m-%d')] = {
-            'x': (tweet.day - epoch).total_seconds() * 1000,
+        values[tweet.day.strftime('%Y-%m-%d %H')] = {
+            'x': tweet.day.timestamp() * 1000,
             'y': convert_score_to_percentage(tweet.avg_compound)
         }
 
         total += int(tweet.total)
-        totals[tweet.day.strftime('%Y-%m-%d')] = int(tweet.total)
+        totals[tweet.day.strftime('%Y-%m-%d %H')] = int(tweet.total)
 
     return {
         'values': [v for k, v in values.items()],

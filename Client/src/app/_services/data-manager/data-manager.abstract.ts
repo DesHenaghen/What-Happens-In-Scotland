@@ -136,6 +136,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   private updateDistrict(district: District, tweet: Tweet): District {
     if (this.updateTweets && new Date(district.values[district.values.length - 1].x).toDateString() === new Date().toDateString()) {
+      // Check if a new hour has started, in which case update all stats to be for this hour
+      if (moment(tweet.date).hour() !== moment(district.values[district.values.length - 1].x).hour())
+        this.addNewHourData();
+
       tweet.name = tweet.user.name;
 
       let sum = district.average * district.totals[district.totals.length - 1];
@@ -163,6 +167,18 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     return district;
   }
 
+  private addNewHourData() {
+    if (this.districts) {
+      const hourKey = moment().minute(0).second(0).millisecond(0).valueOf();
+      for (const district of Object.values(this.districts)) {
+        district.totals.push(0);
+        district.average = 50;
+        district.prettyAverage = 50;
+        district.values.push({ x: hourKey, y: 0});
+      }
+    }
+  }
+
   /**
    * Loads the districts from a JSON file. Generates data for these districts and passes this data
    * to the child map component.
@@ -170,7 +186,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   public loadDistrictsData(): void {
     this.loadedData.next(false);
     d3.json('./assets/json/' + this.dataFile, (error, topology: FeatureCollection<any>) => {
-      console.log(this.regionName, topology);
       if (error) {
         console.error(error);
       } else {
@@ -319,14 +334,14 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   }
 
   protected getDistrictsData(ids: string[], date: Date = new Date(), period: number = 3) {
-    const dateString: string = moment(date).format('YYYY-MM-DD');
+    const dateString: string = moment(date).format('YYYY-MM-DD HH');
     return this._http.get<any>('/api/' + this.apiDataRoute, {
       params: {ids, region: 'true', date: dateString, period: '' + period}
     });
   }
 
   protected getCommonWords(ids: string[], date: moment.Moment = moment(), period: number = 3) {
-    const dateString: string = date.format('YYYY-MM-DD');
+    const dateString: string = date.format('YYYY-MM-DD HH');
     const params = {
         ids,
         region: 'true',
@@ -342,7 +357,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   protected getDistrictsTweets(date: moment.Moment) {
     return this._http.get<any>('/api/districts_tweets', {
-      params: {date: date.format('YYYY-MM-DD')}
+      params: {date: date.format('YYYY-MM-DD HH')}
     });
   }
 

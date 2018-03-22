@@ -1,10 +1,13 @@
-<div *ngIf="!loaded" style="z-index: 9999999; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
-  <div class="loader"></div>
-</div>
+<div id="map-container">
+  <div *ngIf="!loaded" style="z-index: 9999999; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
+    <div class="loader"></div>
+  </div>
 
-<div [hidden]="!loaded" class="map-title header mat-card-title">
-  {{district.name}}
-  <button *ngIf="regionMap === 'scotland-map'" class="btn btn-secondary zoom" [class.disabled]="!canZoomIn()" (click)="zoomMapIn()"><i class="fas fa-search-plus fa-2x"></i></button>
-  <button *ngIf="regionMap !== 'scotland-map'" class="btn btn-secondary zoom" (click)="zoomMapOut()"><i class="fas fa-search-minus fa-2x"></i></button>
+  <div [hidden]="!loaded" class="map-title header mat-card-title">
+    {{district.name}}
+    <button *ngIf="regionMap === 'scotland-map' && canZoomIn()" class="btn btn-secondary zoom" (click)="zoomMapIn()"><i class="fas fa-search-plus fa-2x"></i></button>
+    <button *ngIf="regionMap !== 'scotland-map'" class="btn btn-secondary zoom" (click)="zoomMapOut()"><i class="fas fa-search-minus fa-2x"></i></button>
+  </div>
+
+  <div [hidden]="!loaded" [id]="regionMap" class="area-map"></div>
 </div>
-<div [hidden]="!loaded" [id]="regionMap" class="area-map"></div>

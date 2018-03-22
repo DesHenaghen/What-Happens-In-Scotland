@@ -184,6 +184,9 @@ class AbstractDataManager {
     }
     updateDistrict(district, tweet) {
         if (this.updateTweets && new Date(district.values[district.values.length - 1].x).toDateString() === new Date().toDateString()) {
+            // Check if a new hour has started, in which case update all stats to be for this hour
+            if (__WEBPACK_IMPORTED_MODULE_5_moment__(tweet.date).hour() !== __WEBPACK_IMPORTED_MODULE_5_moment__(district.values[district.values.length - 1].x).hour())
+                this.addNewHourData();
             tweet.name = tweet.user.name;
             let sum = district.average * district.totals[district.totals.length - 1];
             sum = (!isNaN(sum)) ? sum + tweet.score : tweet.score;
@@ -204,6 +207,17 @@ class AbstractDataManager {
         }
         return district;
     }
+    addNewHourData() {
+        if (this.districts) {
+            const hourKey = __WEBPACK_IMPORTED_MODULE_5_moment__().minute(0).second(0).millisecond(0).valueOf();
+            for (const district of Object.values(this.districts)) {
+                district.totals.push(0);
+                district.average = 50;
+                district.prettyAverage = 50;
+                district.values.push({ x: hourKey, y: 0 });
+            }
+        }
+    }
     /**
      * Loads the districts from a JSON file. Generates data for these districts and passes this data
      * to the child map component.
@@ -211,7 +225,6 @@ class AbstractDataManager {
     loadDistrictsData() {
         this.loadedData.next(false);
         d3.json('./assets/json/' + this.dataFile, (error, topology) => {
-            console.log(this.regionName, topology);
             if (error) {
                 console.error(error);
             }
@@ -335,13 +348,13 @@ class AbstractDataManager {
         this.district.next(this.districts[area]);
     }
     getDistrictsData(ids, date = new Date(), period = 3) {
-        const dateString = __WEBPACK_IMPORTED_MODULE_5_moment__(date).format('YYYY-MM-DD');
+        const dateString = __WEBPACK_IMPORTED_MODULE_5_moment__(date).format('YYYY-MM-DD HH');
         return this._http.get('/api/' + this.apiDataRoute, {
             params: { ids, region: 'true', date: dateString, period: '' + period }
         });
     }
     getCommonWords(ids, date = __WEBPACK_IMPORTED_MODULE_5_moment__(), period = 3) {
-        const dateString = date.format('YYYY-MM-DD');
+        const dateString = date.format('YYYY-MM-DD HH');
         const params = {
             ids,
             region: 'true',
@@ -355,7 +368,7 @@ class AbstractDataManager {
     }
     getDistrictsTweets(date) {
         return this._http.get('/api/districts_tweets', {
-            params: { date: date.format('YYYY-MM-DD') }
+            params: { date: date.format('YYYY-MM-DD HH') }
         });
     }
     setUpdateTweets(bool) {
@@ -1199,7 +1212,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#happinessChart {\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n", ""]);
+exports.push([module.i, "#happinessChart {\r\n  height: 100%;\r\n  width: 100%;\r\n}\r\n\r\n.nvd3 .nv-groups .nv-point {\r\n  stroke-opacity: 1 !important;\r\n  stroke-width: 2px;\r\n  -webkit-animation-duration: 1.2s;\r\n          animation-duration: 1.2s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n@-webkit-keyframes pointPulsate {\r\n  0%    { stroke-width: 5px; }\r\n  50%   { stroke-width: 10px; }\r\n  100%  { stroke-width: 5px; }\r\n}\r\n\r\n@keyframes pointPulsate {\r\n  0%    { stroke-width: 5px; }\r\n  50%   { stroke-width: 10px; }\r\n  100%  { stroke-width: 5px; }\r\n}\r\n\r\n@-webkit-keyframes pointPulsate2 {\r\n  0%    { stroke-width: 5px; }\r\n  50%   { stroke-width: 10px; }\r\n  100%  { stroke-width: 5px; }\r\n}\r\n\r\n@keyframes pointPulsate2 {\r\n  0%    { stroke-width: 5px; }\r\n  50%   { stroke-width: 10px; }\r\n  100%  { stroke-width: 5px; }\r\n}\r\n", ""]);
 
 // exports
 
@@ -1225,6 +1238,7 @@ module.exports = "<div id=\"happinessChartContainer\">\n  <nvd3 #timelineChart i
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nvd3__ = __webpack_require__("../../../../nvd3/build/nv.d3.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nvd3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_nvd3__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_District__ = __webpack_require__("../../../../../src/app/_models/District.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__models_Colour__ = __webpack_require__("../../../../../src/app/_models/Colour.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1237,11 +1251,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 /**
  * Component for the generation of a line chart to show happiness over time for a ward
  */
 let HappyTimelineComponent = class HappyTimelineComponent {
-    constructor() { }
+    constructor(_differs) {
+        this._differs = _differs;
+        this._differ = this._differs.find({}).create();
+    }
     ngOnInit() {
         this.setOptions();
     }
@@ -1254,9 +1272,29 @@ let HappyTimelineComponent = class HappyTimelineComponent {
             this.setData();
         }
     }
+    ngDoCheck() {
+        if (this._differ) {
+            const changes = this._differ.diff(this.ward);
+            if (changes) {
+                this.pulsePoint();
+                this.setData();
+            }
+        }
+    }
     refreshChart() {
         if (this.chart && this.chart.chart && this.chart.chart.update) {
             this.chart.chart.update();
+        }
+    }
+    pulsePoint() {
+        const element = document.querySelector('.nvd3 .nv-groups .nv-point-' + (this.ward.values.length - 1));
+        if (element) {
+            if (element.style.animationName === 'pointPulsate') {
+                element.style.animationName = 'pointPulsate2';
+            }
+            else {
+                element.style.animationName = 'pointPulsate';
+            }
         }
     }
     /**
@@ -1277,30 +1315,41 @@ let HappyTimelineComponent = class HappyTimelineComponent {
                 useInteractiveGuideline: true,
                 xAxis: {
                     axisLabel: 'Date',
-                    tickFormat: d => d3.time.format('%b %d')(new Date(d))
+                    staggerLabels: true,
+                    tickFormat: d => d3.time.format('%b %d, %I %p')(new Date(d))
                 },
                 yAxis: {
                     axisLabel: 'Positivity',
-                    tickFormat: d => d.toFixed(0) + '%',
+                    tickFormat: d => d.toFixed(1) + '%',
                     axisLabelDistance: -10
                 }
             }
         };
+        if (this.ward.values && this.ward.values.length > 0)
+            this.lineOptions.chart.forceX = [this.ward.values[0].x - 60, this.ward.values[this.ward.values.length - 1].x + 60];
     }
     /**
      * Sets the data for the happy timeline line chart
      */
     setData() {
-        if (this.ward.values) {
+        if (this.ward.values && this.ward.values.length > 0) {
+            if (this.lineOptions) {
+                this.lineOptions.chart.forceX = [this.ward.values[0].x - 3000000, this.ward.values[this.ward.values.length - 1].x + 6000000];
+            }
             // Line chart data should be sent as an array of series objects.
             this.lineData = [
                 {
                     values: this.ward.values,
                     key: 'Positivity',
-                    color: '#7cff6c',
+                    color: __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour(this.ward.values[this.ward.values.length - 1].y),
                     area: true // area - set to true if you want this line to turn into a filled area chart.
                 }
             ];
+            const lastPoint = document.querySelector('.nvd3 .nv-groups .nv-point-' + (this.ward.values.length - 1));
+            if (lastPoint) {
+                lastPoint.style.stroke = __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour((this.ward.values[this.ward.values.length - 1].y >= 50) ? 100 : 0);
+                lastPoint.style['stroke-width'] = '5px';
+            }
         }
     }
 };
@@ -1319,7 +1368,7 @@ HappyTimelineComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/happy-timeline/happy-timeline.component.css"), __webpack_require__("../../../../nvd3/build/nv.d3.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["KeyValueDiffers"]])
 ], HappyTimelineComponent);
 
 
@@ -1334,7 +1383,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  #districtInfoBox {\r\n    margin: 0;\r\n  }\r\n}\r\n\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
+exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right:-5px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  #districtInfoBox {\r\n    margin: 0 0 -10px;\r\n  }\r\n}\r\n\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
 
 // exports
 
@@ -1347,7 +1396,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"map-background\">\n  <div class=\"row\">\n    <div style=\"height: 800px\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <button type=\"button\" class=\"btn btn-secondary\" data-toggle=\"collapse\" data-target=\"#date-box\">\n        Select Dates\n        <i class=\"fas fa-angle-down\"></i>\n      </button>\n      <div id=\"date-box\" class=\"collapse\">\n        Showing the\n        <mat-form-field style=\"width: 2rem\">\n          <mat-select [(value)]=\"period\">\n            <mat-option *ngFor=\"let i of [1,2,3,4,5,6,7]\" [value]=\"i\">{{i}}</mat-option>\n          </mat-select>\n        </mat-form-field>\n        days up to\n        <mat-form-field style=\"width: 7rem\">\n          <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\n          <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\n          <mat-datepicker #picker></mat-datepicker>\n        </mat-form-field>\n        <button class=\"btn btn-primary\" (click)=\"refreshData()\">Refresh</button>\n      </div>\n      <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n        <mat-tab label=\"Scotland\"></mat-tab>\n        <mat-tab label=\"Glasgow\"></mat-tab>\n        <mat-tab label=\"Edinburgh\"></mat-tab>\n      </mat-tab-group>\n\n      <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n      <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n      <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" style=\"height: 90vh\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\">\n              <div class=\"col\">\n                <h3 class=\"centre\"><b>Common Words</b></h3>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(0)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(1)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(2)}}\n                </h4>\n              </div>\n              <div class=\"col\">\n                <br>\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; height:75vh; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
+module.exports = "<div id=\"map-background\">\n    <div id=\"date-box\">\n      Showing the\n      <mat-form-field style=\"width: 2rem\">\n        <mat-select [(value)]=\"period\">\n          <mat-option *ngFor=\"let i of [1,2,3,4,5,6,7]\" [value]=\"i\">{{i}}</mat-option>\n        </mat-select>\n      </mat-form-field>\n      days up to\n      <mat-form-field style=\"width: 7rem\">\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\n        <mat-datepicker #picker></mat-datepicker>\n      </mat-form-field>\n      <button class=\"btn btn-primary\" (click)=\"refreshData()\">Refresh</button>\n    </div>\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\">\n              <div class=\"col\">\n                <h3 class=\"centre\"><b>Common Words</b></h3>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(0)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(1)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(2)}}\n                </h4>\n              </div>\n              <div class=\"col\">\n                <br>\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -1531,7 +1580,6 @@ let HomeComponent = class HomeComponent {
             : [];
     }
     setMode(index) {
-        console.log(index);
         this.mapModeTabs.selectedIndex = index;
         this.currentMode = index;
         this._dataManager.selectDataManager(this.currentMode);
@@ -1713,7 +1761,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "div.tooltip {\r\n  color: #222;\r\n  background: #fff;\r\n  border-radius: 3px;\r\n  box-shadow: 0 0 2px 0 #a6a6a6;\r\n  padding: .2em;\r\n  text-shadow: #f5f5f5 0 1px 0;\r\n  opacity: 0.9;\r\n  position: absolute;\r\n}\r\n\r\n.districts {\r\n  cursor: pointer;\r\n  stroke: #000;\r\n  -webkit-animation-duration: 1s;\r\n          animation-duration: 1s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.districts:hover {\r\n  fill: #a2a2a2;\r\n}\r\n\r\n.boundary:hover {\r\n  stroke: #a2a2a2;\r\n}\r\n\r\n.place-label {\r\n  pointer-events:none;\r\n}\r\n\r\n.districts.selected {\r\n  stroke-width: 5px;\r\n}\r\n\r\n.area-map {\r\n  text-align: center;\r\n}\r\n\r\n.map-title {\r\n  margin: 1%;\r\n}\r\n\r\n.area-map svg {\r\n  max-height: 80vh;\r\n  left: 0;\r\n  position: absolute;\r\n  min-height: 50vh;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  .area-map svg {\r\n    /*max-width: 40vw;*/\r\n  }\r\n}\r\n\r\n@media (min-width: 768px) and (max-width: 991px) {\r\n  .area-map svg {\r\n    max-width: 70vw;\r\n  }\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  .area-map svg {\r\n    width: 130vw;\r\n    height: 85vh;\r\n  }\r\n}\r\n\r\n.boundary {\r\n  fill: none;\r\n  stroke-linejoin: round;\r\n  stroke-width: 4vh !important;\r\n  cursor: pointer;\r\n  -webkit-animation-duration: 0.5s;\r\n          animation-duration: 0.5s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.btn.zoom {\r\n  float: right;\r\n  margin-right: 2vw;\r\n  border-radius: 3vw;\r\n}\r\n\r\n@-webkit-keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 5px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 5px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 5px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 5px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n/*Page loading spinner*/\r\n.loader {\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  border: 16px solid #f3f3f3; /* Light grey */\r\n  border-top: 16px solid #3498db; /* Blue */\r\n  border-radius: 50%;\r\n  width: 120px;\r\n  height: 120px;\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n\r\n@-webkit-keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n@keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n", ""]);
+exports.push([module.i, "div.tooltip {\r\n  color: #222;\r\n  background: #fff;\r\n  border-radius: 3px;\r\n  box-shadow: 0 0 2px 0 #a6a6a6;\r\n  padding: .2em;\r\n  text-shadow: #f5f5f5 0 1px 0;\r\n  opacity: 0.9;\r\n  position: absolute;\r\n}\r\n\r\n.districts {\r\n  cursor: pointer;\r\n  stroke: #000;\r\n  -webkit-animation-duration: 1.2s;\r\n          animation-duration: 1.2s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.districts:hover {\r\n  fill: #a2a2a2;\r\n}\r\n\r\n.boundary:hover {\r\n  stroke: #a2a2a2;\r\n}\r\n\r\n.place-label {\r\n  pointer-events:none;\r\n}\r\n\r\n.districts.selected {\r\n  stroke-width: 5px;\r\n}\r\n\r\n.area-map {\r\n  text-align: center;\r\n  width: 100%;\r\n}\r\n\r\n.map-title {\r\n  margin: 1%;\r\n}\r\n\r\n.area-map svg {\r\n  /*max-height: 80vh;*/\r\n  left: 0;\r\n  position: relative;\r\n  width: 100%\r\n}\r\n\r\ndiv.row {\r\n  margin-right: 0;\r\n}\r\n\r\n\r\n/*@media (min-width: 992px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 40vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (min-width: 768px) and (max-width: 991px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 70vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (max-width: 767px) {*/\r\n  /*#map-container svg {*/\r\n    /*!*width: 130vw;*!*/\r\n    /*height: 85vh;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n.svgMap {\r\n  max-height: 75vh;\r\n}\r\n\r\n.boundary {\r\n  fill: none;\r\n  stroke-linejoin: round;\r\n  stroke-width: 4vh !important;\r\n  cursor: pointer;\r\n  -webkit-animation-duration: 0.5s;\r\n          animation-duration: 0.5s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.btn.zoom {\r\n  float: right;\r\n  margin-right: 2vw;\r\n  border-radius: 3vw;\r\n}\r\n\r\n@-webkit-keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n/*Page loading spinner*/\r\n.loader {\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  border: 16px solid #f3f3f3; /* Light grey */\r\n  border-top: 16px solid #3498db; /* Blue */\r\n  border-radius: 50%;\r\n  width: 120px;\r\n  height: 120px;\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n\r\n@-webkit-keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n@keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -1726,7 +1774,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/map/map.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"!loaded\" style=\"z-index: 9999999; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n  <div class=\"loader\"></div>\n</div>\n\n<div [hidden]=\"!loaded\" class=\"map-title header mat-card-title\">\n  {{district.name}}\n  <button *ngIf=\"regionMap === 'scotland-map'\" class=\"btn btn-secondary zoom\" [class.disabled]=\"!canZoomIn()\" (click)=\"zoomMapIn()\"><i class=\"fas fa-search-plus fa-2x\"></i></button>\n  <button *ngIf=\"regionMap !== 'scotland-map'\" class=\"btn btn-secondary zoom\" (click)=\"zoomMapOut()\"><i class=\"fas fa-search-minus fa-2x\"></i></button>\n</div>\n<div [hidden]=\"!loaded\" [id]=\"regionMap\" class=\"area-map\"></div>\n"
+module.exports = "<div id=\"map-container\">\n  <div *ngIf=\"!loaded\" style=\"z-index: 9999999; height:100%; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n    <div class=\"loader\"></div>\n  </div>\n\n  <div [hidden]=\"!loaded\" class=\"map-title header mat-card-title\">\n    {{district.name}}\n    <button *ngIf=\"regionMap === 'scotland-map' && canZoomIn()\" class=\"btn btn-secondary zoom\" (click)=\"zoomMapIn()\"><i class=\"fas fa-search-plus fa-2x\"></i></button>\n    <button *ngIf=\"regionMap !== 'scotland-map'\" class=\"btn btn-secondary zoom\" (click)=\"zoomMapOut()\"><i class=\"fas fa-search-minus fa-2x\"></i></button>\n  </div>\n\n  <div [hidden]=\"!loaded\" [id]=\"regionMap\" class=\"area-map\"></div>\n</div>\n"
 
 /***/ }),
 
@@ -1840,14 +1888,19 @@ class MapComponent {
                 }
             }
         });
-        this._dataManager.getMapTopology().subscribe((topology) => {
-            if (topology)
-                this.drawMap(topology);
-        });
+        this._dataManager.getMapTopology().subscribe((topology) => this.topologySubscription(topology));
     }
     ngAfterViewInit() {
         this.initVariables();
         this.sharedInit();
+    }
+    topologySubscription(topology) {
+        if (topology) {
+            if (this.districts)
+                this.drawMap(topology);
+            else
+                setInterval(this.topologySubscription(topology), 500);
+        }
     }
     canZoomIn() {
         return this.mapModeMapping.hasOwnProperty(this.district.id);
@@ -1865,6 +1918,7 @@ class MapComponent {
         this.svg = d3.select('#' + this.regionMap)
             .append('svg')
             .attr('id', this._dataManager.mapType + '-mapp')
+            .attr('class', 'svgMap')
             .attr('preserveAspectRatio', 'xMinYMin meet')
             .attr('viewBox', '0 0 ' + this.width + ' ' + this.height);
         this.path = d3.geo.path().projection(this.projection);
@@ -1920,8 +1974,8 @@ class MapComponent {
             .attr('fill', d => {
             const average = (this.districts.hasOwnProperty(d.properties[this._dataManager.topologyId]))
                 ? this.districts[d.properties[this._dataManager.topologyId]].average
-                : 0;
-            this.colour(average);
+                : 50;
+            return this.colour(average);
         })
             .attr('id', d => d.properties[this._dataManager.topologyId])
             .on('click', this.setData)
@@ -1979,7 +2033,7 @@ class MapComponent {
      * @param {string} area - id of the selected ward
      */
     setStyling(area) {
-        if (area !== undefined) {
+        if (area) {
             this.clearSelectedClass();
             if (document.getElementById(area))
                 document.getElementById(area).classList.add('selected');
@@ -1989,9 +2043,11 @@ class MapComponent {
      * Removes the selected class from all wards drawn on the map
      */
     clearSelectedClass() {
-        for (const [key] of Object.entries(this.districts)) {
-            if (document.getElementById(key))
-                document.getElementById(key).classList.remove('selected');
+        if (this.districts) {
+            for (const [key] of Object.entries(this.districts)) {
+                if (document.getElementById(key))
+                    document.getElementById(key).classList.remove('selected');
+            }
         }
     }
 }
@@ -2037,13 +2093,13 @@ let ScotlandMapComponent = class ScotlandMapComponent extends __WEBPACK_IMPORTED
     }
     initVariables() {
         this.projection = d3.geo.albers()
-            .center([-0.0959, 57.60153])
+            .center([-0.9959, 57.80153])
             .rotate([3.1, 0])
             .parallels([50, 60])
-            .scale(8000)
+            .scale(8500)
             .translate([this.width / 2, this.height / 2]);
         this.offsetT = document.getElementById('map-background')
-            ? document.getElementById('map-background').offsetTop
+            ? document.getElementById('map-background').offsetTop - 20
             : 0;
     }
 };
@@ -2069,7 +2125,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#tweet_box {\r\n  top: 2%;\r\n  margin-top: 5%;\r\n  right: 1%;\r\n  /*border: black solid;*/\r\n  background-color: white;\r\n  max-height: 85vh;\r\n  width: 100%;\r\n  overflow-y: auto;\r\n  /*right: 0;*/\r\n  position: absolute;\r\n  /*top: 10px;*/\r\n  /*border-radius: 2vh;*/\r\n  color: #14171a;\r\n  font-family: 'Segoe UI',Arial,sans-serif;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  #tweet_box {\r\n\r\n  }\r\n}\r\n\r\n\r\n@media (min-width: 768px) and (max-width: 991px) {\r\n  #tweet_box {\r\n    margin-right: 7%;\r\n  }\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweet_box {\r\n    margin: 0 4%;\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n#tweet_box .header {\r\n  font-size: 1.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#tweet_box p {\r\n  font-size: 1rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n.good_word {\r\n  color: #3e3e86;\r\n  -webkit-filter: drop-shadow(0 0 3px dodgerblue);\r\n          filter: drop-shadow(0 0 3px dodgerblue);\r\n}\r\n\r\n.bad_word {\r\n  color: #bf4545;\r\n  -webkit-filter: drop-shadow(0 0 3px salmon);\r\n          filter: drop-shadow(0 0 3px salmon);\r\n}\r\n\r\n.pause-tweets {\r\n  margin-bottom: 30px;\r\n  height: 30px;\r\n  line-height: 18px;\r\n}\r\n", ""]);
+exports.push([module.i, "#tweet_box {\r\n  top: 2%;\r\n  right: 1%;\r\n  /*border: black solid;*/\r\n  background-color: white;\r\n  max-height: 85vh;\r\n  width: 100%;\r\n  overflow-y: auto;\r\n  /*right: 0;*/\r\n  position: absolute;\r\n  /*top: 10px;*/\r\n  /*border-radius: 2vh;*/\r\n  color: #14171a;\r\n  font-family: 'Segoe UI',Arial,sans-serif;\r\n}\r\n\r\n#infoBox {\r\n  padding-right: 0;\r\n}\r\n\r\n#tweet_box {\r\n  top: 0;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweet_box {\r\n    margin: 0 4%;\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n#tweet_box .header {\r\n  font-size: 1.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#tweet_box p {\r\n  font-size: 1rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n.good_word {\r\n  color: #3e3e86;\r\n  -webkit-filter: drop-shadow(0 0 3px dodgerblue);\r\n          filter: drop-shadow(0 0 3px dodgerblue);\r\n}\r\n\r\n.bad_word {\r\n  color: #bf4545;\r\n  -webkit-filter: drop-shadow(0 0 3px salmon);\r\n          filter: drop-shadow(0 0 3px salmon);\r\n}\r\n\r\n.pause-tweets {\r\n  margin-bottom: 30px;\r\n  height: 30px;\r\n  line-height: 18px;\r\n}\r\n", ""]);
 
 // exports
 

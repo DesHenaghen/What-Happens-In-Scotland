@@ -12,7 +12,7 @@ div.tooltip {
 .districts {
   cursor: pointer;
   stroke: #000;
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   animation-iteration-count: 1;
   animation-timing-function: linear;
 }
@@ -35,6 +35,7 @@ div.tooltip {
 
 .area-map {
   text-align: center;
+  width: 100%;
 }
 
 .map-title {
@@ -42,29 +43,38 @@ div.tooltip {
 }
 
 .area-map svg {
-  max-height: 80vh;
+  /*max-height: 80vh;*/
   left: 0;
-  position: absolute;
-  min-height: 50vh;
+  position: relative;
+  width: 100%
 }
 
-@media (min-width: 992px) {
-  .area-map svg {
+div.row {
+  margin-right: 0;
+}
+
+
+/*@media (min-width: 992px) {*/
+  /*#map-container {*/
     /*max-width: 40vw;*/
-  }
-}
+  /*}*/
+/*}*/
 
-@media (min-width: 768px) and (max-width: 991px) {
-  .area-map svg {
-    max-width: 70vw;
-  }
-}
+/*@media (min-width: 768px) and (max-width: 991px) {*/
+  /*#map-container {*/
+    /*max-width: 70vw;*/
+  /*}*/
+/*}*/
 
-@media (max-width: 767px) {
-  .area-map svg {
-    width: 130vw;
-    height: 85vh;
-  }
+/*@media (max-width: 767px) {*/
+  /*#map-container svg {*/
+    /*!*width: 130vw;*!*/
+    /*height: 85vh;*/
+  /*}*/
+/*}*/
+
+.svgMap {
+  max-height: 75vh;
 }
 
 .boundary {
@@ -97,13 +107,13 @@ div.tooltip {
 
 @keyframes districtPulsate {
   0%    { stroke-width: 1px; }
-  50%   { stroke-width: 5px; }
+  50%   { stroke-width: 6px; }
   100%  { stroke-width: 1px; }
 }
 
 @keyframes districtPulsate2 {
   0%    { stroke-width: 1px; }
-  50%   { stroke-width: 5px; }
+  50%   { stroke-width: 6px; }
   100%  { stroke-width: 1px; }
 }
 

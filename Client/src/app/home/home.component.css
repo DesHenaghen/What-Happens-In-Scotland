@@ -15,6 +15,26 @@ html, body {
   height: 100%;
 }
 
+#mapBox {
+  min-height: 50vh;
+  margin-left: 5px;
+}
+
+mat-card.mapCard {
+  padding: 0;
+}
+
+#tweets_box {
+  height: 100%;
+  margin-right:-5px;
+}
+
+@media (max-width: 767px) {
+  #tweets_box {
+    height: 80vh;
+  }
+}
+
 #chart-box {
   border-color: #686666;
   border-style: solid;
@@ -51,7 +71,7 @@ html, body {
 
 @media (min-width: 992px) {
   #districtInfoBox {
-    margin: 0;
+    margin: 0 0 -10px;
   }
 }
 

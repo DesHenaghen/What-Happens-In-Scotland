@@ -2,3 +2,23 @@
   height: 100%;
   width: 100%;
 }
+
+.nvd3 .nv-groups .nv-point {
+  stroke-opacity: 1 !important;
+  stroke-width: 2px;
+  animation-duration: 1.2s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
+@keyframes pointPulsate {
+  0%    { stroke-width: 5px; }
+  50%   { stroke-width: 10px; }
+  100%  { stroke-width: 5px; }
+}
+
+@keyframes pointPulsate2 {
+  0%    { stroke-width: 5px; }
+  50%   { stroke-width: 10px; }
+  100%  { stroke-width: 5px; }
+}

@@ -1,9 +1,7 @@
 import _thread
 
-import sys
 from urllib3.exceptions import ProtocolError
 
-import logger as log
 import configuration
 import DatabaseManager as dbMan
 import TwitterManager as twMan

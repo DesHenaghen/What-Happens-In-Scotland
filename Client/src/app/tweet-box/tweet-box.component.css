@@ -1,6 +1,5 @@
 #tweet_box {
   top: 2%;
-  margin-top: 5%;
   right: 1%;
   /*border: black solid;*/
   background-color: white;
@@ -15,17 +14,12 @@
   font-family: 'Segoe UI',Arial,sans-serif;
 }
 
-@media (min-width: 992px) {
-  #tweet_box {
-
-  }
+#infoBox {
+  padding-right: 0;
 }
 
-
-@media (min-width: 768px) and (max-width: 991px) {
-  #tweet_box {
-    margin-right: 7%;
-  }
+#tweet_box {
+  top: 0;
 }
 
 @media (max-width: 767px) {

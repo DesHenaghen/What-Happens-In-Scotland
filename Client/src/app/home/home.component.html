@@ -1,40 +1,38 @@
 <div id="map-background">
+    <div id="date-box">
+      Showing the
+      <mat-form-field style="width: 2rem">
+        <mat-select [(value)]="period">
+          <mat-option *ngFor="let i of [1,2,3,4,5,6,7]" [value]="i">{{i}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      days up to
+      <mat-form-field style="width: 7rem">
+        <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button class="btn btn-primary" (click)="refreshData()">Refresh</button>
+    </div>
   <div class="row">
-    <div style="height: 800px" class="col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12">
-      <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#date-box">
-        Select Dates
-        <i class="fas fa-angle-down"></i>
-      </button>
-      <div id="date-box" class="collapse">
-        Showing the
-        <mat-form-field style="width: 2rem">
-          <mat-select [(value)]="period">
-            <mat-option *ngFor="let i of [1,2,3,4,5,6,7]" [value]="i">{{i}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        days up to
-        <mat-form-field style="width: 7rem">
-          <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <button class="btn btn-primary" (click)="refreshData()">Refresh</button>
-      </div>
-      <mat-tab-group id="mapModeTabs" #mapModeTabs (selectedTabChange)="tabChanged($event)">
-        <mat-tab label="Scotland"></mat-tab>
-        <mat-tab label="Glasgow"></mat-tab>
-        <mat-tab label="Edinburgh"></mat-tab>
-      </mat-tab-group>
+    <div id="mapBox" class="col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12">
+      <mat-card class="mapCard">
+        <mat-tab-group id="mapModeTabs" #mapModeTabs (selectedTabChange)="tabChanged($event)">
+          <mat-tab label="Scotland"></mat-tab>
+          <mat-tab label="Glasgow"></mat-tab>
+          <mat-tab label="Edinburgh"></mat-tab>
+        </mat-tab-group>
 
-      <app-glasgow-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
-      <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
-      <app-edinburgh-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Edinburgh"></app-edinburgh-map>
+        <app-glasgow-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Glasgow"></app-glasgow-map>
+        <app-scotland-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Scotland"></app-scotland-map>
+        <app-edinburgh-map (mapMode)="setMode($event)" [hidden]="currentMode!=mapModes.Edinburgh"></app-edinburgh-map>
+      </mat-card>
     </div>
     <div
       class="next-page-chevron d-md-none"
       [ngx-scroll-to]="'#tweets_box'"
     ><i class="fas fa-angle-down fa-2x"></i></div>
-    <div id="tweets_box" style="height: 90vh" class="col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12">
+    <div id="tweets_box" class="col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12">
       <app-tweet-box [ward]="district"></app-tweet-box>
     </div>
     <div
@@ -81,7 +79,7 @@
           <div class="infoBox">
             <mat-tab-group id="tweetDateTabs" (selectedTabChange)="tweetDateTabChanged($event)">
               <mat-tab *ngFor="let tweetDate of tweetDates; trackBy: trackByTweetDate" label="{{tweetDate.title}}">
-                <div *ngIf="!tweetDate.loaded" style="z-index: 9999999; height:75vh; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
+                <div *ngIf="!tweetDate.loaded" style="z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)">
                   <div class="loader"></div>
                 </div>
                 <mat-card>
