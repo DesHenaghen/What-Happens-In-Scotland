@@ -26,7 +26,7 @@ mat-card.mapCard {
 
 #tweets_box {
   height: 100%;
-  margin-right:-5px;
+  margin-right: -10px;
 }
 
 @media (max-width: 767px) {
@@ -67,6 +67,10 @@ mat-card.mapCard {
   /*background-color: #f6f6f6;*/
   max-height: 85vh;
   overflow-y: auto;
+}
+
+#infoBox {
+  margin-right: 5px;
 }
 
 @media (min-width: 992px) {
@@ -120,6 +124,10 @@ score-mark {
   color: #FFF;
   font-weight: 700;
   text-align: center;
+}
+
+div.row {
+  margin-top: 10px;
 }
 
 score-mark.wide {

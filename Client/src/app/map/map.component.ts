@@ -25,7 +25,6 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
   protected height: number;
   protected width: number;
   public svg: any;
-  protected colour = Colour.getColour;
   protected projection;
   protected path: number;
   protected tooltip: any;
@@ -165,7 +164,40 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
 
       // Draw each district polygon
       this.drawDistricts(topology);
+
+      this.renderLegend();
     }
+  }
+
+  /**
+   *
+   */
+  public renderLegend(): void {
+
+    const legend = this.svg.selectAll('g.legend')
+      .data(Colour.getColourDomain())
+      .enter().append('g')
+      .attr('class', 'legend');
+
+    const ls_w = 30, ls_h = 30;
+
+    legend.append('rect')
+      .attr('x', this.width - (ls_w * 6))
+      .attr('y', (d, i) => this.height - (i * ls_h) - 2 * ls_h)
+      .attr('width', ls_w)
+      .attr('height', ls_h)
+      .style('fill', (d, i) => Colour.getColour(d))
+      .style('opacity', 0.8);
+
+    legend.append('text')
+      .attr('x', this.width - (ls_w * 4.5))
+      .attr('y', (d, i) => this.height - (i * ls_h) - ls_h - 4)
+      .text((d, i) => Colour.getColourDomainLabels()[i]);
+
+    legend.append('text')
+      .attr('x', this.width - (ls_w * 6))
+      .attr('y', () => this.height - (Colour.getColourDomain().length * ls_h) - ls_h - 4)
+      .text('Percent Positive');
   }
 
   /**
@@ -186,7 +218,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
         const average = (this.districts.hasOwnProperty(d.properties[this._dataManager.topologyId]))
                           ? this.districts[d.properties[this._dataManager.topologyId]].average
                           : 50;
-        return this.colour(average);
+        return Colour.getColour(average);
       })
       .attr('id', d => d.properties[this._dataManager.topologyId])
       .on('click', this.setData)
@@ -202,7 +234,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       for (const [key, value] of Object.entries(this.districts)) {
         this.svg
           .select('path#' + key)
-          .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => this.colour(value.average));
+          .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => Colour.getColour(value.average));
       }
     }
   }
@@ -217,7 +249,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
     // Only returns the arcs that aren't shared by districts i.e the outer bounds
       .datum(topojson.mesh(topology, topology.objects[0], (a, b) => a === b ))
       .attr('d', this.path)
-      .attr('stroke', () => this.colour(this.districts[this._dataManager.getMapBoundaryId()].average))
+      .attr('stroke', () => Colour.getColour(this.districts[this._dataManager.getMapBoundaryId()].average))
       .attr('id', this._dataManager.getMapBoundaryId())
       .attr('class', 'boundary selected')
       .on('click', this.setData)

@@ -1,19 +1,4 @@
 <div id="map-background">
-    <div id="date-box">
-      Showing the
-      <mat-form-field style="width: 2rem">
-        <mat-select [(value)]="period">
-          <mat-option *ngFor="let i of [1,2,3,4,5,6,7]" [value]="i">{{i}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      days up to
-      <mat-form-field style="width: 7rem">
-        <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <button class="btn btn-primary" (click)="refreshData()">Refresh</button>
-    </div>
   <div class="row">
     <div id="mapBox" class="col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12">
       <mat-card class="mapCard">

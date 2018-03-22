@@ -15,7 +15,6 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 // Components
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { AppRoutingModule } from './app-routing.module';
 import { HappyRankComponent } from './happy-rank/happy-rank.component';
 import { HappyTimelineComponent } from './happy-timeline/happy-timeline.component';
 import { GlasgowMapComponent } from './map/glasgow-map/glasgow-map.component';
@@ -50,7 +49,6 @@ import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material';
     HttpClientModule,
     FormsModule,
     NvD3Module,
-    AppRoutingModule,
     MatTabsModule,
     MatCardModule,
     MatInputModule,

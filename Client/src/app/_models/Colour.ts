@@ -17,4 +17,16 @@ export class Colour {
       else
         return '#c20000';
   }
+
+  public static getColourDomain(): number[] {
+    return [0, 20, 30, 40, 50, 60, 70, 80];
+  }
+
+  public static getColourDomainLabels(): string[] {
+    return ['<20', '20+', '30+', '40+', '50+', '60+', '70+', '>80'];
+  }
+
+  public static getColours(): string[] {
+    return ['#c20000', '#e33940', '#fe8a87', '#f3c8db', '#afb9f1', '#588bca', '#213f85', '#0a1b37'];
+  }
 }

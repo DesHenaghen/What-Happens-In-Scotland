@@ -77,6 +77,10 @@ div.row {
   max-height: 75vh;
 }
 
+.legend {
+  font-size: 20px;
+}
+
 .boundary {
   fill: none;
   stroke-linejoin: round;

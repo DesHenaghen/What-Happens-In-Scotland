@@ -40,6 +40,15 @@ class Colour {
         else
             return '#c20000';
     }
+    static getColourDomain() {
+        return [0, 20, 30, 40, 50, 60, 70, 80];
+    }
+    static getColourDomainLabels() {
+        return ['<20', '20+', '30+', '40+', '50+', '60+', '70+', '>80'];
+    }
+    static getColours() {
+        return ['#c20000', '#e33940', '#fe8a87', '#f3c8db', '#afb9f1', '#588bca', '#213f85', '#0a1b37'];
+    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Colour;
 
@@ -818,43 +827,6 @@ WebSocketService = __decorate([
 
 /***/ }),
 
-/***/ "../../../../../src/app/app-routing.module.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm2015/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/esm2015/router.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home_component__ = __webpack_require__("../../../../../src/app/home/home.component.ts");
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-
-
-const appRoutes = [
-    { path: '**', component: __WEBPACK_IMPORTED_MODULE_2__home_home_component__["a" /* HomeComponent */] }
-];
-let AppRoutingModule = class AppRoutingModule {
-};
-AppRoutingModule = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
-        imports: [
-            __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* RouterModule */].forRoot(appRoutes)
-        ],
-        exports: [
-            __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* RouterModule */]
-        ]
-    })
-], AppRoutingModule);
-
-
-
-/***/ }),
-
 /***/ "../../../../../src/app/app.component.css":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -863,7 +835,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, ".navbar {\r\n  background-color: #0009 !important;\r\n}\r\n\r\n.navbar .navbar-brand {\r\n  color: rgb(255,255,255);\r\n}\r\n\r\n.nav-link.disabled {\r\n  cursor: default;\r\n}\r\n\r\nfooter {\r\n  display: -webkit-box;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n}\r\n\r\n.nav-link.feedback {\r\n  color: white !important;\r\n  background-color: cadetblue;\r\n  border-radius: 10px;\r\n  font-size: 18px;\r\n  font-weight: bold;\r\n  padding: 5px;\r\n  text-align: center;\r\n  margin-top: 5px;\r\n}\r\n\r\n#intro-box {\r\n  position: fixed;\r\n  width: 100%;\r\n  height: 100%;\r\n  top: 0;\r\n  left: 0;\r\n  z-index: 9999999999999999;\r\n  background-color: rgba(0, 0, 0, 0.66);\r\n}\r\n\r\n#intro-message {\r\n  text-align: center;\r\n  position: absolute;\r\n  top: 50%;\r\n  left: 50%;\r\n  width: 350px;\r\n  height: 500px;\r\n  margin-left: -175px;\r\n  margin-top: -250px;\r\n  overflow: auto;\r\n}\r\n\r\n@media (max-width: 508px) {\r\n  #intro-message {\r\n    width: 250px;\r\n    height: 400px;\r\n    margin-left: -125px;\r\n    margin-top: -200px;\r\n  }\r\n}\r\n\r\n#text-box {\r\n  background-color: aliceblue;\r\n  border-radius: 13px;\r\n  padding: 20px;\r\n}\r\n\r\n/* The slider itself */\r\n.slider {\r\n  -webkit-appearance: none;  /* Override default CSS styles */\r\n  -moz-appearance: none;\r\n       appearance: none;\r\n  width: 100%; /* Full-width */\r\n  height: 25px; /* Specified height */\r\n  background: #d3d3d3; /* Grey background */\r\n  outline: none; /* Remove outline */\r\n  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */ /* 0.2 seconds transition on hover */\r\n  transition: opacity .2s;\r\n}\r\n\r\n/* Mouse-over effects */\r\n.slider:hover {\r\n  opacity: 1; /* Fully shown on mouse-over */\r\n}\r\n\r\n/* The slider handle (use webkit (Chrome, Opera, Safari, Edge) and moz (Firefox) to override default look) */\r\n.slider::-webkit-slider-thumb {\r\n  -webkit-appearance: none; /* Override default look */\r\n  appearance: none;\r\n  width: 25px; /* Set a specific slider handle width */\r\n  height: 25px; /* Slider handle height */\r\n  background: #4CAF50; /* Green background */\r\n  cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n.slider::-moz-range-thumb {\r\n  width: 25px; /* Set a specific slider handle width */\r\n  height: 25px; /* Slider handle height */\r\n  background: #4CAF50; /* Green background */\r\n  cursor: pointer; /* Cursor on hover */\r\n}\r\n", ""]);
+exports.push([module.i, ".navbar {\r\n  background-color: #0009 !important;\r\n}\r\n\r\n.navbar .navbar-brand {\r\n  color: rgb(255,255,255);\r\n}\r\n\r\n.nav-link.disabled {\r\n  cursor: default;\r\n}\r\n\r\nfooter {\r\n  display: -webkit-box;\r\n  display: -ms-flexbox;\r\n  display: flex;\r\n}\r\n\r\n.nav-link.feedback {\r\n  color: white !important;\r\n  background-color: cadetblue;\r\n  border-radius: 10px;\r\n  font-size: 18px;\r\n  font-weight: bold;\r\n  padding: 5px;\r\n  text-align: center;\r\n  margin-top: 5px;\r\n}\r\n\r\n#intro-box {\r\n  position: fixed;\r\n  width: 100%;\r\n  height: 100%;\r\n  top: 0;\r\n  left: 0;\r\n  z-index: 9999999999999999;\r\n  background-color: rgba(0, 0, 0, 0.66);\r\n}\r\n\r\n#intro-message {\r\n  text-align: center;\r\n  position: absolute;\r\n  top: 50%;\r\n  left: 50%;\r\n  width: 350px;\r\n  height: 500px;\r\n  margin-left: -175px;\r\n  margin-top: -250px;\r\n  overflow: auto;\r\n}\r\n\r\n@media (max-width: 508px) {\r\n  #intro-message {\r\n    width: 250px;\r\n    height: 400px;\r\n    margin-left: -125px;\r\n    margin-top: -200px;\r\n  }\r\n}\r\n\r\n#text-box {\r\n  background-color: aliceblue;\r\n  border-radius: 13px;\r\n  padding: 20px;\r\n}\r\n\r\n/* The slider itself */\r\n.slider {\r\n  -webkit-appearance: none;  /* Override default CSS styles */\r\n  -moz-appearance: none;\r\n       appearance: none;\r\n  width: 100%; /* Full-width */\r\n  height: 25px; /* Specified height */\r\n  background: #d3d3d3; /* Grey background */\r\n  outline: none; /* Remove outline */\r\n  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */ /* 0.2 seconds transition on hover */\r\n  transition: opacity .2s;\r\n}\r\n\r\n/* Mouse-over effects */\r\n.slider:hover {\r\n  opacity: 1; /* Fully shown on mouse-over */\r\n}\r\n\r\n/* The slider handle (use webkit (Chrome, Opera, Safari, Edge) and moz (Firefox) to override default look) */\r\n.slider::-webkit-slider-thumb {\r\n  -webkit-appearance: none; /* Override default look */\r\n  appearance: none;\r\n  width: 25px; /* Set a specific slider handle width */\r\n  height: 25px; /* Slider handle height */\r\n  background: #4CAF50; /* Green background */\r\n  cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n.slider::-moz-range-thumb {\r\n  width: 25px; /* Set a specific slider handle width */\r\n  height: 25px; /* Slider handle height */\r\n  background: #4CAF50; /* Green background */\r\n  cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n#date-box .mat-select-value,\r\n#date-box .mat-select-placeholder,\r\n#date-box .mat-form-field-label,\r\n#date-box .mat-select-arrow {\r\n  color: white !important;\r\n}\r\n\r\n#date-box .mat-form-field-underline {\r\n  color: white !important;\r\n  background-color: white;\r\n}\r\n\r\n#date-box {\r\n  color: white;\r\n  margin: auto;\r\n}\r\n", ""]);
 
 // exports
 
@@ -876,7 +848,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-light\">\r\n  <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <div class=\"navbar-brand\" id=\"navbar-brand\">What Happens In Scotland</div>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link feedback\" href=\"https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf\">Leave Feedback</a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n\r\n<div id=\"intro-box\">\r\n  <div id=\"intro-message\">\r\n    <div id=\"text-box\">\r\n      This site shows the emotions expressed by Twitter users all across Scotland. Each region has a positivity score\r\n      showing overall how positive tweets are from that region.\r\n      <br> <br>\r\n      Interact with the map to view different regions and play with the filters to see what emotions you can uncover.\r\n      <br> <br>\r\n      I would also greatly appreciate it if you could leave your feedback on the website by clicking the \"Leave Feedback\"\r\n      button in the navbar at the top! <i class=\"fas fa-arrow-up\"></i>\r\n      <br><br>\r\n      <button id=\"hide_button\" class=\"btn btn-secondary\" style=\"margin-bottom: 10px;\" (click)=\"hideIntroBox()\">Ok</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<router-outlet></router-outlet>\r\n\r\n<!--<footer class=\"footer\">-->\r\n  <!--Today-->\r\n  <!--<span *ngIf=\"paused\" (click)=\"togglePaused()\" ><i class=\"fas fa-play\"></i></span>-->\r\n  <!--<span *ngIf=\"!paused\" (click)=\"togglePaused()\"><i class=\"fas fa-pause\"></i></span>-->\r\n  <!--<input type=\"range\" min=\"1\" max=\"100\" [(ngModel)]=\"value\" class=\"slider\" id=\"myRange\">-->\r\n<!--</footer>-->\r\n"
+module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-light\">\r\n  <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <div class=\"navbar-brand\" id=\"navbar-brand\">What Happens In Scotland</div>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <div id=\"date-box\">\r\n      Showing the\r\n      <mat-form-field style=\"width: 2rem\">\r\n        <mat-select [(value)]=\"period\">\r\n          <mat-option *ngFor=\"let i of [1,2,3,4,5]\" [value]=\"i\">{{i}}</mat-option>\r\n        </mat-select>\r\n      </mat-form-field>\r\n      days up to\r\n      <mat-form-field style=\"width: 7rem\">\r\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\r\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n        <mat-datepicker #picker></mat-datepicker>\r\n      </mat-form-field>\r\n      <button class=\"btn btn-primary\" (click)=\"submitDate()\">Refresh</button>\r\n    </div>\r\n\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link feedback\" href=\"https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf\">Leave Feedback</a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n\r\n<div id=\"intro-box\">\r\n  <div id=\"intro-message\">\r\n    <div id=\"text-box\">\r\n      This site shows the emotions expressed by Twitter users all across Scotland. Each region has a positivity score\r\n      showing overall how positive tweets are from that region.\r\n      <br> <br>\r\n      Interact with the map to view different regions and play with the filters to see what emotions you can uncover.\r\n      <br> <br>\r\n      I would also greatly appreciate it if you could leave your feedback on the website by clicking the \"Leave Feedback\"\r\n      button in the navbar at the top! <i class=\"fas fa-arrow-up\"></i>\r\n      <br><br>\r\n      <button id=\"hide_button\" class=\"btn btn-secondary\" style=\"margin-bottom: 10px;\" (click)=\"hideIntroBox()\">Ok</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<app-home [endDate]=\"endDate\" [period]=\"period\"></app-home>\r\n\r\n<!--<footer class=\"footer\">-->\r\n  <!--Today-->\r\n  <!--<span *ngIf=\"paused\" (click)=\"togglePaused()\" ><i class=\"fas fa-play\"></i></span>-->\r\n  <!--<span *ngIf=\"!paused\" (click)=\"togglePaused()\"><i class=\"fas fa-pause\"></i></span>-->\r\n  <!--<input type=\"range\" min=\"1\" max=\"100\" [(ngModel)]=\"value\" class=\"slider\" id=\"myRange\">-->\r\n<!--</footer>-->\r\n"
 
 /***/ }),
 
@@ -886,6 +858,7 @@ module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navb
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm2015/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__home_home_component__ = __webpack_require__("../../../../../src/app/home/home.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -896,17 +869,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 let AppComponent = class AppComponent {
-    constructor() { }
+    constructor() {
+        this.minDate = new Date(2017, 11, 1);
+        this.maxDate = new Date();
+    }
+    ngOnInit() {
+        this.endDate = new Date;
+        this.period = 3;
+    }
+    submitDate() {
+        this.home.refreshData();
+    }
     hideIntroBox() {
         document.getElementById('intro-box').style.display = 'none';
     }
 };
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_1__home_home_component__["a" /* HomeComponent */]),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__home_home_component__["a" /* HomeComponent */])
+], AppComponent.prototype, "home", void 0);
 AppComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-root',
         template: __webpack_require__("../../../../../src/app/app.component.html"),
-        styles: [__webpack_require__("../../../../../src/app/app.component.css"), __webpack_require__("../../../../../src/assets/css/sticky-footer.css")]
+        styles: [__webpack_require__("../../../../../src/app/app.component.css"), __webpack_require__("../../../../../src/assets/css/sticky-footer.css")],
+        encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
     }),
     __metadata("design:paramtypes", [])
 ], AppComponent);
@@ -935,15 +924,14 @@ AppComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__nicky_lenaers_ngx_scroll_to__ = __webpack_require__("../../../../@nicky-lenaers/ngx-scroll-to/@nicky-lenaers/ngx-scroll-to.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__home_home_component__ = __webpack_require__("../../../../../src/app/home/home.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__app_routing_module__ = __webpack_require__("../../../../../src/app/app-routing.module.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__happy_rank_happy_rank_component__ = __webpack_require__("../../../../../src/app/happy-rank/happy-rank.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__happy_timeline_happy_timeline_component__ = __webpack_require__("../../../../../src/app/happy-timeline/happy-timeline.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__map_glasgow_map_glasgow_map_component__ = __webpack_require__("../../../../../src/app/map/glasgow-map/glasgow-map.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__tweet_box_tweet_box_component__ = __webpack_require__("../../../../../src/app/tweet-box/tweet-box.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__map_scotland_map_scotland_map_component__ = __webpack_require__("../../../../../src/app/map/scotland-map/scotland-map.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__map_edinburgh_map_edinburgh_map_component__ = __webpack_require__("../../../../../src/app/map/edinburgh-map/edinburgh-map.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__services__ = __webpack_require__("../../../../../src/app/_services/index.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__happy_rank_happy_rank_component__ = __webpack_require__("../../../../../src/app/happy-rank/happy-rank.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__happy_timeline_happy_timeline_component__ = __webpack_require__("../../../../../src/app/happy-timeline/happy-timeline.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__map_glasgow_map_glasgow_map_component__ = __webpack_require__("../../../../../src/app/map/glasgow-map/glasgow-map.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__tweet_box_tweet_box_component__ = __webpack_require__("../../../../../src/app/tweet-box/tweet-box.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__map_scotland_map_scotland_map_component__ = __webpack_require__("../../../../../src/app/map/scotland-map/scotland-map.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__map_edinburgh_map_edinburgh_map_component__ = __webpack_require__("../../../../../src/app/map/edinburgh-map/edinburgh-map.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__services__ = __webpack_require__("../../../../../src/app/_services/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -972,7 +960,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-
 // Services
 
 
@@ -983,36 +970,35 @@ AppModule = __decorate([
         declarations: [
             __WEBPACK_IMPORTED_MODULE_12__app_component__["a" /* AppComponent */],
             __WEBPACK_IMPORTED_MODULE_13__home_home_component__["a" /* HomeComponent */],
-            __WEBPACK_IMPORTED_MODULE_15__happy_rank_happy_rank_component__["a" /* HappyRankComponent */],
-            __WEBPACK_IMPORTED_MODULE_16__happy_timeline_happy_timeline_component__["a" /* HappyTimelineComponent */],
-            __WEBPACK_IMPORTED_MODULE_17__map_glasgow_map_glasgow_map_component__["a" /* GlasgowMapComponent */],
-            __WEBPACK_IMPORTED_MODULE_18__tweet_box_tweet_box_component__["a" /* TweetBoxComponent */],
-            __WEBPACK_IMPORTED_MODULE_19__map_scotland_map_scotland_map_component__["a" /* ScotlandMapComponent */],
-            __WEBPACK_IMPORTED_MODULE_20__map_edinburgh_map_edinburgh_map_component__["a" /* EdinburghMapComponent */]
+            __WEBPACK_IMPORTED_MODULE_14__happy_rank_happy_rank_component__["a" /* HappyRankComponent */],
+            __WEBPACK_IMPORTED_MODULE_15__happy_timeline_happy_timeline_component__["a" /* HappyTimelineComponent */],
+            __WEBPACK_IMPORTED_MODULE_16__map_glasgow_map_glasgow_map_component__["a" /* GlasgowMapComponent */],
+            __WEBPACK_IMPORTED_MODULE_17__tweet_box_tweet_box_component__["a" /* TweetBoxComponent */],
+            __WEBPACK_IMPORTED_MODULE_18__map_scotland_map_scotland_map_component__["a" /* ScotlandMapComponent */],
+            __WEBPACK_IMPORTED_MODULE_19__map_edinburgh_map_edinburgh_map_component__["a" /* EdinburghMapComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
             __WEBPACK_IMPORTED_MODULE_3__angular_common_http__["b" /* HttpClientModule */],
             __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormsModule */],
             __WEBPACK_IMPORTED_MODULE_4_ng2_nvd3__["NvD3Module"],
-            __WEBPACK_IMPORTED_MODULE_14__app_routing_module__["a" /* AppRoutingModule */],
             __WEBPACK_IMPORTED_MODULE_5__angular_material_tabs__["b" /* MatTabsModule */],
             __WEBPACK_IMPORTED_MODULE_6__angular_material_card__["a" /* MatCardModule */],
             __WEBPACK_IMPORTED_MODULE_8__angular_material_input__["b" /* MatInputModule */],
             __WEBPACK_IMPORTED_MODULE_7__angular_material_datepicker__["a" /* MatDatepickerModule */],
-            __WEBPACK_IMPORTED_MODULE_22__angular_material__["b" /* MatNativeDateModule */],
+            __WEBPACK_IMPORTED_MODULE_21__angular_material__["b" /* MatNativeDateModule */],
             __WEBPACK_IMPORTED_MODULE_9__angular_material_select__["a" /* MatSelectModule */],
             __WEBPACK_IMPORTED_MODULE_10__angular_platform_browser_animations__["a" /* BrowserAnimationsModule */],
             __WEBPACK_IMPORTED_MODULE_11__nicky_lenaers_ngx_scroll_to__["a" /* ScrollToModule */].forRoot()
         ],
         providers: [
-            __WEBPACK_IMPORTED_MODULE_21__services__["e" /* TweetService */],
-            __WEBPACK_IMPORTED_MODULE_21__services__["f" /* WebSocketService */],
-            __WEBPACK_IMPORTED_MODULE_21__services__["c" /* GlasgowDataManagerService */],
-            __WEBPACK_IMPORTED_MODULE_21__services__["d" /* ScotlandDataManagerService */],
-            __WEBPACK_IMPORTED_MODULE_21__services__["b" /* EdinburghDataManagerService */],
-            __WEBPACK_IMPORTED_MODULE_21__services__["a" /* DataManagerService */],
-            { provide: __WEBPACK_IMPORTED_MODULE_22__angular_material__["a" /* MAT_DATE_LOCALE */], useValue: 'en-GB' }
+            __WEBPACK_IMPORTED_MODULE_20__services__["e" /* TweetService */],
+            __WEBPACK_IMPORTED_MODULE_20__services__["f" /* WebSocketService */],
+            __WEBPACK_IMPORTED_MODULE_20__services__["c" /* GlasgowDataManagerService */],
+            __WEBPACK_IMPORTED_MODULE_20__services__["d" /* ScotlandDataManagerService */],
+            __WEBPACK_IMPORTED_MODULE_20__services__["b" /* EdinburghDataManagerService */],
+            __WEBPACK_IMPORTED_MODULE_20__services__["a" /* DataManagerService */],
+            { provide: __WEBPACK_IMPORTED_MODULE_21__angular_material__["a" /* MAT_DATE_LOCALE */], useValue: 'en-GB' }
         ],
         schemas: [__WEBPACK_IMPORTED_MODULE_1__angular_core__["CUSTOM_ELEMENTS_SCHEMA"]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_12__app_component__["a" /* AppComponent */]]
@@ -1383,7 +1369,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right:-5px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  #districtInfoBox {\r\n    margin: 0 0 -10px;\r\n  }\r\n}\r\n\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
+exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right: -10px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n#infoBox {\r\n  margin-right: 5px;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  #districtInfoBox {\r\n    margin: 0 0 -10px;\r\n  }\r\n}\r\n\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\ndiv.row {\r\n  margin-top: 10px;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
 
 // exports
 
@@ -1396,7 +1382,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"map-background\">\n    <div id=\"date-box\">\n      Showing the\n      <mat-form-field style=\"width: 2rem\">\n        <mat-select [(value)]=\"period\">\n          <mat-option *ngFor=\"let i of [1,2,3,4,5,6,7]\" [value]=\"i\">{{i}}</mat-option>\n        </mat-select>\n      </mat-form-field>\n      days up to\n      <mat-form-field style=\"width: 7rem\">\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\n        <mat-datepicker #picker></mat-datepicker>\n      </mat-form-field>\n      <button class=\"btn btn-primary\" (click)=\"refreshData()\">Refresh</button>\n    </div>\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\">\n              <div class=\"col\">\n                <h3 class=\"centre\"><b>Common Words</b></h3>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(0)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(1)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(2)}}\n                </h4>\n              </div>\n              <div class=\"col\">\n                <br>\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
+module.exports = "<div id=\"map-background\">\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\">\n              <div class=\"col\">\n                <h3 class=\"centre\"><b>Common Words</b></h3>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(0)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(1)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(2)}}\n                </h4>\n              </div>\n              <div class=\"col\">\n                <br>\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -1455,8 +1441,6 @@ let HomeComponent = class HomeComponent {
         this.districts = {};
         this.mapModes = __WEBPACK_IMPORTED_MODULE_4__models_MapModes__["a" /* MapModes */];
         this.tweetDates = [];
-        this.minDate = new Date(2017, 11, 1);
-        this.maxDate = new Date();
         this.sorting = TweetSorting.DATE_DESC;
         this.searchTerm = '';
         this.tweets = {};
@@ -1469,8 +1453,6 @@ let HomeComponent = class HomeComponent {
         };
     }
     ngOnInit() {
-        this.endDate = new Date();
-        this.period = 3;
         this.currentMode = __WEBPACK_IMPORTED_MODULE_4__models_MapModes__["a" /* MapModes */].Scotland;
         this._dataManager.getDataManager().subscribe(dm => {
             if (dm !== undefined) {
@@ -1631,8 +1613,17 @@ __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_8__happy_rank_happy_rank_component__["a" /* HappyRankComponent */]),
     __metadata("design:type", Object)
 ], HomeComponent.prototype, "rankChart", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", Date)
+], HomeComponent.prototype, "endDate", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", Number)
+], HomeComponent.prototype, "period", void 0);
 HomeComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'app-home',
         template: __webpack_require__("../../../../../src/app/home/home.component.html"),
         styles: [__webpack_require__("../../../../../src/app/home/home.component.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
@@ -1731,7 +1722,7 @@ let GlasgowMapComponent = class GlasgowMapComponent extends __WEBPACK_IMPORTED_M
     }
     initVariables() {
         this.projection = d3.geo.albers()
-            .center([-0.139, 55.8642])
+            .center([-0.139, 55.8442])
             .rotate([4.1, 0])
             .parallels([50, 60])
             .scale(280000)
@@ -1761,7 +1752,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "div.tooltip {\r\n  color: #222;\r\n  background: #fff;\r\n  border-radius: 3px;\r\n  box-shadow: 0 0 2px 0 #a6a6a6;\r\n  padding: .2em;\r\n  text-shadow: #f5f5f5 0 1px 0;\r\n  opacity: 0.9;\r\n  position: absolute;\r\n}\r\n\r\n.districts {\r\n  cursor: pointer;\r\n  stroke: #000;\r\n  -webkit-animation-duration: 1.2s;\r\n          animation-duration: 1.2s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.districts:hover {\r\n  fill: #a2a2a2;\r\n}\r\n\r\n.boundary:hover {\r\n  stroke: #a2a2a2;\r\n}\r\n\r\n.place-label {\r\n  pointer-events:none;\r\n}\r\n\r\n.districts.selected {\r\n  stroke-width: 5px;\r\n}\r\n\r\n.area-map {\r\n  text-align: center;\r\n  width: 100%;\r\n}\r\n\r\n.map-title {\r\n  margin: 1%;\r\n}\r\n\r\n.area-map svg {\r\n  /*max-height: 80vh;*/\r\n  left: 0;\r\n  position: relative;\r\n  width: 100%\r\n}\r\n\r\ndiv.row {\r\n  margin-right: 0;\r\n}\r\n\r\n\r\n/*@media (min-width: 992px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 40vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (min-width: 768px) and (max-width: 991px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 70vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (max-width: 767px) {*/\r\n  /*#map-container svg {*/\r\n    /*!*width: 130vw;*!*/\r\n    /*height: 85vh;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n.svgMap {\r\n  max-height: 75vh;\r\n}\r\n\r\n.boundary {\r\n  fill: none;\r\n  stroke-linejoin: round;\r\n  stroke-width: 4vh !important;\r\n  cursor: pointer;\r\n  -webkit-animation-duration: 0.5s;\r\n          animation-duration: 0.5s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.btn.zoom {\r\n  float: right;\r\n  margin-right: 2vw;\r\n  border-radius: 3vw;\r\n}\r\n\r\n@-webkit-keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n/*Page loading spinner*/\r\n.loader {\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  border: 16px solid #f3f3f3; /* Light grey */\r\n  border-top: 16px solid #3498db; /* Blue */\r\n  border-radius: 50%;\r\n  width: 120px;\r\n  height: 120px;\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n\r\n@-webkit-keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n@keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n", ""]);
+exports.push([module.i, "div.tooltip {\r\n  color: #222;\r\n  background: #fff;\r\n  border-radius: 3px;\r\n  box-shadow: 0 0 2px 0 #a6a6a6;\r\n  padding: .2em;\r\n  text-shadow: #f5f5f5 0 1px 0;\r\n  opacity: 0.9;\r\n  position: absolute;\r\n}\r\n\r\n.districts {\r\n  cursor: pointer;\r\n  stroke: #000;\r\n  -webkit-animation-duration: 1.2s;\r\n          animation-duration: 1.2s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.districts:hover {\r\n  fill: #a2a2a2;\r\n}\r\n\r\n.boundary:hover {\r\n  stroke: #a2a2a2;\r\n}\r\n\r\n.place-label {\r\n  pointer-events:none;\r\n}\r\n\r\n.districts.selected {\r\n  stroke-width: 5px;\r\n}\r\n\r\n.area-map {\r\n  text-align: center;\r\n  width: 100%;\r\n}\r\n\r\n.map-title {\r\n  margin: 1%;\r\n}\r\n\r\n.area-map svg {\r\n  /*max-height: 80vh;*/\r\n  left: 0;\r\n  position: relative;\r\n  width: 100%\r\n}\r\n\r\ndiv.row {\r\n  margin-right: 0;\r\n}\r\n\r\n\r\n/*@media (min-width: 992px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 40vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (min-width: 768px) and (max-width: 991px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 70vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (max-width: 767px) {*/\r\n  /*#map-container svg {*/\r\n    /*!*width: 130vw;*!*/\r\n    /*height: 85vh;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n.svgMap {\r\n  max-height: 75vh;\r\n}\r\n\r\n.legend {\r\n  font-size: 20px;\r\n}\r\n\r\n.boundary {\r\n  fill: none;\r\n  stroke-linejoin: round;\r\n  stroke-width: 4vh !important;\r\n  cursor: pointer;\r\n  -webkit-animation-duration: 0.5s;\r\n          animation-duration: 0.5s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.btn.zoom {\r\n  float: right;\r\n  margin-right: 2vw;\r\n  border-radius: 3vw;\r\n}\r\n\r\n@-webkit-keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n/*Page loading spinner*/\r\n.loader {\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  border: 16px solid #f3f3f3; /* Light grey */\r\n  border-top: 16px solid #3498db; /* Blue */\r\n  border-radius: 50%;\r\n  width: 120px;\r\n  height: 120px;\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n\r\n@-webkit-keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n@keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -1811,7 +1802,6 @@ class MapComponent {
         this.district = new __WEBPACK_IMPORTED_MODULE_2__models_District__["a" /* District */]();
         this.districts = {};
         this.margin = { top: 20, right: 20, bottom: 0, left: 50 };
-        this.colour = __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColour;
         this.mapModeMapping = {
             'S12000046': __WEBPACK_IMPORTED_MODULE_4__models_MapModes__["a" /* MapModes */].Glasgow,
             'S12000036': __WEBPACK_IMPORTED_MODULE_4__models_MapModes__["a" /* MapModes */].Edinburgh
@@ -1958,7 +1948,33 @@ class MapComponent {
             this.drawRegionOutline(topology);
             // Draw each district polygon
             this.drawDistricts(topology);
+            this.renderLegend();
         }
+    }
+    /**
+     *
+     */
+    renderLegend() {
+        const legend = this.svg.selectAll('g.legend')
+            .data(__WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColourDomain())
+            .enter().append('g')
+            .attr('class', 'legend');
+        const ls_w = 30, ls_h = 30;
+        legend.append('rect')
+            .attr('x', this.width - (ls_w * 6))
+            .attr('y', (d, i) => this.height - (i * ls_h) - 2 * ls_h)
+            .attr('width', ls_w)
+            .attr('height', ls_h)
+            .style('fill', (d, i) => __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColour(d))
+            .style('opacity', 0.8);
+        legend.append('text')
+            .attr('x', this.width - (ls_w * 4.5))
+            .attr('y', (d, i) => this.height - (i * ls_h) - ls_h - 4)
+            .text((d, i) => __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColourDomainLabels()[i]);
+        legend.append('text')
+            .attr('x', this.width - (ls_w * 6))
+            .attr('y', () => this.height - (__WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColourDomain().length * ls_h) - ls_h - 4)
+            .text('Percent Positive');
     }
     /**
      * Draws the districts that exist in the topology passed in.
@@ -1975,7 +1991,7 @@ class MapComponent {
             const average = (this.districts.hasOwnProperty(d.properties[this._dataManager.topologyId]))
                 ? this.districts[d.properties[this._dataManager.topologyId]].average
                 : 50;
-            return this.colour(average);
+            return __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColour(average);
         })
             .attr('id', d => d.properties[this._dataManager.topologyId])
             .on('click', this.setData)
@@ -1990,7 +2006,7 @@ class MapComponent {
             for (const [key, value] of Object.entries(this.districts)) {
                 this.svg
                     .select('path#' + key)
-                    .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => this.colour(value.average));
+                    .attr((key === this._dataManager.getMapBoundaryId()) ? 'stroke' : 'fill', () => __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColour(value.average));
             }
         }
     }
@@ -2003,7 +2019,7 @@ class MapComponent {
         this.svg.append('path')
             .datum(__WEBPACK_IMPORTED_MODULE_1_topojson__["a" /* mesh */](topology, topology.objects[0], (a, b) => a === b))
             .attr('d', this.path)
-            .attr('stroke', () => this.colour(this.districts[this._dataManager.getMapBoundaryId()].average))
+            .attr('stroke', () => __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColour(this.districts[this._dataManager.getMapBoundaryId()].average))
             .attr('id', this._dataManager.getMapBoundaryId())
             .attr('class', 'boundary selected')
             .on('click', this.setData)
@@ -2125,7 +2141,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#tweet_box {\r\n  top: 2%;\r\n  right: 1%;\r\n  /*border: black solid;*/\r\n  background-color: white;\r\n  max-height: 85vh;\r\n  width: 100%;\r\n  overflow-y: auto;\r\n  /*right: 0;*/\r\n  position: absolute;\r\n  /*top: 10px;*/\r\n  /*border-radius: 2vh;*/\r\n  color: #14171a;\r\n  font-family: 'Segoe UI',Arial,sans-serif;\r\n}\r\n\r\n#infoBox {\r\n  padding-right: 0;\r\n}\r\n\r\n#tweet_box {\r\n  top: 0;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweet_box {\r\n    margin: 0 4%;\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n#tweet_box .header {\r\n  font-size: 1.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#tweet_box p {\r\n  font-size: 1rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n.good_word {\r\n  color: #3e3e86;\r\n  -webkit-filter: drop-shadow(0 0 3px dodgerblue);\r\n          filter: drop-shadow(0 0 3px dodgerblue);\r\n}\r\n\r\n.bad_word {\r\n  color: #bf4545;\r\n  -webkit-filter: drop-shadow(0 0 3px salmon);\r\n          filter: drop-shadow(0 0 3px salmon);\r\n}\r\n\r\n.pause-tweets {\r\n  margin-bottom: 30px;\r\n  height: 30px;\r\n  line-height: 18px;\r\n}\r\n", ""]);
+exports.push([module.i, "#tweet_box {\r\n  top: 2%;\r\n  right: 1%;\r\n  /*border: black solid;*/\r\n  background-color: white;\r\n  max-height: 85vh;\r\n  width: 100%;\r\n  overflow-y: auto;\r\n  /*right: 0;*/\r\n  position: absolute;\r\n  /*top: 10px;*/\r\n  /*border-radius: 2vh;*/\r\n  color: #14171a;\r\n  font-family: 'Segoe UI',Arial,sans-serif;\r\n}\r\n\r\n#infoBox {\r\n  padding-right: 0;\r\n}\r\n\r\n#tweet_box {\r\n  padding: 10px 15px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweet_box {\r\n    margin: 0 4%;\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n.tweet_mark {\r\n  position: initial;\r\n}\r\n\r\n#tweet_box .header {\r\n  font-size: 1.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#tweet_box p {\r\n  font-size: 1rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n.good_word {\r\n  color: #3e3e86;\r\n  -webkit-filter: drop-shadow(0 0 3px dodgerblue);\r\n          filter: drop-shadow(0 0 3px dodgerblue);\r\n}\r\n\r\n.bad_word {\r\n  color: #bf4545;\r\n  -webkit-filter: drop-shadow(0 0 3px salmon);\r\n          filter: drop-shadow(0 0 3px salmon);\r\n}\r\n\r\n.pause-tweets {\r\n  margin-bottom: 30px;\r\n  height: 30px;\r\n  line-height: 18px;\r\n}\r\n", ""]);
 
 // exports
 
@@ -2138,7 +2154,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/tweet-box/tweet-box.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--<div id=\"tweet_box\">-->\n  <!--<h3 style=\"margin-left: 25px; font-weight: bold;\">{{ward.last_tweet.user.name}}</h3>-->\n  <!--<h5 style=\"margin-left: 30px;\">{{ward.last_tweet.text}}</h5>-->\n<!--</div>-->\n<mat-card id=\"tweet_box\">\n  <button id=\"pause_button\" class=\"btn btn-secondary pause-tweets\" (click)=\"toggleLiveTweets()\"\n          [innerHTML]=\"pauseButtonText\">\n  </button>\n  <div class=\"tweet_details\" *ngFor=\"let tweet of ward.last_tweets; trackBy: trackByFn\">\n    <div>\n      <mat-card-header>\n        <score-mark [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n        <mat-card-title class=\"header\">\n          {{tweet.user.name}}\n          <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n        </mat-card-title>\n      </mat-card-header>\n      <mat-card-content>\n        <p [innerHTML]=\"tweet.text\"></p>\n      </mat-card-content>\n    </div>\n    <hr>\n  </div>\n</mat-card>\n"
+module.exports = "<!--<div id=\"tweet_box\">-->\n  <!--<h3 style=\"margin-left: 25px; font-weight: bold;\">{{ward.last_tweet.user.name}}</h3>-->\n  <!--<h5 style=\"margin-left: 30px;\">{{ward.last_tweet.text}}</h5>-->\n<!--</div>-->\n<mat-card id=\"tweet_box\">\n  <button id=\"pause_button\" class=\"btn btn-secondary pause-tweets\" (click)=\"toggleLiveTweets()\"\n          [innerHTML]=\"pauseButtonText\">\n  </button>\n  <div class=\"tweet_details\" *ngFor=\"let tweet of ward.last_tweets; trackBy: trackByFn\">\n    <div>\n      <mat-card-header>\n        <score-mark class=\"tweet_mark\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n        <mat-card-title class=\"header\">\n          {{tweet.user.name}}\n          <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n        </mat-card-title>\n      </mat-card-header>\n      <mat-card-content>\n        <p [innerHTML]=\"tweet.text\"></p>\n      </mat-card-content>\n    </div>\n    <hr>\n  </div>\n</mat-card>\n"
 
 /***/ }),
 

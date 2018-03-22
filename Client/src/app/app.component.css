@@ -96,3 +96,20 @@ footer {
   background: #4CAF50; /* Green background */
   cursor: pointer; /* Cursor on hover */
 }
+
+#date-box .mat-select-value,
+#date-box .mat-select-placeholder,
+#date-box .mat-form-field-label,
+#date-box .mat-select-arrow {
+  color: white !important;
+}
+
+#date-box .mat-form-field-underline {
+  color: white !important;
+  background-color: white;
+}
+
+#date-box {
+  color: white;
+  margin: auto;
+}

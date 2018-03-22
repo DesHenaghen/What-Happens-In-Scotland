@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {TweetService, DataManagerService} from '../_services';
 import {District} from '../_models/District';
@@ -25,6 +25,7 @@ enum TweetSorting {
  * of wards data.
  */
 @Component({
+  selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: [
     './home.component.css'
@@ -39,6 +40,9 @@ export class HomeComponent implements OnInit {
   @ViewChild(HappyTimelineComponent) timelineChart;
   @ViewChild(HappyRankComponent) rankChart;
 
+  @Input() endDate: Date;
+  @Input() period: number;
+
   public TweetSorting = TweetSorting;
   public district: District = new District();
   public districts: {[id: string]: District} = {};
@@ -46,11 +50,7 @@ export class HomeComponent implements OnInit {
   public mapModes = MapModes;
   public currentMode: MapModes;
 
-  public endDate: Date;
-  public period: number;
   public tweetDates: any[] = [];
-  public minDate = new Date(2017, 11, 1);
-  public maxDate = new Date();
 
   public sorting: TweetSorting = TweetSorting.DATE_DESC;
   public searchTerm = '';
@@ -71,9 +71,6 @@ export class HomeComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.endDate = new Date();
-    this.period = 3;
-
     this.currentMode = MapModes.Scotland;
 
     this._dataManager.getDataManager().subscribe(dm => {

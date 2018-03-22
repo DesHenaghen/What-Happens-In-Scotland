@@ -5,6 +5,22 @@
   <div class="navbar-brand" id="navbar-brand">What Happens In Scotland</div>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div id="date-box">
+      Showing the
+      <mat-form-field style="width: 2rem">
+        <mat-select [(value)]="period">
+          <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">{{i}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      days up to
+      <mat-form-field style="width: 7rem">
+        <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button class="btn btn-primary" (click)="submitDate()">Refresh</button>
+    </div>
+
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
         <a class="nav-link feedback" href="https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf">Leave Feedback</a>
@@ -29,7 +45,7 @@
   </div>
 </div>
 
-<router-outlet></router-outlet>
+<app-home [endDate]="endDate" [period]="period"></app-home>
 
 <!--<footer class="footer">-->
   <!--Today-->

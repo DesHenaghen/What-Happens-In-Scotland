@@ -24,7 +24,7 @@ export class GlasgowMapComponent extends MapComponent {
 
   protected initVariables(): void {
     this.projection = d3.geo.albers()
-      .center([-0.139, 55.8642])
+      .center([-0.139, 55.8442])
       .rotate([4.1, 0])
       .parallels([50, 60])
       .scale(280000)

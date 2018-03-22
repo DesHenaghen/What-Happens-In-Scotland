@@ -19,7 +19,7 @@
 }
 
 #tweet_box {
-  top: 0;
+  padding: 10px 15px;
 }
 
 @media (max-width: 767px) {
@@ -27,6 +27,10 @@
     margin: 0 4%;
     width: 90%;
   }
+}
+
+.tweet_mark {
+  position: initial;
 }
 
 #tweet_box .header {

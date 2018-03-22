@@ -2,26 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html.">
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/tests/gathertweet_test.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/tests/sentiment_test.py" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.css" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_models/Colour.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_models/Colour.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app-routing.module.ts" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.css" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.html" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.spec.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.spec.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.module.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.module.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.css" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/map/map.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/map/map.component.css" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/map/map.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/map/map.component.html" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/map/map.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/map/map.component.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/map/scotland-map/scotland-map.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/map/scotland-map/scotland-map.component.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.css" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.html" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/app/DatabaseManager.py" afterPath="$PROJECT_DIR$/app/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/app/ScotlandTwitterStream.py" afterPath="$PROJECT_DIR$/app/ScotlandTwitterStream.py" />
-      <change beforePath="$PROJECT_DIR$/app/server/routes.py" afterPath="$PROJECT_DIR$/app/server/routes.py" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/inline.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/inline.bundle.js.map" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" />
+      <change beforePath="$PROJECT_DIR$/app/server/templates/vendor.bundle.js" afterPath="$PROJECT_DIR$/app/server/templates/vendor.bundle.js" />
+      <change beforePath="$PROJECT_DIR$/app/server/templates/vendor.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/vendor.bundle.js.map" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -80,7 +80,7 @@
         <entry file="file://$PROJECT_DIR$/app/application.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="4" column="17" lean-forward="true" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+              <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -1245,7 +1245,7 @@
     <entry file="file://$PROJECT_DIR$/app/application.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" column="17" lean-forward="true" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+          <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
