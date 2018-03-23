@@ -60,6 +60,11 @@ mat-card.mapCard {
   text-align: center;
 }
 
+.centre-col {
+  height: 100%;
+  margin: auto;
+}
+
 .infoBox {
   /*top: 2%;*/
   /*right: 1%;*/

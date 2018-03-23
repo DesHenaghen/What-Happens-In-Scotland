@@ -36,9 +36,16 @@
             </score-mark>
           </mat-card-header>
           <mat-card-content>
-            <h5 class="centre alfa">{{this.district.total}} tweets</h5>
             <app-happy-timeline [ward]="district"></app-happy-timeline>
-            <app-word-cloud></app-word-cloud>
+            <div class="row">
+              <div class="col">
+                <app-word-cloud></app-word-cloud>
+              </div>
+              <div class="col centre-col">
+                <div class="centre yuge alfa">{{this.district.total}}</div>
+                <h4 class="centre alfa">tweets</h4>
+              </div>
+            </div>
             <app-happy-rank [ward]="district" [wards]="districts"></app-happy-rank>
           </mat-card-content>
         </mat-card>

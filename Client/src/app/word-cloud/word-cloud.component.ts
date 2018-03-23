@@ -5,6 +5,7 @@ import {DataManagerService} from '../_services';
 import {Tweet} from '../_models/Tweet';
 import {District} from '../_models/District';
 import {Colour} from '../_models/Colour';
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'app-word-cloud',
@@ -17,29 +18,38 @@ export class WordCloudComponent implements AfterViewInit {
   private layout: any;
   private svg: any;
   private district: District;
+  private districtSubscription: Subscription = new Subscription();
 
   constructor(private _dataManager: DataManagerService) { }
 
   ngAfterViewInit() {
-    this._dataManager.getLatestTweet().subscribe((tweet: Tweet) => {
-      // console.log("word cloud tweet", tweet);
-    });
+    this.svg = d3.select('#wordcloud').append('svg')
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('viewBox', '0 0 ' + 500 + ' ' + 500)
+      .append('g')
+      .attr('transform', 'translate(250,250)');
 
-    this._dataManager.getDistrict().subscribe((district: District) => {
+    this._dataManager.getDataManager().subscribe(dm => {
+      if (dm !== undefined) {
+        this.subscribeForDistrictData();
+      }
+    });
+  }
+
+  public subscribeForDistrictData() {
+    if (!this.districtSubscription.closed) {
+      this.districtSubscription.unsubscribe();
+    }
+    this.districtSubscription = this._dataManager.getDistrict().subscribe((district: District) => {
+      console.log(district);
       this.district = district;
 
       this.generateLayout();
     });
-
-    this.svg = d3.select('#wordcloud').append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', '0 0 ' + 1000 + ' ' + 500)
-      .append('g')
-      .attr('transform', 'translate(500,250)');
   }
 
   public generateLayout() {
-    if (this.district.common_emote_words && this.district.common_emote_words.length > 0) {
+    if (this.district.common_emote_words) {
       const words = this.district.common_emote_words.slice(0, 30);
       let max;
       this.layout = wordCloud()
@@ -56,6 +66,8 @@ export class WordCloudComponent implements AfterViewInit {
         .on('end', this.drawWordCloud);
 
       this.layout.start();
+    } else {
+      this.drawWordCloud([]);
     }
   }
 

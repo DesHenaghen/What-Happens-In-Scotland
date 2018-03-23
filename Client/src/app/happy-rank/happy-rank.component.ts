@@ -75,7 +75,7 @@ export class HappyRankComponent implements OnInit, OnChanges {
         x: d => d.label,
         y: d => d.value,
         showValues: true,
-        valueFormat: d => (d === this.minValue || d === this.maxValue) ? d.toFixed(0) + '%' : '' ,
+        valueFormat: d => /*(d === this.minValue || d === this.maxValue) ? d.toFixed(0) + '%' : */'' ,
         duration: 250,
         wrapLabels: true,
         xAxis: {
