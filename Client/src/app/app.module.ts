@@ -32,6 +32,7 @@ import {
 } from './_services';
 
 import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material';
+import { WordCloudComponent } from './word-cloud/word-cloud.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material';
     GlasgowMapComponent,
     TweetBoxComponent,
     ScotlandMapComponent,
-    EdinburghMapComponent
+    EdinburghMapComponent,
+    WordCloudComponent
   ],
   imports: [
     BrowserModule,

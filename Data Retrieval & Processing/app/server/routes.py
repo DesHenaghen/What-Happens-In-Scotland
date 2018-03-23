@@ -184,14 +184,16 @@ def get_common_words():
         regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchone()
         ids_dict['region'] = filterstopwords(regionData.word_arr
                                              if regionData is not None and regionData.word_arr is not None
-                                             else [])[:3]
+                                             else [])
 
     elif region:
         regionData = dbMan.get_scotland_common_words(date, period).fetchone()[0]
-        ids_dict['region'] = filterstopwords(regionData if regionData is not None else [])[:3]
+        ids_dict['region'] = filterstopwords(regionData if regionData is not None else [])
 
     for row in rawData:
-        ids_dict[row.group_id] = filterstopwords(row.word_arr if row.word_arr is not None else [])[:3]
+        ids_dict[row.group_id] = filterstopwords(row.word_arr if row.word_arr is not None else [])
+
+    print(ids_dict)
 
     return jsonify(ids_dict)
 

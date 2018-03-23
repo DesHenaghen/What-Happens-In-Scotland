@@ -2,21 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html.">
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_models/Colour.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_models/Colour.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/app-routing.module.ts" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.css" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.html" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.spec.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.spec.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/app.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.component.ts" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/word-cloud/word-cloud.component.css" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/word-cloud/word-cloud.component.html" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/word-cloud/word-cloud.component.spec.ts" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/../Client/src/app/word-cloud/word-cloud.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/package-lock.json" afterPath="$PROJECT_DIR$/../Client/package-lock.json" />
+      <change beforePath="$PROJECT_DIR$/../Client/package.json" afterPath="$PROJECT_DIR$/../Client/package.json" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/app.module.ts" afterPath="$PROJECT_DIR$/../Client/src/app/app.module.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.css" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.html" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/home/home.component.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/map/map.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/map/map.component.css" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/map/map.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/map/map.component.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.css" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.css" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.html" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.html" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/app/DatabaseManager.py" afterPath="$PROJECT_DIR$/app/DatabaseManager.py" />
+      <change beforePath="$PROJECT_DIR$/app/server/routes.py" afterPath="$PROJECT_DIR$/app/server/routes.py" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/inline.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/inline.bundle.js.map" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" />
@@ -54,11 +52,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/DatabaseManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1193">
-              <caret line="279" column="55" lean-forward="false" selection-start-line="279" selection-start-column="55" selection-end-line="279" selection-end-column="55" />
+            <state relative-caret-position="394">
+              <caret line="289" column="34" lean-forward="false" selection-start-line="289" selection-start-column="34" selection-end-line="289" selection-end-column="34" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -69,8 +67,8 @@
       <file leaf-file-name="routes.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/server/routes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="58" column="49" lean-forward="false" selection-start-line="58" selection-start-column="49" selection-end-line="58" selection-end-column="49" />
+            <state relative-caret-position="323">
+              <caret line="189" column="76" lean-forward="false" selection-start-line="189" selection-start-column="76" selection-end-line="189" selection-end-column="76" />
               <folding />
             </state>
           </provider>
@@ -88,11 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/server/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+            <state relative-caret-position="358">
+              <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -241,10 +239,10 @@
         <option value="$PROJECT_DIR$/app/tests/gathertweet_test.py" />
         <option value="$PROJECT_DIR$/app/tests/sentiment_test.py" />
         <option value="$PROJECT_DIR$/app/ScotlandTwitterStream.py" />
-        <option value="$PROJECT_DIR$/app/DatabaseManager.py" />
-        <option value="$PROJECT_DIR$/app/server/routes.py" />
         <option value="$PROJECT_DIR$/app/configuration.py" />
         <option value="$PROJECT_DIR$/app/server/__init__.py" />
+        <option value="$PROJECT_DIR$/app/server/routes.py" />
+        <option value="$PROJECT_DIR$/app/DatabaseManager.py" />
       </list>
     </option>
   </component>
@@ -254,7 +252,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
@@ -864,7 +862,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16385669" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1192,24 +1190,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/DatabaseManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1193">
-          <caret line="279" column="55" lean-forward="false" selection-start-line="279" selection-start-column="55" selection-end-line="279" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/server/routes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="58" column="49" lean-forward="false" selection-start-line="58" selection-start-column="49" selection-end-line="58" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/socket.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1254,10 +1234,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/server/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+        <state relative-caret-position="358">
+          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/server/routes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="189" column="76" lean-forward="false" selection-start-line="189" selection-start-column="76" selection-end-line="189" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/DatabaseManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="394">
+          <caret line="289" column="34" lean-forward="false" selection-start-line="289" selection-start-column="34" selection-end-line="289" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -254,8 +254,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
           if (this.districts[key])
             this.districts[key].common_emote_words = value;
         }
+
+        this.districtsSubject.next(this.districts);
+        this.district.next(this.district.getValue());
       });
-    this.districtsSubject.next(this.districts);
   }
 
   public fetchDistrictTweets(date: moment.Moment, append: boolean) {

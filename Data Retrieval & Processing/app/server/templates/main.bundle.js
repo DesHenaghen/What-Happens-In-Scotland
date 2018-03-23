@@ -292,8 +292,9 @@ class AbstractDataManager {
                 if (this.districts[key])
                     this.districts[key].common_emote_words = value;
             }
+            this.districtsSubject.next(this.districts);
+            this.district.next(this.district.getValue());
         });
-        this.districtsSubject.next(this.districts);
     }
     fetchDistrictTweets(date, append) {
         if (this.mapMode === __WEBPACK_IMPORTED_MODULE_4__models_MapModes__["a" /* MapModes */].Scotland) {
@@ -932,6 +933,7 @@ AppComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__map_edinburgh_map_edinburgh_map_component__ = __webpack_require__("../../../../../src/app/map/edinburgh-map/edinburgh-map.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__services__ = __webpack_require__("../../../../../src/app/_services/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__word_cloud_word_cloud_component__ = __webpack_require__("../../../../../src/app/word-cloud/word-cloud.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -963,6 +965,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 // Services
 
 
+
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -975,7 +978,8 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_16__map_glasgow_map_glasgow_map_component__["a" /* GlasgowMapComponent */],
             __WEBPACK_IMPORTED_MODULE_17__tweet_box_tweet_box_component__["a" /* TweetBoxComponent */],
             __WEBPACK_IMPORTED_MODULE_18__map_scotland_map_scotland_map_component__["a" /* ScotlandMapComponent */],
-            __WEBPACK_IMPORTED_MODULE_19__map_edinburgh_map_edinburgh_map_component__["a" /* EdinburghMapComponent */]
+            __WEBPACK_IMPORTED_MODULE_19__map_edinburgh_map_edinburgh_map_component__["a" /* EdinburghMapComponent */],
+            __WEBPACK_IMPORTED_MODULE_22__word_cloud_word_cloud_component__["a" /* WordCloudComponent */]
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -1382,7 +1386,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"map-background\">\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\">\n              <div class=\"col\">\n                <h3 class=\"centre\"><b>Common Words</b></h3>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(0)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(1)}}\n                </h4>\n                <h4 class=\"centre alfa\">\n                  {{commonWord(2)}}\n                </h4>\n              </div>\n              <div class=\"col\">\n                <br>\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
+module.exports = "<div id=\"map-background\">\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <h5 class=\"centre alfa\">{{this.district.total}} tweets</h5>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <app-word-cloud></app-word-cloud>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -2227,6 +2231,133 @@ TweetBoxComponent = __decorate([
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__services__["a" /* DataManagerService */]])
 ], TweetBoxComponent);
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/word-cloud/word-cloud.component.css":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ "../../../../../src/app/word-cloud/word-cloud.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div id=\"wordcloud\"></div>\n"
+
+/***/ }),
+
+/***/ "../../../../../src/app/word-cloud/word-cloud.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WordCloudComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm2015/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3_cloud__ = __webpack_require__("../../../../d3-cloud/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_d3_cloud___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_d3_cloud__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services__ = __webpack_require__("../../../../../src/app/_services/index.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__models_Colour__ = __webpack_require__("../../../../../src/app/_models/Colour.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+let WordCloudComponent = class WordCloudComponent {
+    constructor(_dataManager) {
+        this._dataManager = _dataManager;
+        this.drawWordCloud = (words) => {
+            const cloud = this.svg.selectAll('g text')
+                .data(words, d => d.text);
+            // Entering words
+            cloud.enter()
+                .append('text')
+                .style('font-family', 'Impact')
+                .style('fill', d => __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour(d.value))
+                .attr('text-anchor', 'middle')
+                .attr('font-size', 1)
+                .text(d => d.text);
+            // Entering and existing words
+            cloud
+                .transition()
+                .duration(600)
+                .style('font-size', d => d.size + 'px')
+                .attr('transform', d => 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')')
+                .style('fill-opacity', 1);
+            // Exiting words
+            cloud.exit()
+                .transition()
+                .duration(200)
+                .style('fill-opacity', 1e-6)
+                .attr('font-size', 1)
+                .remove();
+        };
+    }
+    ngAfterViewInit() {
+        this._dataManager.getLatestTweet().subscribe((tweet) => {
+            // console.log("word cloud tweet", tweet);
+        });
+        this._dataManager.getDistrict().subscribe((district) => {
+            this.district = district;
+            this.generateLayout();
+        });
+        this.svg = d3.select('#wordcloud').append('svg')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .attr('viewBox', '0 0 ' + 1000 + ' ' + 500)
+            .append('g')
+            .attr('transform', 'translate(500,250)');
+    }
+    generateLayout() {
+        if (this.district.common_emote_words && this.district.common_emote_words.length > 0) {
+            const words = this.district.common_emote_words.slice(0, 30);
+            let max;
+            this.layout = __WEBPACK_IMPORTED_MODULE_1_d3_cloud__()
+                .size([500, 500])
+                .words(words.map(d => {
+                const values = d.split(', ');
+                const totalUses = parseFloat(values[2]);
+                if (max === undefined || totalUses > max)
+                    max = totalUses;
+                return { text: values[0], size: totalUses, test: 'haha', value2: values[1], value: ((parseFloat(values[1]) + 4) / 8 * 100) };
+            }))
+                .padding(5)
+                .font('Impact')
+                .fontSize(d => 90 * d.size / max)
+                .on('end', this.drawWordCloud);
+            this.layout.start();
+        }
+    }
+};
+WordCloudComponent = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'app-word-cloud',
+        template: __webpack_require__("../../../../../src/app/word-cloud/word-cloud.component.html"),
+        styles: [__webpack_require__("../../../../../src/app/word-cloud/word-cloud.component.css")],
+        encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__services__["a" /* DataManagerService */]])
+], WordCloudComponent);
 
 
 
