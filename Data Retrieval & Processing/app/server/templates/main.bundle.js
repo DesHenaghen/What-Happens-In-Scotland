@@ -878,7 +878,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-light\">\r\n  <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <div class=\"navbar-brand\" id=\"navbar-brand\">What Happens In Scotland</div>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <div id=\"date-box\">\r\n      Showing the\r\n      <mat-form-field style=\"width: 2rem; height: 1px;\">\r\n        <mat-select [(value)]=\"period\">\r\n          <mat-option *ngFor=\"let i of [1,2,3,4,5]\" [value]=\"i\">{{i}}</mat-option>\r\n        </mat-select>\r\n      </mat-form-field>\r\n      days up to\r\n      <mat-form-field style=\"width: 7rem; height: 1px;\">\r\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\r\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n        <mat-datepicker #picker></mat-datepicker>\r\n      </mat-form-field>\r\n      <button class=\"btn btn-primary\" (click)=\"submitDate()\">Refresh</button>\r\n    </div>\r\n\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link feedback\" href=\"https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf\">Leave Feedback</a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n\r\n<div id=\"intro-box\">\r\n  <div id=\"intro-message\">\r\n    <div id=\"text-box\">\r\n      This site shows the emotions expressed by Twitter users all across Scotland. Each region has a positivity score\r\n      showing overall how positive tweets are from that region.\r\n      <br> <br>\r\n      Interact with the map to view different regions and play with the filters to see what emotions you can uncover.\r\n      <br> <br>\r\n      I would also greatly appreciate it if you could leave your feedback on the website by clicking the \"Leave Feedback\"\r\n      button in the navbar at the top! <i class=\"fas fa-arrow-up\"></i>\r\n      <br><br>\r\n      <button id=\"hide_button\" class=\"btn btn-secondary\" style=\"margin-bottom: 10px;\" (click)=\"hideIntroBox()\">Ok</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<app-home [endDate]=\"endDate\" [period]=\"period\"></app-home>\r\n\r\n<!--<footer class=\"footer\">-->\r\n  <!--Today-->\r\n  <!--<span *ngIf=\"paused\" (click)=\"togglePaused()\" ><i class=\"fas fa-play\"></i></span>-->\r\n  <!--<span *ngIf=\"!paused\" (click)=\"togglePaused()\"><i class=\"fas fa-pause\"></i></span>-->\r\n  <!--<input type=\"range\" min=\"1\" max=\"100\" [(ngModel)]=\"value\" class=\"slider\" id=\"myRange\">-->\r\n<!--</footer>-->\r\n"
+module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-light\">\r\n  <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <div class=\"navbar-brand\" id=\"navbar-brand\">What Happens In Scotland</div>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <div id=\"date-box\">\r\n      Showing the\r\n      <mat-form-field style=\"width: 2rem; height: 1px;\">\r\n        <mat-select [(value)]=\"period\">\r\n          <mat-option *ngFor=\"let i of [1,2,3,4,5]\" [value]=\"i\">{{i}}</mat-option>\r\n        </mat-select>\r\n      </mat-form-field>\r\n      days up to\r\n      <mat-form-field style=\"width: 7rem; height: 1px;\">\r\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\r\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n        <mat-datepicker #picker></mat-datepicker>\r\n      </mat-form-field>\r\n      <button class=\"btn btn-primary\" (click)=\"submitDate()\">Refresh</button>\r\n      <button class=\"btn btn-secondary\" (click)=\"resetDate()\">Now</button>\r\n    </div>\r\n\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link feedback\" href=\"https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf\">Leave Feedback</a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n\r\n<div id=\"intro-box\">\r\n  <div id=\"intro-message\">\r\n    <div id=\"text-box\">\r\n      This site shows the emotions expressed by Twitter users all across Scotland. Each region has a positivity score\r\n      showing overall how positive tweets are from that region.\r\n      <br> <br>\r\n      Interact with the map to view different regions and play with the filters to see what emotions you can uncover.\r\n      <br> <br>\r\n      I would also greatly appreciate it if you could leave your feedback on the website by clicking the \"Leave Feedback\"\r\n      button in the navbar at the top! <i class=\"fas fa-arrow-up\"></i>\r\n      <br><br>\r\n      <button id=\"hide_button\" class=\"btn btn-secondary\" style=\"margin-bottom: 10px;\" (click)=\"hideIntroBox()\">Ok</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<app-home [endDate]=\"endDate\" [period]=\"period\"></app-home>\r\n\r\n<!--<footer class=\"footer\">-->\r\n  <!--Today-->\r\n  <!--<span *ngIf=\"paused\" (click)=\"togglePaused()\" ><i class=\"fas fa-play\"></i></span>-->\r\n  <!--<span *ngIf=\"!paused\" (click)=\"togglePaused()\"><i class=\"fas fa-pause\"></i></span>-->\r\n  <!--<input type=\"range\" min=\"1\" max=\"100\" [(ngModel)]=\"value\" class=\"slider\" id=\"myRange\">-->\r\n<!--</footer>-->\r\n"
 
 /***/ }),
 
@@ -901,16 +901,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 let AppComponent = class AppComponent {
-    constructor() {
+    constructor(_changeDetectorRef) {
+        this._changeDetectorRef = _changeDetectorRef;
         this.minDate = new Date(2017, 11, 1);
         this.maxDate = new Date();
     }
     ngOnInit() {
-        this.endDate = new Date;
+        this.endDate = new Date();
         this.period = 3;
     }
     submitDate() {
         this.home.refreshData();
+    }
+    resetDate() {
+        this.ngOnInit();
+        this._changeDetectorRef.detectChanges();
+        this.submitDate();
     }
     hideIntroBox() {
         document.getElementById('intro-box').style.display = 'none';
@@ -927,7 +933,7 @@ AppComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/app.component.css"), __webpack_require__("../../../../../src/assets/css/sticky-footer.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"]])
 ], AppComponent);
 
 
@@ -1847,7 +1853,7 @@ class MapComponent {
                 .attr('r', 12)
                 .ease('sine')
                 .transition()
-                .duration(20000)
+                .duration(2000)
                 .attr('stroke-width', 10)
                 .attr('r', 0)
                 .remove();
@@ -1903,7 +1909,7 @@ class MapComponent {
             if (tweet !== undefined) {
                 if (tweet.id !== (this._dataManager.getMapBoundaryId())) {
                     if (tweet.coordinates)
-                        this.drawPoint(tweet.coordinates);
+                        this.drawPoint(tweet);
                     this.pulsateDistrictElement(tweet.id);
                 }
                 if (this._dataManager.allowRegionPulsing) {
@@ -2061,16 +2067,16 @@ class MapComponent {
             this.tooltip.classed('hidden', true);
         });
     }
-    drawPoint(coordArray) {
-        if (Object(__WEBPACK_IMPORTED_MODULE_3_util__["isNumber"])(coordArray[0])) {
-            const coordinates = this.projection(coordArray);
+    drawPoint(tweet) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_3_util__["isNumber"])(tweet.coordinates[0])) {
+            const coordinates = this.projection(tweet.coordinates);
             this.svg
                 .append('circle')
                 .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
                 .attr('cx', () => coordinates[0])
                 .attr('cy', () => coordinates[1])
                 .attr('r', '4px')
-                .attr('fill', '#2a2727')
+                .attr('fill', __WEBPACK_IMPORTED_MODULE_5__models_Colour__["a" /* Colour */].getColour(tweet.score))
                 .call(d => this.circlePulse(d[0][0]));
         }
     }

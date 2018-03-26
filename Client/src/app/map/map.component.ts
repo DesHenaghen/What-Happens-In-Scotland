@@ -66,7 +66,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       if (tweet !== undefined) {
         if (tweet.id !== (this._dataManager.getMapBoundaryId())) {
           if (tweet.coordinates)
-            this.drawPoint(tweet.coordinates);
+            this.drawPoint(tweet);
 
           this.pulsateDistrictElement(tweet.id);
         }
@@ -259,16 +259,16 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       });
   }
 
-  public drawPoint(coordArray: number[]): void {
-    if (isNumber(coordArray[0])) {
-      const coordinates = this.projection(coordArray);
+  public drawPoint(tweet: Tweet): void {
+    if (isNumber(tweet.coordinates[0])) {
+      const coordinates = this.projection(tweet.coordinates);
       this.svg
         .append('circle')
         .attr('id', ('c' + coordinates[0] + coordinates[1]).replace(/\./g, ''))
         .attr('cx', () => coordinates[0])
         .attr('cy', () => coordinates[1])
         .attr('r', '4px')
-        .attr('fill', '#2a2727')
+        .attr('fill', Colour.getColour(tweet.score))
         .call(d => this.circlePulse(d[0][0]));
     }
   }
@@ -281,7 +281,7 @@ export abstract class MapComponent implements OnInit, AfterViewInit {
       .attr('r', 12)
       .ease('sine')
       .transition()
-      .duration(20000)
+      .duration(2000)
       .attr('stroke-width', 10)
       .attr('r', 0)
       .remove();

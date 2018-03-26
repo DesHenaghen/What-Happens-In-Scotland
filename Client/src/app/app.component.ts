@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {HomeComponent} from './home/home.component';
 
 @Component({
@@ -17,15 +17,21 @@ export class AppComponent implements OnInit {
   public minDate = new Date(2017, 11, 1);
   public maxDate = new Date();
 
-  constructor() {  }
+  constructor(private _changeDetectorRef: ChangeDetectorRef) {  }
 
   ngOnInit() {
-    this.endDate = new Date;
+    this.endDate = new Date();
     this.period = 3;
   }
 
   public submitDate(): void {
     this.home.refreshData();
+  }
+
+  public resetDate(): void {
+    this.ngOnInit();
+    this._changeDetectorRef.detectChanges();
+    this.submitDate();
   }
 
   public hideIntroBox(): void {
