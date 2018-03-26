@@ -9,6 +9,6 @@ export class Tweet {
   score?: number;
   text_sentiments: number[] = [];
   text_sentiment_words: string[] = [];
-  date?: Date | string;
+  date?: string;
 }
 

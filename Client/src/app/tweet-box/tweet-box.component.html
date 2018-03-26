@@ -7,7 +7,7 @@
           [innerHTML]="pauseButtonText">
   </button>
   <div class="tweet_details" *ngFor="let tweet of ward.last_tweets; trackBy: trackByFn">
-    <div>
+    <div [id]="'T'+tweet.user.id+tweet.date.substring(tweet.date.length - 4)">
       <mat-card-header>
         <score-mark class="tweet_mark" [ngStyle]="{ 'background-color': getTweetColour(tweet.score) }">{{tweet.score | number:'1.0-0'}}%</score-mark>
         <mat-card-title class="header">

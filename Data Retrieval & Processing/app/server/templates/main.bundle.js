@@ -204,9 +204,9 @@ class AbstractDataManager {
             if (district.values && district.values.length > 0 && district.values[district.values.length - 1])
                 district.values[district.values.length - 1].y = district.average;
             district.prettyAverage = Math.round(district.average * 10) / 10;
-            if (district.last_tweets.length >= 10) {
-                district.last_tweets.pop();
-            }
+            const nowDate = new Date();
+            nowDate.setMinutes(nowDate.getMinutes() - 1);
+            district.last_tweets = district.last_tweets.filter((x) => new Date(x.date) > nowDate);
             // Update most common words
             for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
                 const word = tweet.text_sentiment_words[i];
@@ -2193,7 +2193,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/tweet-box/tweet-box.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--<div id=\"tweet_box\">-->\n  <!--<h3 style=\"margin-left: 25px; font-weight: bold;\">{{ward.last_tweet.user.name}}</h3>-->\n  <!--<h5 style=\"margin-left: 30px;\">{{ward.last_tweet.text}}</h5>-->\n<!--</div>-->\n<mat-card id=\"tweet_box\">\n  <button id=\"pause_button\" class=\"btn btn-secondary pause-tweets\" (click)=\"toggleLiveTweets()\"\n          [innerHTML]=\"pauseButtonText\">\n  </button>\n  <div class=\"tweet_details\" *ngFor=\"let tweet of ward.last_tweets; trackBy: trackByFn\">\n    <div>\n      <mat-card-header>\n        <score-mark class=\"tweet_mark\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n        <mat-card-title class=\"header\">\n          {{tweet.user.name}}\n          <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n        </mat-card-title>\n      </mat-card-header>\n      <mat-card-content>\n        <p [innerHTML]=\"tweet.text\"></p>\n      </mat-card-content>\n    </div>\n    <hr>\n  </div>\n</mat-card>\n"
+module.exports = "<!--<div id=\"tweet_box\">-->\n  <!--<h3 style=\"margin-left: 25px; font-weight: bold;\">{{ward.last_tweet.user.name}}</h3>-->\n  <!--<h5 style=\"margin-left: 30px;\">{{ward.last_tweet.text}}</h5>-->\n<!--</div>-->\n<mat-card id=\"tweet_box\">\n  <button id=\"pause_button\" class=\"btn btn-secondary pause-tweets\" (click)=\"toggleLiveTweets()\"\n          [innerHTML]=\"pauseButtonText\">\n  </button>\n  <div class=\"tweet_details\" *ngFor=\"let tweet of ward.last_tweets; trackBy: trackByFn\">\n    <div [id]=\"'T'+tweet.user.id+tweet.date.substring(tweet.date.length - 4)\">\n      <mat-card-header>\n        <score-mark class=\"tweet_mark\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n        <mat-card-title class=\"header\">\n          {{tweet.user.name}}\n          <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n        </mat-card-title>\n      </mat-card-header>\n      <mat-card-content>\n        <p [innerHTML]=\"tweet.text\"></p>\n      </mat-card-content>\n    </div>\n    <hr>\n  </div>\n</mat-card>\n"
 
 /***/ }),
 
@@ -2231,6 +2231,17 @@ let TweetBoxComponent = class TweetBoxComponent {
     }
     ngOnInit() {
     }
+    ngAfterViewChecked() {
+        const tweet = this.ward.last_tweets[0];
+        if (this.mostRecentTweet !== tweet) {
+            const listBox = document.querySelector('#tweet_box');
+            if (listBox.scrollTop !== 0) {
+                const latestTweet = document.querySelector('#T' + tweet.user.id + tweet.date.substring(tweet.date.length - 4));
+                listBox.scrollTop += latestTweet.offsetHeight;
+            }
+            this.mostRecentTweet = tweet;
+        }
+    }
     get pauseButtonText() {
         return this.pauseButtonLabels[this.liveTweets.toString()];
     }
@@ -2243,7 +2254,7 @@ let TweetBoxComponent = class TweetBoxComponent {
     }
     ngOnChanges(changes) {
         if (changes['ward']) {
-            // console.log(this.ward);
+            // console.log("changes - ward - tweet-box", this.ward);
         }
     }
     getTweetBorder(score) {

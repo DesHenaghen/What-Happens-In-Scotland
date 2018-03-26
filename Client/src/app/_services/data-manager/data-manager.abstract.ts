@@ -151,9 +151,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         district.values[district.values.length - 1].y = district.average;
       district.prettyAverage = Math.round(district.average * 10) / 10;
 
-      if (district.last_tweets.length >= 10) {
-        district.last_tweets.pop();
-      }
+      const nowDate = new Date();
+      nowDate.setMinutes(nowDate.getMinutes() - 1);
+
+      district.last_tweets = district.last_tweets.filter((x) => new Date(x.date) > nowDate);
 
       // Update most common words
       for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
