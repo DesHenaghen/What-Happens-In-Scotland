@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {ScrollToModule} from '@nicky-lenaers/ngx-scroll-to';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -10,12 +10,11 @@ import {MatInputModule, MatNativeDateModule} from '@angular/material';
 import {FormsModule} from '@angular/forms';
 import {DataManagerService, TweetService} from '../_services';
 import {of} from 'rxjs/observable/of';
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {District} from "../_models/District";
-import {MapModes} from "../_models/MapModes";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {District} from '../_models/District';
+import {MapModes} from '../_models/MapModes';
 import * as moment from 'moment';
-import {Tweet} from "../_models/Tweet";
-import {packageChunkSort} from "@angular/cli/utilities/package-chunk-sort";
+import {Tweet} from '../_models/Tweet';
 
 class MockDataManager {
   dataFile = 'scotland-councils-simplified.json';
@@ -66,13 +65,14 @@ class MockDataManager {
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+  let fixture: ComponentFixture<TestComponentWrapper>;
 
   beforeEach(async(() => {
     const tweetServiceSpy = jasmine.createSpyObj('TweetService', ['getTweets']);
 
     TestBed.configureTestingModule({
       declarations: [
+        TestComponentWrapper,
         HomeComponent
       ],
       imports: [
@@ -94,8 +94,8 @@ describe('HomeComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestComponentWrapper);
+    component = fixture.debugElement.children[0].componentInstance;
     fixture.detectChanges();
   });
 
@@ -141,3 +141,12 @@ describe('HomeComponent', () => {
     expect(component.filteredTweets[component.currentKey][0].score).toBe(1);
   });
 });
+
+@Component({
+  selector: 'test-component-wrapper',
+  template: '<app-home [endDate]="endDate" [period]="period"></app-home>'
+})
+class TestComponentWrapper {
+  endDate = new Date();
+  period = 3;
+}

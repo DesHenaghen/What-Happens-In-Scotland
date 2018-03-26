@@ -10,7 +10,7 @@ import {HomeComponent} from './home/home.component';
 })
 export class AppComponent implements OnInit {
 
-  @ViewChild(HomeComponent) home: HomeComponent;
+  @ViewChild(HomeComponent) home;
 
   public endDate: Date;
   public period: number;

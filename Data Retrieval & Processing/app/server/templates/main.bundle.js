@@ -161,8 +161,6 @@ class AbstractDataManager {
         tweet.id = id;
         const district = this.districts[id];
         const region = this.districts[this.mapType + '-boundary'];
-        // console.log(this.districts);
-        // console.log(this.regionName, tweet, id, district);
         // If the id isn't equivalent to the region, update it
         if (region && district && region !== district) {
             this.districts[this.mapType + '-boundary'] = this.updateDistrict(region, tweet);
@@ -209,6 +207,22 @@ class AbstractDataManager {
             if (district.last_tweets.length >= 10) {
                 district.last_tweets.pop();
             }
+            // Update most common words
+            for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
+                const word = tweet.text_sentiment_words[i];
+                // If the word exists in the object, add 1
+                if (district.common_emote_words.hasOwnProperty(word)) {
+                    district.common_emote_words[word].freq++;
+                    // if the word has a sentiment weight add it to the object
+                }
+                else if (tweet.text_sentiments[i] !== 0 && word.length > 2) {
+                    district.common_emote_words[word] = {
+                        word: word,
+                        freq: 1,
+                        score: this.wordScoreToAreaScore(tweet.text_sentiments[i] + 4)
+                    };
+                }
+            }
             district.last_tweets.unshift(tweet);
             if (this.mapMode === __WEBPACK_IMPORTED_MODULE_4__models_MapModes__["a" /* MapModes */].Scotland && district.id === this.districtId) {
                 this._tweet.addTweet(tweet);
@@ -226,6 +240,9 @@ class AbstractDataManager {
                 district.values.push({ x: hourKey, y: 0 });
             }
         }
+    }
+    wordScoreToAreaScore(score) {
+        return (score + 4) / 8 * 100;
     }
     /**
      * Loads the districts from a JSON file. Generates data for these districts and passes this data
@@ -288,9 +305,21 @@ class AbstractDataManager {
     fetchCommonWords(ids, period = 3) {
         this.getCommonWords(ids, this.targetDate, period).subscribe(results => {
             for (let [key, value] of Object.entries(results)) {
+                value = value.slice(0, 30);
                 key = (key === 'region') ? this.getMapBoundaryId() : key;
-                if (this.districts[key])
-                    this.districts[key].common_emote_words = value;
+                if (this.districts[key]) {
+                    const values = {};
+                    for (const v of value) {
+                        const vs = v.split(', ');
+                        const vObj = {
+                            word: vs[0],
+                            score: this.wordScoreToAreaScore(parseFloat(vs[1])),
+                            freq: parseFloat(vs[2])
+                        };
+                        values[vObj.word] = vObj;
+                    }
+                    this.districts[key].common_emote_words = values;
+                }
             }
             this.districtsSubject.next(this.districts);
             this.district.next(this.district.getValue());
@@ -849,7 +878,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-light\">\r\n  <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <div class=\"navbar-brand\" id=\"navbar-brand\">What Happens In Scotland</div>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <div id=\"date-box\">\r\n      Showing the\r\n      <mat-form-field style=\"width: 2rem\">\r\n        <mat-select [(value)]=\"period\">\r\n          <mat-option *ngFor=\"let i of [1,2,3,4,5]\" [value]=\"i\">{{i}}</mat-option>\r\n        </mat-select>\r\n      </mat-form-field>\r\n      days up to\r\n      <mat-form-field style=\"width: 7rem\">\r\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\r\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n        <mat-datepicker #picker></mat-datepicker>\r\n      </mat-form-field>\r\n      <button class=\"btn btn-primary\" (click)=\"submitDate()\">Refresh</button>\r\n    </div>\r\n\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link feedback\" href=\"https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf\">Leave Feedback</a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n\r\n<div id=\"intro-box\">\r\n  <div id=\"intro-message\">\r\n    <div id=\"text-box\">\r\n      This site shows the emotions expressed by Twitter users all across Scotland. Each region has a positivity score\r\n      showing overall how positive tweets are from that region.\r\n      <br> <br>\r\n      Interact with the map to view different regions and play with the filters to see what emotions you can uncover.\r\n      <br> <br>\r\n      I would also greatly appreciate it if you could leave your feedback on the website by clicking the \"Leave Feedback\"\r\n      button in the navbar at the top! <i class=\"fas fa-arrow-up\"></i>\r\n      <br><br>\r\n      <button id=\"hide_button\" class=\"btn btn-secondary\" style=\"margin-bottom: 10px;\" (click)=\"hideIntroBox()\">Ok</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<app-home [endDate]=\"endDate\" [period]=\"period\"></app-home>\r\n\r\n<!--<footer class=\"footer\">-->\r\n  <!--Today-->\r\n  <!--<span *ngIf=\"paused\" (click)=\"togglePaused()\" ><i class=\"fas fa-play\"></i></span>-->\r\n  <!--<span *ngIf=\"!paused\" (click)=\"togglePaused()\"><i class=\"fas fa-pause\"></i></span>-->\r\n  <!--<input type=\"range\" min=\"1\" max=\"100\" [(ngModel)]=\"value\" class=\"slider\" id=\"myRange\">-->\r\n<!--</footer>-->\r\n"
+module.exports = "<nav class=\"navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-light\">\r\n  <button class=\"navbar-toggler navbar-toggler-right\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <div class=\"navbar-brand\" id=\"navbar-brand\">What Happens In Scotland</div>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <div id=\"date-box\">\r\n      Showing the\r\n      <mat-form-field style=\"width: 2rem; height: 1px;\">\r\n        <mat-select [(value)]=\"period\">\r\n          <mat-option *ngFor=\"let i of [1,2,3,4,5]\" [value]=\"i\">{{i}}</mat-option>\r\n        </mat-select>\r\n      </mat-form-field>\r\n      days up to\r\n      <mat-form-field style=\"width: 7rem; height: 1px;\">\r\n        <input [(ngModel)]=\"endDate\" matInput [min]=\"minDate\" [max]=\"maxDate\" [matDatepicker]=\"picker\" placeholder=\"Choose a date\">\r\n        <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n        <mat-datepicker #picker></mat-datepicker>\r\n      </mat-form-field>\r\n      <button class=\"btn btn-primary\" (click)=\"submitDate()\">Refresh</button>\r\n    </div>\r\n\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link feedback\" href=\"https://strathsci.qualtrics.com/jfe/form/SV_9N7rhKFwmprJvDf\">Leave Feedback</a>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n\r\n<div id=\"intro-box\">\r\n  <div id=\"intro-message\">\r\n    <div id=\"text-box\">\r\n      This site shows the emotions expressed by Twitter users all across Scotland. Each region has a positivity score\r\n      showing overall how positive tweets are from that region.\r\n      <br> <br>\r\n      Interact with the map to view different regions and play with the filters to see what emotions you can uncover.\r\n      <br> <br>\r\n      I would also greatly appreciate it if you could leave your feedback on the website by clicking the \"Leave Feedback\"\r\n      button in the navbar at the top! <i class=\"fas fa-arrow-up\"></i>\r\n      <br><br>\r\n      <button id=\"hide_button\" class=\"btn btn-secondary\" style=\"margin-bottom: 10px;\" (click)=\"hideIntroBox()\">Ok</button>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<app-home [endDate]=\"endDate\" [period]=\"period\"></app-home>\r\n\r\n<!--<footer class=\"footer\">-->\r\n  <!--Today-->\r\n  <!--<span *ngIf=\"paused\" (click)=\"togglePaused()\" ><i class=\"fas fa-play\"></i></span>-->\r\n  <!--<span *ngIf=\"!paused\" (click)=\"togglePaused()\"><i class=\"fas fa-pause\"></i></span>-->\r\n  <!--<input type=\"range\" min=\"1\" max=\"100\" [(ngModel)]=\"value\" class=\"slider\" id=\"myRange\">-->\r\n<!--</footer>-->\r\n"
 
 /***/ }),
 
@@ -889,7 +918,7 @@ let AppComponent = class AppComponent {
 };
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_1__home_home_component__["a" /* HomeComponent */]),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__home_home_component__["a" /* HomeComponent */])
+    __metadata("design:type", Object)
 ], AppComponent.prototype, "home", void 0);
 AppComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -1373,7 +1402,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right: -10px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.centre-col {\r\n  height: 100%;\r\n  margin: auto;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n#infoBox {\r\n  margin-right: 5px;\r\n}\r\n\r\n@media (min-width: 992px) {\r\n  #districtInfoBox {\r\n    margin: 0 0 -10px;\r\n  }\r\n}\r\n\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\ndiv.row {\r\n  margin-top: 10px;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
+exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right: -10px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.centre-col {\r\n  height: 100%;\r\n  margin: auto;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n#infoBox {\r\n  margin-right: 5px;\r\n}\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\ndiv.row {\r\n  margin-top: 10px;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
 
 // exports
 
@@ -1386,7 +1415,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"map-background\">\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\">\n              <div class=\"col\">\n                <app-word-cloud></app-word-cloud>\n              </div>\n              <div class=\"col centre-col\">\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
+module.exports = "<div id=\"map-background\">\n  <div class=\"row\">\n    <div id=\"mapBox\" class=\"col col-xl-5 col-lg-8 col-md-8 col-sm-12 col-12\">\n      <mat-card class=\"mapCard\">\n        <mat-tab-group id=\"mapModeTabs\" #mapModeTabs (selectedTabChange)=\"tabChanged($event)\">\n          <mat-tab label=\"Scotland\"></mat-tab>\n          <mat-tab label=\"Glasgow\"></mat-tab>\n          <mat-tab label=\"Edinburgh\"></mat-tab>\n        </mat-tab-group>\n\n        <app-glasgow-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Glasgow\"></app-glasgow-map>\n        <app-scotland-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Scotland\"></app-scotland-map>\n        <app-edinburgh-map (mapMode)=\"setMode($event)\" [hidden]=\"currentMode!=mapModes.Edinburgh\"></app-edinburgh-map>\n      </mat-card>\n    </div>\n    <div\n      class=\"next-page-chevron d-md-none\"\n      [ngx-scroll-to]=\"'#tweets_box'\"\n    ><i class=\"fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"tweets_box\" class=\"col col-xl-2 col-lg-4 col-md-4 col-sm-12 col-12\">\n      <app-tweet-box [ward]=\"district\"></app-tweet-box>\n    </div>\n    <div\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#bottom-chevron'\"\n    ><i class=\"hidden-lg-up fas fa-angle-down fa-2x\"></i></div>\n    <div id=\"infoBox\" class=\"col col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12\">\n      <mat-tab-group id=\"infoBoxTabs\" (animationDone)=\"infoBoxTabChanged($event)\">\n        <mat-tab label=\"Overview\">\n          <mat-card id=\"districtInfoBox\" class=\"infoBox\">\n          <mat-card-header>\n            <mat-card-title class=\"header\">{{district.name}}</mat-card-title>\n            <!--<mat-card-subtitle class=\"subtitle\">{{district.prettyAverage}}% Happy</mat-card-subtitle>-->\n            <score-mark class=\"big\" [ngStyle]=\"{ 'background-color': getTweetColour(district.prettyAverage) }\">\n              {{district.prettyAverage | number:'1.0-0'}}%\n            </score-mark>\n          </mat-card-header>\n          <mat-card-content>\n            <app-happy-timeline [ward]=\"district\"></app-happy-timeline>\n            <div class=\"row\" style=\"margin: -20px auto;\">\n              <div class=\"col\">\n                <app-word-cloud></app-word-cloud>\n              </div>\n              <div class=\"col centre-col\">\n                <div class=\"centre yuge alfa\">{{this.district.total}}</div>\n                <h4 class=\"centre alfa\">tweets</h4>\n              </div>\n            </div>\n            <app-happy-rank [ward]=\"district\" [wards]=\"districts\"></app-happy-rank>\n          </mat-card-content>\n        </mat-card>\n        </mat-tab>\n        <mat-tab id=\"tweet_box_tab\" label=\"Tweets\">\n          <div class=\"infoBox\">\n            <mat-tab-group id=\"tweetDateTabs\" (selectedTabChange)=\"tweetDateTabChanged($event)\">\n              <mat-tab *ngFor=\"let tweetDate of tweetDates; trackBy: trackByTweetDate\" label=\"{{tweetDate.title}}\">\n                <div *ngIf=\"!tweetDate.loaded\" style=\"z-index: 9999999; width: 100%; background-color: rgba(0, 0, 0, 0.16)\">\n                  <div class=\"loader\"></div>\n                </div>\n                <mat-card>\n                  <input\n                    matInput\n                    id=\"tweet-search-box\"\n                    placeholder=\"Search\"\n                    [(ngModel)]=\"searchTerm\"\n                    (input)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length || 10)\">\n                  <span>Showing tweets 1-{{getDateFilteredTweets(tweetDate).length}} of {{tweetDate.total}}. </span>\n                  <span>\n                    Sort By\n                    <mat-form-field style=\"width: 7rem\">\n                      <mat-select id=\"sort_tweets\" [(value)]=\"sorting\" (selectionChange)=\"sortTweets(tweetDate)\">\n                        <mat-option [value]=\"TweetSorting.DATE_DESC\">Date Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.DATE_ASC\">Date Asc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_DESC\">Score Desc</mat-option>\n                        <mat-option [value]=\"TweetSorting.SCORE_ASC\">Score Asc</mat-option>\n                      </mat-select>\n                    </mat-form-field>\n                  </span>\n                  <h3 *ngIf=\"getDateFilteredTweets(tweetDate).length === 0 && tweetDate.loaded\" style=\"background-color: white\">\n                    There are no tweets for the selected date, region and filters\n                  </h3>\n                  <div id=\"fwoop\" *ngIf=\"(getDateFilteredTweets(tweetDate).length > 0) && tweetDate.loaded\">\n                    <div\n                      class=\"tweet_details\"\n                      *ngFor=\"let tweet of getDateFilteredTweets(tweetDate); trackBy: trackByFn\">\n                      <div style=\"border-radius: 10px;\">\n                        <mat-card-header>\n                          <score-mark class=\"wide\" [ngStyle]=\"{ 'background-color': getTweetColour(tweet.score) }\">{{tweet.score | number:'1.0-0'}}%</score-mark>\n                          <mat-card-title class=\"header\">\n                            {{tweet.name}}\n                            <mat-card-subtitle>{{tweet.date | date:'shortTime'}}</mat-card-subtitle>\n                          </mat-card-title>\n                        </mat-card-header>\n                        <mat-card-content>\n                          <p style=\"padding: 0 5px\" [innerHTML]=\"tweet.text\"></p>\n                        </mat-card-content>\n                      </div>\n                      <hr>\n                    </div>\n                  </div>\n                  <button\n                    style=\"width: 100%\" class=\"btn btn-primary\"\n                    *ngIf=\"getDateFilteredTweets(tweetDate).length > 0 && tweetDate.loaded\"\n                    (click)=\"filterTweets(tweetDate.dateString, getDateFilteredTweets(tweetDate).length+50)\">\n                    Load More\n                  </button>\n                </mat-card>\n              </mat-tab>\n            </mat-tab-group>\n          </div>\n        </mat-tab>\n      </mat-tab-group>\n    </div>\n    <div\n      id=\"bottom-chevron\"\n      class=\"next-page-chevron d-lg-none\"\n      [ngx-scroll-to]=\"'#navbar-brand'\"\n      [ngx-scroll-to-duration]=\"1\"\n      [ngx-scroll-to-easing]=\"'easeOutQuint'\"\n    ><i class=\"hidden-lg-up fas fa-angle-double-up fa-2x\"></i></div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -2290,6 +2319,8 @@ let WordCloudComponent = class WordCloudComponent {
     constructor(_dataManager) {
         this._dataManager = _dataManager;
         this.districtSubscription = new __WEBPACK_IMPORTED_MODULE_4_rxjs_Subscription__["a" /* Subscription */]();
+        this.tweetSubscription = new __WEBPACK_IMPORTED_MODULE_4_rxjs_Subscription__["a" /* Subscription */]();
+        this.tweetCount = 10;
         this.drawWordCloud = (words) => {
             const cloud = this.svg.selectAll('g text')
                 .data(words, d => d.text);
@@ -2330,31 +2361,43 @@ let WordCloudComponent = class WordCloudComponent {
         });
     }
     subscribeForDistrictData() {
+        if (!this.tweetSubscription.closed) {
+            this.tweetSubscription.unsubscribe();
+        }
+        this.tweetSubscription = this._dataManager.getLatestTweet().subscribe((tweet) => {
+            if (this.district) {
+                if (this.tweetCount === 0) {
+                    this.generateLayout();
+                    this.tweetCount = 10;
+                }
+                this.tweetCount--;
+            }
+        });
         if (!this.districtSubscription.closed) {
             this.districtSubscription.unsubscribe();
         }
         this.districtSubscription = this._dataManager.getDistrict().subscribe((district) => {
-            console.log(district);
             this.district = district;
             this.generateLayout();
         });
     }
     generateLayout() {
         if (this.district.common_emote_words) {
-            const words = this.district.common_emote_words.slice(0, 30);
             let max;
             this.layout = __WEBPACK_IMPORTED_MODULE_1_d3_cloud__()
                 .size([500, 500])
-                .words(words.map(d => {
-                const values = d.split(', ');
-                const totalUses = parseFloat(values[2]);
-                if (max === undefined || totalUses > max)
-                    max = totalUses;
-                return { text: values[0], size: totalUses, test: 'haha', value2: values[1], value: ((parseFloat(values[1]) + 4) / 8 * 100) };
+                .words(Object.values(this.district.common_emote_words).map(d => {
+                if (max === undefined || d.freq > max)
+                    max = d.freq;
+                return { text: d.word, size: d.freq, test: 'haha', value: d.score };
             }))
                 .padding(5)
                 .font('Impact')
-                .fontSize(d => 90 * d.size / max)
+                .fontSize(d => {
+                const size = 90 * d.size / max;
+                if (size > 5)
+                    return size;
+            })
                 .on('end', this.drawWordCloud);
             this.layout.start();
         }

@@ -13,7 +13,6 @@ import {MapModes} from '../../_models/MapModes';
 
 declare let d3: any;
 import * as moment from 'moment';
-import {Moment} from 'moment';
 
 /**
  *
@@ -25,7 +24,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   // Fields
   protected district = new BehaviorSubject<District>(new District());
-  protected districts: {[id: string]: District} = {};
+  public    districts: {[id: string]: District} = {};
   protected districtsSubject = new BehaviorSubject<{[id: string]: District}>(undefined);
   protected latestTweet = new BehaviorSubject<Tweet>(undefined);
   protected mapTopology = new BehaviorSubject<FeatureCollection<any>>(undefined);
@@ -45,7 +44,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   public topologyName: string;
 
   private targetDate = moment();
-  private updateTweets = true;
+  public updateTweets = true;
 
 
   constructor(injector: Injector) {
@@ -97,8 +96,6 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     tweet.id = id;
     const district = this.districts[id];
     const region = this.districts[this.mapType + '-boundary'];
-    // console.log(this.districts);
-    // console.log(this.regionName, tweet, id, district);
 
     // If the id isn't equivalent to the region, update it
     if (region && district && region !== district) {
@@ -158,6 +155,24 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         district.last_tweets.pop();
       }
 
+      // Update most common words
+      for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
+        const word = tweet.text_sentiment_words[i];
+
+        // If the word exists in the object, add 1
+        if (district.common_emote_words.hasOwnProperty(word)) {
+          district.common_emote_words[word].freq++;
+
+        // if the word has a sentiment weight add it to the object
+        } else if (tweet.text_sentiments[i] !== 0 && word.length > 2) {
+          district.common_emote_words[word] = {
+            word: word,
+            freq: 1,
+            score: this.wordScoreToAreaScore(tweet.text_sentiments[i] + 4)
+          };
+        }
+      }
+
       district.last_tweets.unshift(tweet);
       if (this.mapMode === MapModes.Scotland && district.id === this.districtId) {
         this._tweet.addTweet(tweet);
@@ -177,6 +192,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         district.values.push({ x: hourKey, y: 0});
       }
     }
+  }
+
+  private wordScoreToAreaScore(score): number {
+    return (score + 4) / 8 * 100;
   }
 
   /**
@@ -250,9 +269,22 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     this.getCommonWords(ids, this.targetDate, period).subscribe(
       results => {
         for (let [key, value] of Object.entries(results)) {
+          value = value.slice(0, 30);
           key = (key === 'region') ? this.getMapBoundaryId() : key;
-          if (this.districts[key])
-            this.districts[key].common_emote_words = value;
+          if (this.districts[key]) {
+            const values = {};
+            for (const v of value) {
+              const vs = v.split(', ');
+              const vObj = {
+                word: vs[0],
+                score: this.wordScoreToAreaScore(parseFloat(vs[1])),
+                freq: parseFloat(vs[2])
+              };
+
+              values[vObj.word] = vObj;
+            }
+            this.districts[key].common_emote_words = values;
+          }
         }
 
         this.districtsSubject.next(this.districts);

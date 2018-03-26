@@ -7,13 +7,13 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <div id="date-box">
       Showing the
-      <mat-form-field style="width: 2rem">
+      <mat-form-field style="width: 2rem; height: 1px;">
         <mat-select [(value)]="period">
           <mat-option *ngFor="let i of [1,2,3,4,5]" [value]="i">{{i}}</mat-option>
         </mat-select>
       </mat-form-field>
       days up to
-      <mat-form-field style="width: 7rem">
+      <mat-form-field style="width: 7rem; height: 1px;">
         <input [(ngModel)]="endDate" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" placeholder="Choose a date">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>

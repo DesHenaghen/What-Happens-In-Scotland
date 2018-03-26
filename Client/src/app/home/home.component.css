@@ -78,13 +78,6 @@ mat-card.mapCard {
   margin-right: 5px;
 }
 
-@media (min-width: 992px) {
-  #districtInfoBox {
-    margin: 0 0 -10px;
-  }
-}
-
-
 #districtInfoBox .header {
   font-size: 2.5rem;
   display: inline-block;

@@ -1,10 +1,9 @@
 import {TestBed, async, ComponentFixture} from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import {Component, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
-import {HomeComponent} from './home/home.component';
 import {APP_BASE_HREF} from '@angular/common';
 
-@Component({template: ''})
+@Component({selector: 'app-home', template: ''})
 class HomeStubComponent {}
 
 describe('AppComponent', () => {
@@ -15,7 +14,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        HomeComponent
+        HomeStubComponent
       ],
       providers: [
         {provide: APP_BASE_HREF, useValue : '/' }

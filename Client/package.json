@@ -10,6 +10,7 @@
     "build-dev": "ng build -w",
     "build-prod": "ng build --prod",
     "test": "ng test",
+    "test-single": "ng test --single-run",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

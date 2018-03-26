@@ -11,3 +11,4 @@ export class Tweet {
   text_sentiment_words: string[] = [];
   date?: Date | string;
 }
+

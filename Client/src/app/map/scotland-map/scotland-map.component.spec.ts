@@ -7,6 +7,7 @@ import {District} from '../../_models/District';
 import {MapModes} from '../../_models/MapModes';
 import {FeatureCollection} from 'geojson';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Tweet} from '../../_models/Tweet';
 
 class MockTestService {
   dataFile = 'scotland-councils-simplified.json';
@@ -19,23 +20,29 @@ class MockTestService {
   allowRegionPulsing = false;
   apiDataRoute = 'all_scotland_district_data';
   private district = new BehaviorSubject(new District());
+  private latestTweet = new BehaviorSubject(undefined);
 
   getDistricts = () => of({'test': 50});
   getLoadedData = () => of(true);
   getDistrict = () => this.district.asObservable();
-  getLatestTweet = () => of(undefined);
+  getLatestTweet = () => this.latestTweet.asObservable();
   getMapTopology = () => of(undefined);
   getMapBoundaryId = () => 'test';
   setDistrict = (id) => {
-    let district = new District();
+    const district = new District();
     district.id = id;
     this.district.next(district);
+  }
+  updateLastTweet = (tweet, id) => {
+    tweet.id = id;
+    this.latestTweet.next(tweet);
   }
 }
 
 describe('ScotlandMapComponent', () => {
   let component: ScotlandMapComponent;
   let fixture: ComponentFixture<ScotlandMapComponent>;
+  const areaId = 'S12000017';
   const scotlandTopology: any = {
     'type': 'FeatureCollection',
     'crs': {
@@ -8296,16 +8303,21 @@ describe('ScotlandMapComponent', () => {
   });
 
   it('should render the map', () => {
-    const areas = fixture.debugElement.nativeElement.querySelectorAll('#S12000017').length;
+    const areas = fixture.debugElement.nativeElement.querySelectorAll('#' + areaId).length;
     expect(areas).toBe(1);
   });
 
   it('should select the area clicked on', () => {
-    const id = '#S12000017';
-    let area = fixture.debugElement.nativeElement.querySelector(id);
+    let area = fixture.debugElement.nativeElement.querySelector('#' + areaId);
     area.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    area = fixture.debugElement.nativeElement.querySelector(id);
+    area = fixture.debugElement.nativeElement.querySelector('#' + areaId);
     expect(area.classList.contains('selected')).toBe(true);
+  });
+
+  it('should animate the area of the latest tweet', () => {
+    component._dataManager.updateLastTweet(new Tweet(), areaId);
+    expect(fixture.debugElement.nativeElement.querySelector('#' + areaId).style['animation-name'])
+      .toBe('districtPulsate');
   });
 });

@@ -3,6 +3,8 @@ import json
 import string
 import decimal
 
+from sqlalchemy.exc import OperationalError
+
 from server import get_app_instance, get_socketio_instance
 from flask import render_template, send_from_directory, jsonify, request, Blueprint
 import DatabaseManager as dbMan
@@ -18,6 +20,23 @@ __translation = str.maketrans("", "", string.punctuation)
 data_routes = Blueprint('data_routes', __name__)
 app = get_app_instance()
 socketio = get_socketio_instance()
+
+
+class InvalidUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        rv['status_code'] = self.status_code
+        return rv
 
 
 def filterstopwords(words):
@@ -37,6 +56,13 @@ def alchemyencoder(obj):
         return obj.isoformat()
     elif isinstance(obj, decimal.Decimal):
         return float(obj)
+
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 
 @data_routes.route('/')
@@ -98,29 +124,35 @@ def all_scotland_district_data():
 
     ids_dict = {}
 
-    # If region data is requested, pop the last id in the list and fetch area data
-    if region:
-        region_id = area_ids.pop()
-        ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_tweets(date, period).fetchall(), date, period)
+    try:
+        # If region data is requested, pop the last id in the list and fetch area data
+        if region:
+            region_id = area_ids.pop()
+            ids_dict[region_id] = parse_twitter_data(dbMan.get_scotland_tweets(date, period).fetchall(), date, period)
 
-    # Get the tweet data for all tweets from the specified area ids
-    raw_data = dbMan.get_scotland_district_tweets(area_ids, "area", date, period).fetchall()
+        # Get the tweet data for all tweets from the specified area ids
+        raw_data = dbMan.get_scotland_district_tweets(area_ids, "area", date, period).fetchall()
+    except Exception:
+        raise InvalidUsage('Error occurred when fetching data from the database', status_code=500)
 
-    # Initialise tweet arrays
-    tweet_dict = {}
-    for area_id in area_ids:
-        tweet_dict[area_id] = []
+    try:
+        # Initialise tweet arrays
+        tweet_dict = {}
+        for area_id in area_ids:
+            tweet_dict[area_id] = []
 
-    # Sort and group tweets by area_id
-    for tweet in raw_data:
-        tweet_area_id = tweet["area_id"]
+        # Sort and group tweets by area_id
+        for tweet in raw_data:
+            tweet_area_id = tweet["area_id"]
 
-        if tweet_area_id:
-            tweet_dict[tweet_area_id].append(tweet)
+            if tweet_area_id:
+                tweet_dict[tweet_area_id].append(tweet)
 
-    # Parse twitter data and store to id dictionary
-    for key, tweets in tweet_dict.items():
-        ids_dict[key] = parse_twitter_data(tweets, date, period)
+        # Parse twitter data and store to id dictionary
+        for key, tweets in tweet_dict.items():
+            ids_dict[key] = parse_twitter_data(tweets, date, period)
+    except Exception:
+        raise InvalidUsage('Somehow crashed when processing database results', status_code=418)
 
     # Send those bad boys away
     return jsonify(ids_dict)
@@ -136,31 +168,37 @@ def all_scotland_ward_data():
 
     ids_dict = {}
 
-    # If region data is requested, pop the last id in the list and fetch area data
-    if region:
-        region_id = area_ids.pop()
-        ids_dict[region_id] = parse_twitter_data(
-            dbMan.get_scotland_district_tweets([region_id], "area", date, period).fetchall(),
-            date,
-            period
-        )
+    try:
+        # If region data is requested, pop the last id in the list and fetch area data
+        if region:
+            region_id = area_ids.pop()
+            ids_dict[region_id] = parse_twitter_data(
+                dbMan.get_scotland_district_tweets([region_id], "area", date, period).fetchall(),
+                date,
+                period
+            )
 
-    # Get the tweet data for all tweets from the specified area ids
-    raw_data = dbMan.get_scotland_district_tweets(area_ids, "ward", date, period).fetchall()
+        # Get the tweet data for all tweets from the specified area ids
+        raw_data = dbMan.get_scotland_district_tweets(area_ids, "ward", date, period).fetchall()
+    except Exception:
+        raise InvalidUsage('Error occurred when fetching data from the database', status_code=500)
 
-    # Initialise tweet arrays
-    tweet_dict = {}
-    for area_id in area_ids:
-        tweet_dict[area_id] = []
+    try:
+        # Initialise tweet arrays
+        tweet_dict = {}
+        for area_id in area_ids:
+            tweet_dict[area_id] = []
 
-    # Sort and group tweets by area_id
-    for tweet in raw_data:
-        if tweet["ward_id"] is not None:
-            tweet_dict[tweet["ward_id"]].append(tweet)
+        # Sort and group tweets by area_id
+        for tweet in raw_data:
+            if tweet["ward_id"] is not None:
+                tweet_dict[tweet["ward_id"]].append(tweet)
 
-    # Parse twitter data and store to id dictionary
-    for key, tweets in tweet_dict.items():
-        ids_dict[key] = parse_twitter_data(tweets, date, period)
+        # Parse twitter data and store to id dictionary
+        for key, tweets in tweet_dict.items():
+            ids_dict[key] = parse_twitter_data(tweets, date, period)
+    except Exception:
+        raise InvalidUsage('Somehow crashed when processing database results', status_code=418)
 
     # Send those bad boys away
     return jsonify(ids_dict)
@@ -178,22 +216,26 @@ def get_common_words():
 
     ids_dict = {}
 
-    rawData = dbMan.get_scotland_district_common_words(area_ids, group, date, period).fetchall()
+    try:
+        rawData = dbMan.get_scotland_district_common_words(area_ids, group, date, period).fetchall()
 
-    if region and len(region_id) > 0:
-        regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchone()
-        ids_dict['region'] = filterstopwords(regionData.word_arr
-                                             if regionData is not None and regionData.word_arr is not None
-                                             else [])
+        if region and len(region_id) > 0:
+            regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchone()
+            ids_dict['region'] = filterstopwords(regionData.word_arr
+                                                 if regionData is not None and regionData.word_arr is not None
+                                                 else [])
 
-    elif region:
-        regionData = dbMan.get_scotland_common_words(date, period).fetchone()[0]
-        ids_dict['region'] = filterstopwords(regionData if regionData is not None else [])
+        elif region:
+            regionData = dbMan.get_scotland_common_words(date, period).fetchone()[0]
+            ids_dict['region'] = filterstopwords(regionData if regionData is not None else [])
+    except Exception:
+        raise InvalidUsage('Encountered an error fetching data from the database', status_code=500)
 
-    for row in rawData:
-        ids_dict[row.group_id] = filterstopwords(row.word_arr if row.word_arr is not None else [])
-
-    print(ids_dict)
+    try:
+        for row in rawData:
+            ids_dict[row.group_id] = filterstopwords(row.word_arr if row.word_arr is not None else [])
+    except Exception:
+        raise InvalidUsage('Failed to format the database data', status_code=418)
 
     return jsonify(ids_dict)
 
@@ -202,9 +244,16 @@ def get_common_words():
 def get_districts_tweets():
     date = request.args.get('date')
 
-    tweets = dbMan.get_districts_tweets(date).fetchall()
-    json_tweets = list(map(format_html_text, tweets))
-    json_tweets = json.dumps([dict(r) for r in json_tweets], default=alchemyencoder)
+    try:
+        tweets = dbMan.get_districts_tweets(date).fetchall()
+    except Exception:
+        raise InvalidUsage("Encountered an error fetching the data from the database", status_code=500)
+
+    try:
+        json_tweets = list(map(format_html_text, tweets))
+        json_tweets = json.dumps([dict(r) for r in json_tweets], default=alchemyencoder)
+    except Exception:
+        raise InvalidUsage('Could not format twitter data', status_code=418)
 
     return json_tweets
 
@@ -238,8 +287,8 @@ def format_word(word, sentiment, words):
 
 
 @data_routes.route('/api/<path:api_route>')
-def route():
-    return 'This api route does not exist'
+def route(api_route):
+    raise InvalidUsage('This api route does not exist', status_code=404)
 
 
 @data_routes.route('/<path:filename>')

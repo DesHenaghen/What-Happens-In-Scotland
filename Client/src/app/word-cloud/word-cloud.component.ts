@@ -1,11 +1,11 @@
-import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ViewEncapsulation} from '@angular/core';
 declare let d3: any;
 import * as wordCloud from 'd3-cloud';
 import {DataManagerService} from '../_services';
 import {Tweet} from '../_models/Tweet';
 import {District} from '../_models/District';
 import {Colour} from '../_models/Colour';
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-word-cloud',
@@ -17,10 +17,12 @@ export class WordCloudComponent implements AfterViewInit {
 
   private layout: any;
   private svg: any;
-  private district: District;
+  public district: District;
   private districtSubscription: Subscription = new Subscription();
+  private tweetSubscription: Subscription = new Subscription();
+  private tweetCount = 10;
 
-  constructor(private _dataManager: DataManagerService) { }
+  constructor(public _dataManager: DataManagerService) { }
 
   ngAfterViewInit() {
     this.svg = d3.select('#wordcloud').append('svg')
@@ -37,11 +39,24 @@ export class WordCloudComponent implements AfterViewInit {
   }
 
   public subscribeForDistrictData() {
+    if (!this.tweetSubscription.closed) {
+      this.tweetSubscription.unsubscribe();
+    }
+    this.tweetSubscription = this._dataManager.getLatestTweet().subscribe((tweet: Tweet) => {
+      if (this.district) {
+        if (this.tweetCount === 0) {
+          this.generateLayout();
+          this.tweetCount = 10;
+        }
+
+        this.tweetCount--;
+      }
+    });
+
     if (!this.districtSubscription.closed) {
       this.districtSubscription.unsubscribe();
     }
     this.districtSubscription = this._dataManager.getDistrict().subscribe((district: District) => {
-      console.log(district);
       this.district = district;
 
       this.generateLayout();
@@ -50,19 +65,19 @@ export class WordCloudComponent implements AfterViewInit {
 
   public generateLayout() {
     if (this.district.common_emote_words) {
-      const words = this.district.common_emote_words.slice(0, 30);
       let max;
       this.layout = wordCloud()
         .size([500, 500])
-        .words(words.map(d => {
-          const values = d.split(', ');
-          const totalUses = parseFloat(values[2]);
-          if (max === undefined || totalUses > max) max = totalUses;
-          return {text: values[0], size: totalUses, test: 'haha', value2: values[1], value: ((parseFloat(values[1]) + 4) / 8 * 100)};
+        .words(Object.values(this.district.common_emote_words).map(d => {
+          if (max === undefined || d.freq > max) max = d.freq;
+          return {text: d.word, size: d.freq, test: 'haha', value: d.score};
         }))
         .padding(5)
         .font('Impact')
-        .fontSize(d => 90 * d.size / max)
+        .fontSize(d => {
+          const size = 90 * d.size / max;
+          if (size > 5) return size;
+        })
         .on('end', this.drawWordCloud);
 
       this.layout.start();
