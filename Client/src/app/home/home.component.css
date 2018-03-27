@@ -31,7 +31,7 @@ mat-card.mapCard {
 
 @media (max-width: 767px) {
   #tweets_box {
-    height: 80vh;
+    height: 85vh;
   }
 }
 

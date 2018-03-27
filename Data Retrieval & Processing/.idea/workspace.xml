@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html.">
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/app/DatabaseManager.py" afterPath="$PROJECT_DIR$/app/DatabaseManager.py" />
-      <change beforePath="$PROJECT_DIR$/app/server/routes.py" afterPath="$PROJECT_DIR$/app/server/routes.py" />
-      <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js" />
-      <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" />
-    </list>
+    <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html." />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -57,8 +50,8 @@
       <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/server/routes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="236" column="0" lean-forward="true" selection-start-line="236" selection-start-column="0" selection-end-line="236" selection-end-column="0" />
+            <state relative-caret-position="346">
+              <caret line="242" column="41" lean-forward="true" selection-start-line="242" selection-start-column="41" selection-end-line="242" selection-end-column="41" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
                 <element signature="e#3019#3042#0" expanded="false" />
@@ -1292,8 +1285,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/server/routes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="236" column="0" lean-forward="true" selection-start-line="236" selection-start-column="0" selection-end-line="236" selection-end-column="0" />
+        <state relative-caret-position="346">
+          <caret line="242" column="41" lean-forward="true" selection-start-line="242" selection-start-column="41" selection-end-line="242" selection-end-column="41" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
             <element signature="e#3019#3042#0" expanded="false" />
