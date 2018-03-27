@@ -125,6 +125,20 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     this.districtsSubject.next(this.districts);
   }
 
+  public setDistrictDataDates(): void {
+    for (const district of Object.values(this.districts)) {
+      let sum = 0;
+      for (const v of district.values) {
+        sum += v.y;
+      }
+
+      district.average = sum / district.values.length;
+      district.prettyAverage = Math.round(district.average * 10) / 10;
+    }
+
+    this.districtsSubject.next(this.districts);
+  }
+
   public highlightEmotiveWords(word, tweet, new_words, new_scores) {
     if (tweet.text_sentiment_words[0] && word.toLowerCase().startsWith(tweet.text_sentiment_words[0])) {
       new_words.push(tweet.text_sentiment_words.shift());

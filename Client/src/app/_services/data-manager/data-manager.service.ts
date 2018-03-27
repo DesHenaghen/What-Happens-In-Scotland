@@ -122,4 +122,8 @@ export class DataManagerService implements DataManagerInterface {
   setDistrictDataTime(index: number): void {
     this._dataManager.setDistrictDataTime(index);
   }
+
+  setDistrictDataDates(): void {
+    this._dataManager.setDistrictDataDates();
+  }
 }

@@ -1,3 +1,4 @@
 <div id="happinessChartContainer">
+  <button class="btn btn-secondary" (click)="setDistrictDataDates()">Whole Period</button>
   <nvd3 #timelineChart id="happinessChart" [options]="lineOptions" [data]="lineData"></nvd3>
 </div>

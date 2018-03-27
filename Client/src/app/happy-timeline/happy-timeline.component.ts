@@ -34,6 +34,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
 
   private _differ: any;
   private currentPointIndex: number;
+  private selectAll = false;
 
   constructor(
     private _differs: KeyValueDiffers,
@@ -94,6 +95,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
             elementClick: e => {
               this._dataManager.setDistrictDataTime(e[0].pointIndex);
               this.currentPointIndex = e[0].pointIndex;
+              this.selectAll = false;
               this.highlightCurrentPoint();
             }
           }
@@ -158,12 +160,17 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
     }
   }
 
+  public setDistrictDataDates(): void {
+    this._dataManager.setDistrictDataDates();
+    this.selectAll = true;
+  }
+
   private highlightCurrentPoint(i?: number): void {
     const index = i || this.currentPointIndex;
 
     const points: any = document.querySelectorAll('.nvd3 .nv-groups .nv-point');
     for (i = 0; i < points.length; ++i) {
-      if (points[i].classList.contains('nv-point-' + index)) {
+      if (points[i].classList.contains('nv-point-' + index) || this.selectAll) {
         points[i].style.stroke = Colour.getColour((this.ward.values[index].y >= 50) ? 100 : 0);
         points[i].style['stroke-width'] = '5px';
       } else {
