@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html.">
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.interface.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.interface.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-rank/happy-rank.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-rank/happy-rank.component.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.ts" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/app/DatabaseManager.py" afterPath="$PROJECT_DIR$/app/DatabaseManager.py" />
+      <change beforePath="$PROJECT_DIR$/app/server/routes.py" afterPath="$PROJECT_DIR$/app/server/routes.py" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" />
     </list>
@@ -46,10 +43,12 @@
       <file leaf-file-name="DatabaseManager.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/DatabaseManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
-              <caret line="272" column="22" lean-forward="false" selection-start-line="272" selection-start-column="22" selection-end-line="272" selection-end-column="22" />
+            <state relative-caret-position="331">
+              <caret line="224" column="34" lean-forward="true" selection-start-line="224" selection-start-column="34" selection-end-line="224" selection-end-column="34" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
+                <element signature="e#6825#8114#0" expanded="false" />
+                <element signature="e#9446#10607#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -58,13 +57,16 @@
       <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/server/routes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="479">
-              <caret line="46" column="65" lean-forward="false" selection-start-line="46" selection-start-column="65" selection-end-line="46" selection-end-column="65" />
+            <state relative-caret-position="244">
+              <caret line="236" column="0" lean-forward="true" selection-start-line="236" selection-start-column="0" selection-end-line="236" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
                 <element signature="e#3019#3042#0" expanded="false" />
                 <element signature="e#3095#4765#0" expanded="false" />
-                <element signature="e#10658#10967#0" expanded="false" />
+                <element signature="e#4860#6333#0" expanded="false" />
+                <element signature="e#6420#7957#0" expanded="false" />
+                <element signature="e#9924#10432#0" expanded="false" />
+                <element signature="e#11075#11384#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -162,7 +164,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ward</find>
       <find>ward_id</find>
       <find>area</find>
       <find>nltk.d</find>
@@ -190,8 +191,9 @@
       <find>strptime(date, '%Y-%m-%d')</find>
       <find>strptime</find>
       <find>rint</find>
-      <find>print</find>
       <find>emoji</find>
+      <find>print</find>
+      <find>join</find>
     </findStrings>
     <replaceStrings>
       <replace>{0}</replace>
@@ -258,10 +260,10 @@
         <option value="$PROJECT_DIR$/app/tests/gathertweet_test.py" />
         <option value="$PROJECT_DIR$/app/tests/sentiment_test.py" />
         <option value="$PROJECT_DIR$/app/ScotlandTwitterStream.py" />
-        <option value="$PROJECT_DIR$/app/DatabaseManager.py" />
         <option value="$PROJECT_DIR$/app/server/InvalidUsage.py" />
         <option value="$PROJECT_DIR$/app/server/__init__.py" />
         <option value="$PROJECT_DIR$/app/configuration.py" />
+        <option value="$PROJECT_DIR$/app/DatabaseManager.py" />
         <option value="$PROJECT_DIR$/app/server/routes.py" />
       </list>
     </option>
@@ -888,7 +890,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16227607" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3847826" sideWeight="0.3827292" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3902174" sideWeight="0.61727077" order="5" side_tool="false" content_ui="tabs" x="320" y="637" width="1380" height="496" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3902174" sideWeight="0.61727077" order="5" side_tool="false" content_ui="tabs" x="320" y="637" width="1380" height="496" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32826087" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39782608" sideWeight="0.49343544" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -985,7 +987,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="11" />
+      <option name="time" value="12" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1230,16 +1232,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/DatabaseManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="272" column="22" lean-forward="false" selection-start-line="272" selection-start-column="22" selection-end-line="272" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/generateSentimentScoreArrays.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -1286,15 +1278,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/DatabaseManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="224" column="34" lean-forward="true" selection-start-line="224" selection-start-column="34" selection-end-line="224" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+            <element signature="e#6825#8114#0" expanded="false" />
+            <element signature="e#9446#10607#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/server/routes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="479">
-          <caret line="46" column="65" lean-forward="false" selection-start-line="46" selection-start-column="65" selection-end-line="46" selection-end-column="65" />
+        <state relative-caret-position="244">
+          <caret line="236" column="0" lean-forward="true" selection-start-line="236" selection-start-column="0" selection-end-line="236" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
             <element signature="e#3019#3042#0" expanded="false" />
             <element signature="e#3095#4765#0" expanded="false" />
-            <element signature="e#10658#10967#0" expanded="false" />
+            <element signature="e#4860#6333#0" expanded="false" />
+            <element signature="e#6420#7957#0" expanded="false" />
+            <element signature="e#9924#10432#0" expanded="false" />
+            <element signature="e#11075#11384#0" expanded="false" />
           </folding>
         </state>
       </provider>

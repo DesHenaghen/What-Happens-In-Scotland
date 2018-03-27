@@ -126,4 +126,8 @@ export class DataManagerService implements DataManagerInterface {
   setDistrictDataDates(): void {
     this._dataManager.setDistrictDataDates();
   }
+
+  isDistrictTimeChanged(): Observable<boolean> {
+    return this._dataManager.isDistrictTimeChanged();
+  }
 }

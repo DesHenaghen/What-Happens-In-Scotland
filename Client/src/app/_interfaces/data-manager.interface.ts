@@ -31,4 +31,5 @@ export interface DataManagerInterface {
   setUpdateTweets(bool: boolean): void;
   setDistrictDataTime(index: number): void;
   setDistrictDataDates(): void;
+  isDistrictTimeChanged();
 }

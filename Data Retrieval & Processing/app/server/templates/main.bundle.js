@@ -68,6 +68,7 @@ class District {
         this.average = 0;
         this.prettyAverage = 0;
         this.common_emote_words = [];
+        this.currentWords = [];
         this.total = 0;
         this.totals = [];
         this.last_tweets = [];
@@ -123,6 +124,7 @@ class AbstractDataManager {
         this.latestTweet = new __WEBPACK_IMPORTED_MODULE_2_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](undefined);
         this.mapTopology = new __WEBPACK_IMPORTED_MODULE_2_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](undefined);
         this.loadedData = new __WEBPACK_IMPORTED_MODULE_2_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](false);
+        this.districtTimeChanged = new __WEBPACK_IMPORTED_MODULE_2_rxjs_BehaviorSubject__["a" /* BehaviorSubject */](false);
         this.targetDate = __WEBPACK_IMPORTED_MODULE_5_moment__();
         this.updateTweets = true;
         this._http = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]);
@@ -148,6 +150,9 @@ class AbstractDataManager {
     }
     getMapBoundaryId() {
         return this.mapType + '-boundary';
+    }
+    isDistrictTimeChanged() {
+        return this.districtTimeChanged.asObservable();
     }
     updateLastTweet(tweet, id) {
         const new_scores = [];
@@ -180,8 +185,23 @@ class AbstractDataManager {
             const values = district.values[index];
             district.average = values.y;
             district.prettyAverage = Math.round(district.average * 10) / 10;
+            district.currentWords = district.common_emote_words[values.x];
         }
         this.districtsSubject.next(this.districts);
+        this.districtTimeChanged.next(true);
+    }
+    setDistrictDataDates() {
+        for (const district of Object.values(this.districts)) {
+            let sum = 0;
+            for (const v of district.values) {
+                sum += v.y;
+            }
+            district.average = sum / district.values.length;
+            district.prettyAverage = Math.round(district.average * 10) / 10;
+            district.currentWords = district.common_emote_words.overall;
+        }
+        this.districtsSubject.next(this.districts);
+        this.districtTimeChanged.next(true);
     }
     highlightEmotiveWords(word, tweet, new_words, new_scores) {
         if (tweet.text_sentiment_words[0] && word.toLowerCase().startsWith(tweet.text_sentiment_words[0])) {
@@ -216,19 +236,24 @@ class AbstractDataManager {
             nowDate.setMinutes(nowDate.getMinutes() - 1);
             district.last_tweets = district.last_tweets.filter((x) => new Date(x.date) > nowDate);
             // Update most common words
-            for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
-                const word = tweet.text_sentiment_words[i];
-                // If the word exists in the object, add 1
-                if (district.common_emote_words.hasOwnProperty(word)) {
-                    district.common_emote_words[word].freq++;
-                    // if the word has a sentiment weight add it to the object
-                }
-                else if (tweet.text_sentiments[i] !== 0 && word.length > 2) {
-                    district.common_emote_words[word] = {
-                        word: word,
-                        freq: 1,
-                        score: this.wordScoreToAreaScore(tweet.text_sentiments[i] + 4)
-                    };
+            if (district.common_emote_words) {
+                const hourKey = __WEBPACK_IMPORTED_MODULE_5_moment__().minute(0).second(0).millisecond(0).valueOf();
+                for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
+                    const word = tweet.text_sentiment_words[i];
+                    // If the word exists in the object, add 1
+                    if (district.common_emote_words.hasOwnProperty(hourKey) && district.common_emote_words[hourKey].hasOwnProperty(word)) {
+                        district.common_emote_words[hourKey][word].freq++;
+                        // if the word has a sentiment weight add it to the object
+                    }
+                    else if (tweet.text_sentiments[i] !== 0 && word.length > 2) {
+                        if (!district.common_emote_words.hasOwnProperty(hourKey))
+                            district.common_emote_words[hourKey] = {};
+                        district.common_emote_words[hourKey][word] = {
+                            word: word,
+                            freq: 1,
+                            score: this.wordScoreToAreaScore(tweet.text_sentiments[i])
+                        };
+                    }
                 }
             }
             district.last_tweets.unshift(tweet);
@@ -314,21 +339,39 @@ class AbstractDataManager {
     }
     fetchCommonWords(ids, period = 3) {
         this.getCommonWords(ids, this.targetDate, period).subscribe(results => {
+            const timestamp = __WEBPACK_IMPORTED_MODULE_5_moment__().minute(0).second(0).millisecond(0).valueOf();
             for (let [key, value] of Object.entries(results)) {
-                value = value.slice(0, 30);
+                // value = value.slice(0, 30);
                 key = (key === 'region') ? this.getMapBoundaryId() : key;
                 if (this.districts[key]) {
-                    const values = {};
-                    for (const v of value) {
-                        const vs = v.split(', ');
-                        const vObj = {
-                            word: vs[0],
-                            score: this.wordScoreToAreaScore(parseFloat(vs[1])),
-                            freq: parseFloat(vs[2])
-                        };
-                        values[vObj.word] = vObj;
+                    this.districts[key].common_emote_words = { 'overall': {} };
+                    for (const [inKey, inValue] of Object.entries(value)) {
+                        const values = {};
+                        for (const v of inValue) {
+                            const vs = v.split(', ');
+                            const vObj = {
+                                word: vs[0],
+                                score: this.wordScoreToAreaScore(parseFloat(vs[1])),
+                                freq: parseFloat(vs[2])
+                            };
+                            values[vObj.word] = vObj;
+                            if (this.districts[key].common_emote_words.overall.hasOwnProperty(vObj.word)) {
+                                this.districts[key].common_emote_words.overall[vObj.word].freq++;
+                            }
+                            else {
+                                this.districts[key].common_emote_words.overall[vObj.word] = vObj;
+                            }
+                        }
+                        this.districts[key].common_emote_words[inKey] = values;
                     }
-                    this.districts[key].common_emote_words = values;
+                }
+            }
+            for (const v of Object.values(this.districts)) {
+                if (v.common_emote_words && v.common_emote_words[timestamp]) {
+                    v.currentWords = v.common_emote_words[timestamp];
+                }
+                else {
+                    v.currentWords = [];
                 }
             }
             this.districtsSubject.next(this.districts);
@@ -534,6 +577,12 @@ let DataManagerService = class DataManagerService {
     }
     setDistrictDataTime(index) {
         this._dataManager.setDistrictDataTime(index);
+    }
+    setDistrictDataDates() {
+        this._dataManager.setDistrictDataDates();
+    }
+    isDistrictTimeChanged() {
+        return this._dataManager.isDistrictTimeChanged();
     }
 };
 DataManagerService = __decorate([
@@ -1271,7 +1320,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/happy-timeline/happy-timeline.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"happinessChartContainer\">\n  <nvd3 #timelineChart id=\"happinessChart\" [options]=\"lineOptions\" [data]=\"lineData\"></nvd3>\n</div>\n"
+module.exports = "<div id=\"happinessChartContainer\">\n  <button class=\"btn btn-secondary\" (click)=\"setDistrictDataDates()\">Whole Period</button>\n  <nvd3 #timelineChart id=\"happinessChart\" [options]=\"lineOptions\" [data]=\"lineData\"></nvd3>\n</div>\n"
 
 /***/ }),
 
@@ -1307,6 +1356,7 @@ let HappyTimelineComponent = class HappyTimelineComponent {
     constructor(_differs, _dataManager) {
         this._differs = _differs;
         this._dataManager = _dataManager;
+        this.selectAll = false;
         this._differ = this._differs.find({}).create();
     }
     ngOnInit() {
@@ -1357,6 +1407,7 @@ let HappyTimelineComponent = class HappyTimelineComponent {
                         elementClick: e => {
                             this._dataManager.setDistrictDataTime(e[0].pointIndex);
                             this.currentPointIndex = e[0].pointIndex;
+                            this.selectAll = false;
                             this.highlightCurrentPoint();
                         }
                     }
@@ -1416,11 +1467,15 @@ let HappyTimelineComponent = class HappyTimelineComponent {
             this.highlightCurrentPoint();
         }
     }
+    setDistrictDataDates() {
+        this._dataManager.setDistrictDataDates();
+        this.selectAll = true;
+    }
     highlightCurrentPoint(i) {
         const index = i || this.currentPointIndex;
         const points = document.querySelectorAll('.nvd3 .nv-groups .nv-point');
         for (i = 0; i < points.length; ++i) {
-            if (points[i].classList.contains('nv-point-' + index)) {
+            if (points[i].classList.contains('nv-point-' + index) || this.selectAll) {
                 points[i].style.stroke = __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour((this.ward.values[index].y >= 50) ? 100 : 0);
                 points[i].style['stroke-width'] = '5px';
             }
@@ -1462,7 +1517,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right: -10px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border-color: #686666;\r\n  border-style: solid;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 85vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.centre-col {\r\n  height: 100%;\r\n  margin: auto;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n#infoBox {\r\n  margin-right: 5px;\r\n}\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\ndiv.row {\r\n  margin-top: 10px;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
+exports.push([module.i, "html * {\r\n  font-family: 'Open Sans', sans-serif;\r\n}\r\n\r\nbody {\r\n  /*overflow: hidden;*/\r\n  background-color: #dadada;\r\n}\r\n\r\n.hidden {\r\n  display: none;\r\n}\r\n\r\nhtml, body {\r\n  height: 100%;\r\n}\r\n\r\n#mapBox {\r\n  min-height: 50vh;\r\n  margin-left: 5px;\r\n}\r\n\r\nmat-card.mapCard {\r\n  padding: 0;\r\n}\r\n\r\n#tweets_box {\r\n  height: 100%;\r\n  margin-right: -10px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweets_box {\r\n    height: 80vh;\r\n  }\r\n}\r\n\r\n#chart-box {\r\n  border: solid #686666;\r\n  border-radius: 2vh;\r\n  background-color: #9f9f9fb3;\r\n  height: 100%;\r\n  max-height: 90vh;\r\n  width: 80%;\r\n  margin: 4vh auto;\r\n  overflow-x: hidden;\r\n  overflow-y: auto;\r\n}\r\n\r\n.alfa {\r\n  font-family: \"Alfa Slab One\", cursive;\r\n}\r\n\r\n.yuge {\r\n  font-size: 3rem;\r\n}\r\n\r\n.centre {\r\n  text-align: center;\r\n}\r\n\r\n.centre-col {\r\n  height: 100%;\r\n  margin: auto;\r\n}\r\n\r\n.infoBox {\r\n  /*top: 2%;*/\r\n  /*right: 1%;*/\r\n  /*margin: 5% 2%;*/\r\n  /*background-color: #f6f6f6;*/\r\n  max-height: 85vh;\r\n  overflow-y: auto;\r\n}\r\n\r\n#infoBox {\r\n  margin-right: 5px;\r\n}\r\n\r\n#districtInfoBox .header {\r\n  font-size: 2.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#districtInfoBox .subtitle {\r\n  font-size: 1.2rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n#mapModeTabs {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\n.mat-tab-header {\r\n  background-color: #f6f6f6;\r\n  z-index: 0;\r\n}\r\n\r\n.next-page-chevron {\r\n  width: 100% !important;\r\n  text-align: center;\r\n  z-index: 999;\r\n}\r\n\r\nscore-mark {\r\n  border-radius: 20px;\r\n  border: 2px solid #FFF;\r\n  width: 40px;\r\n  height: 30px;\r\n  background-color: #dadada;\r\n  position: absolute;\r\n  top: -5px;\r\n  right: 10px;\r\n  font-size: 12px;\r\n  line-height: 25px;\r\n  font-family: 'Roboto', sans-serif;\r\n  color: #FFF;\r\n  font-weight: 700;\r\n  text-align: center;\r\n}\r\n\r\ndiv.row {\r\n  margin-top: 10px;\r\n}\r\n\r\nscore-mark.wide {\r\n  width: 60px;\r\n}\r\n\r\nscore-mark.big {\r\n  width: 80px;\r\n  height: 60px;\r\n  border-radius: 30px;\r\n  line-height: 55px;\r\n  font-size: 30px;\r\n}\r\n\r\n.btn.disabled {\r\n  opacity: 0.25;\r\n}\r\n\r\nmat-card-header {\r\n  position: relative;\r\n}\r\n", ""]);
 
 // exports
 
@@ -1845,7 +1900,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "div.tooltip {\r\n  color: #222;\r\n  background: #fff;\r\n  border-radius: 3px;\r\n  box-shadow: 0 0 2px 0 #a6a6a6;\r\n  padding: .2em;\r\n  text-shadow: #f5f5f5 0 1px 0;\r\n  opacity: 0.9;\r\n  position: absolute;\r\n}\r\n\r\n.districts {\r\n  cursor: pointer;\r\n  stroke: #000;\r\n  -webkit-animation-duration: 1.2s;\r\n          animation-duration: 1.2s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.districts:hover {\r\n  fill: #a2a2a2;\r\n}\r\n\r\n.boundary:hover {\r\n  stroke: #a2a2a2;\r\n}\r\n\r\n.place-label {\r\n  pointer-events:none;\r\n}\r\n\r\n.districts.selected {\r\n  stroke-width: 5px;\r\n}\r\n\r\n.area-map {\r\n  text-align: center;\r\n  width: 100%;\r\n}\r\n\r\n.map-title {\r\n  margin: 1%;\r\n}\r\n\r\n.area-map svg {\r\n  /*max-height: 80vh;*/\r\n  left: 0;\r\n  position: relative;\r\n  width: 100%\r\n}\r\n\r\ndiv.row {\r\n  margin-right: 0;\r\n}\r\n\r\n\r\n/*@media (min-width: 992px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 40vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (min-width: 768px) and (max-width: 991px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 70vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (max-width: 767px) {*/\r\n  /*#map-container svg {*/\r\n    /*!*width: 130vw;*!*/\r\n    /*height: 85vh;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n.svgMap {\r\n  max-height: 75vh;\r\n}\r\n\r\n.legend {\r\n  font-size: 20px;\r\n}\r\n\r\n.boundary {\r\n  fill: none;\r\n  stroke-linejoin: round;\r\n  stroke-width: 4vh !important;\r\n  cursor: pointer;\r\n  -webkit-animation-duration: 0.5s;\r\n          animation-duration: 0.5s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.btn.zoom {\r\n  float: right;\r\n  margin-right: 2vw;\r\n  border-radius: 3vw;\r\n}\r\n\r\n@-webkit-keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n/*Page loading spinner*/\r\n.loader {\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  border: 16px solid #f3f3f3; /* Light grey */\r\n  border-top: 16px solid #3498db; /* Blue */\r\n  border-radius: 50%;\r\n  width: 120px;\r\n  height: 120px;\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n\r\n@-webkit-keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n@keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n", ""]);
+exports.push([module.i, "div.tooltip {\r\n  color: #222;\r\n  background: #fff;\r\n  border-radius: 3px;\r\n  box-shadow: 0 0 2px 0 #a6a6a6;\r\n  padding: .2em;\r\n  text-shadow: #f5f5f5 0 1px 0;\r\n  opacity: 0.9;\r\n  position: absolute;\r\n}\r\n\r\n.districts {\r\n  cursor: pointer;\r\n  stroke: #000;\r\n  -webkit-animation-duration: 1.2s;\r\n          animation-duration: 1.2s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.districts:hover {\r\n  fill: #a2a2a2;\r\n}\r\n\r\n.boundary:hover {\r\n  stroke: #a2a2a2;\r\n}\r\n\r\n.place-label {\r\n  pointer-events:none;\r\n}\r\n\r\n.districts.selected {\r\n  stroke-width: 5px;\r\n}\r\n\r\n.area-map {\r\n  text-align: center;\r\n  width: 100%;\r\n}\r\n\r\n.map-title {\r\n  margin: 1%;\r\n}\r\n\r\n.area-map svg {\r\n  /*max-height: 80vh;*/\r\n  left: 0;\r\n  position: relative;\r\n  width: 100%\r\n}\r\n\r\ndiv.row {\r\n  margin-right: 0;\r\n}\r\n\r\n\r\n/*@media (min-width: 992px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 40vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (min-width: 768px) and (max-width: 991px) {*/\r\n  /*#map-container {*/\r\n    /*max-width: 70vw;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n/*@media (max-width: 767px) {*/\r\n  /*#map-container svg {*/\r\n    /*!*width: 130vw;*!*/\r\n    /*height: 85vh;*/\r\n  /*}*/\r\n/*}*/\r\n\r\n.svgMap {\r\n  max-height: 80vh;\r\n}\r\n\r\n.legend {\r\n  font-size: 20px;\r\n}\r\n\r\n.boundary {\r\n  fill: none;\r\n  stroke-linejoin: round;\r\n  stroke-width: 4vh !important;\r\n  cursor: pointer;\r\n  -webkit-animation-duration: 0.5s;\r\n          animation-duration: 0.5s;\r\n  -webkit-animation-iteration-count: 1;\r\n          animation-iteration-count: 1;\r\n  -webkit-animation-timing-function: linear;\r\n          animation-timing-function: linear;\r\n}\r\n\r\n.btn.zoom {\r\n  float: right;\r\n  margin-right: 2vw;\r\n  border-radius: 3vw;\r\n}\r\n\r\n@-webkit-keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@keyframes regionPulsate2 {\r\n  0%    { stroke-width: 4vh; }\r\n  50%   { stroke-width: 6vh; }\r\n  100%  { stroke-width: 4vh; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@-webkit-keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n@keyframes districtPulsate2 {\r\n  0%    { stroke-width: 1px; }\r\n  50%   { stroke-width: 6px; }\r\n  100%  { stroke-width: 1px; }\r\n}\r\n\r\n/*Page loading spinner*/\r\n.loader {\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  border: 16px solid #f3f3f3; /* Light grey */\r\n  border-top: 16px solid #3498db; /* Blue */\r\n  border-radius: 50%;\r\n  width: 120px;\r\n  height: 120px;\r\n  -webkit-animation: spin 2s linear infinite;\r\n          animation: spin 2s linear infinite;\r\n}\r\n\r\n@-webkit-keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n@keyframes spin {\r\n  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }\r\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -2390,6 +2445,7 @@ let WordCloudComponent = class WordCloudComponent {
     constructor(_dataManager) {
         this._dataManager = _dataManager;
         this.districtSubscription = new __WEBPACK_IMPORTED_MODULE_4_rxjs_Subscription__["a" /* Subscription */]();
+        this.districtTimeSubscription = new __WEBPACK_IMPORTED_MODULE_4_rxjs_Subscription__["a" /* Subscription */]();
         this.tweetSubscription = new __WEBPACK_IMPORTED_MODULE_4_rxjs_Subscription__["a" /* Subscription */]();
         this.tweetCount = 10;
         this.drawWordCloud = (words) => {
@@ -2451,16 +2507,25 @@ let WordCloudComponent = class WordCloudComponent {
             this.district = district;
             this.generateLayout();
         });
+        if (!this.districtTimeSubscription.closed) {
+            this.districtTimeSubscription.unsubscribe();
+        }
+        this.districtTimeSubscription = this._dataManager.isDistrictTimeChanged().subscribe(() => {
+            this.generateLayout();
+        });
     }
     generateLayout() {
-        if (this.district.common_emote_words) {
+        if (this.district.currentWords) {
             let max;
             this.layout = __WEBPACK_IMPORTED_MODULE_1_d3_cloud__()
                 .size([500, 500])
-                .words(Object.values(this.district.common_emote_words).map(d => {
+                .words(Object.values(this.district.currentWords)
+                .sort((a, b) => b.freq - a.freq)
+                .slice(0, 30)
+                .map(d => {
                 if (max === undefined || d.freq > max)
                     max = d.freq;
-                return { text: d.word, size: d.freq, test: 'haha', value: d.score };
+                return { text: d.word, size: d.freq, value: d.score };
             }))
                 .padding(5)
                 .font('Impact')

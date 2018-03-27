@@ -216,19 +216,19 @@ def get_scotland_district_common_words(ids, group, rdate, period):
 
     # Generate SQL query
     sql = text("""
-          SELECT t.{0}_id as group_id, array_agg(word ||', '||word_score||', '|| word_ct::text) word_arr
+          SELECT t.hour, t.{0}_id as group_id, array_agg(word ||', '||word_score||', '|| word_ct::text) word_arr
           FROM (
-            SELECT {0}_id, word, word_score, count(*) word_ct
+            SELECT date_trunc('hour', date) as hour, {0}_id, word, word_score, count(*) word_ct
             FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
             WHERE  date > {1}
             AND    date <= {2}
             AND compound_sent != 0
             AND {0}_id = ANY(:ids)
             AND word_score != 0
-            GROUP  BY word, word_score, {0}_id
+            GROUP  BY hour, word, word_score, {0}_id
             ORDER  BY {0}_id, count(*) DESC, word
           ) t
-        GROUP BY t.{0}_id
+        GROUP BY t.hour, t.{0}_id
     """.format(
         group,
         "'" + start_date.strftime('%Y-%m-%d %H:%M') + "'",
@@ -281,18 +281,21 @@ def get_scotland_common_words(rdate, period):
     start_date = end_date - timedelta(days=int(period))
 
     sql = text(""" 
-          SELECT array_agg(word ||', ' || word_score || ', ' || word_ct::text) word_arr
-          FROM (
-            SELECT word, word_score, count(*) word_ct
-            FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
-            WHERE  date > {0}
-            AND date <= {1}
-            AND compound_sent != 0
-            AND area_id IS NOT NULL
-            AND word_score != 0
-            GROUP  BY word, word_score
-            ORDER  BY count(*) DESC, word
-          ) t""".format("'" + start_date.strftime('%Y-%m-%d %H:%M') + "'", "'" + end_date.strftime('%Y-%m-%d %H:%M') + "'"))
+        SELECT t.hour, array_agg(word ||', ' || word_score || ', ' || word_ct::text) word_arr
+        FROM (
+          SELECT date_trunc('hour', date) as hour, word, word_score, count(*) word_ct
+          FROM   scotland_tweets, unnest(text_sentiment_words, text_sentiments) AS u(word, word_score)
+          WHERE  date > {0}
+          AND date <= {1}
+          AND compound_sent != 0
+          AND area_id IS NOT NULL
+          AND word_score != 0
+          GROUP  BY hour, word, word_score
+          ORDER  BY count(*) DESC, word
+        ) t
+        GROUP BY t.hour
+        ORDER BY t.hour
+    """.format("'" + start_date.strftime('%Y-%m-%d %H:%M') + "'", "'" + end_date.strftime('%Y-%m-%d %H:%M') + "'"))
 
     return __engine.execute(sql)
 

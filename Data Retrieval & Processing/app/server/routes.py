@@ -215,26 +215,38 @@ def get_common_words():
     region_id = request.args.getlist('region_id')
 
     ids_dict = {}
+    ids_dict['region'] = {}
 
     try:
         rawData = dbMan.get_scotland_district_common_words(area_ids, group, date, period).fetchall()
 
         if region and len(region_id) > 0:
-            regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchone()
-            ids_dict['region'] = filterstopwords(regionData.word_arr
-                                                 if regionData is not None and regionData.word_arr is not None
-                                                 else [])
+            regionData = dbMan.get_scotland_district_common_words(region_id, 'area', date, period).fetchall()
+            for row in regionData:
+                word_arr = filterstopwords(row.word_arr
+                                                     if row is not None and row.word_arr is not None
+                                                     else [])
+
+                ids_dict['region']["%.0f" % (row.hour.timestamp() * 1000)] = word_arr
 
         elif region:
-            regionData = dbMan.get_scotland_common_words(date, period).fetchone()[0]
-            ids_dict['region'] = filterstopwords(regionData if regionData is not None else [])
+            regionData = dbMan.get_scotland_common_words(date, period).fetchall()
+            for row in regionData:
+                word_arr = filterstopwords(row.word_arr if row is not None else [])
+                ids_dict['region']["%.0f" % (row.hour.timestamp() * 1000)] = word_arr
+
     except Exception:
         raise InvalidUsage('Encountered an error fetching data from the database', status_code=500)
 
     try:
         for row in rawData:
-            ids_dict[row.group_id] = filterstopwords(row.word_arr if row.word_arr is not None else [])
-    except Exception:
+            print(row.group_id, row.hour)
+            if row.group_id not in ids_dict:
+                ids_dict[row.group_id] = {}
+
+            ids_dict[row.group_id]["%.0f" % (row.hour.timestamp() * 1000)] = filterstopwords(row.word_arr if row.word_arr is not None else [])
+
+    except Exception as e:
         raise InvalidUsage('Failed to format the database data', status_code=418)
 
     return jsonify(ids_dict)

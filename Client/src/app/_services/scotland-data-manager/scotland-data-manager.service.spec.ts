@@ -98,7 +98,7 @@ describe('ScotlandDataManagerService', () => {
     const tweet = new Tweet();
     const date = new Date();
     date.setHours(date.getHours() + 1);
-    tweet.date = date;
+    tweet.date = date.toISOString();
     service.updateLastTweet(tweet, 'uniqueid');
 
     expect(service.districts['uniqueid'].values.length).toBe(2);

@@ -29,6 +29,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   protected latestTweet = new BehaviorSubject<Tweet>(undefined);
   protected mapTopology = new BehaviorSubject<FeatureCollection<any>>(undefined);
   protected loadedData = new BehaviorSubject<boolean>(false);
+  protected districtTimeChanged = new BehaviorSubject<boolean>(false);
 
   // Map identifiers
   public regionName: string;
@@ -80,6 +81,10 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     return this.mapType + '-boundary';
   }
 
+  public isDistrictTimeChanged(): Observable<boolean> {
+    return this.districtTimeChanged.asObservable();
+  }
+
   public updateLastTweet(tweet: Tweet, id: string): void {
 
     const new_scores = [];
@@ -120,9 +125,12 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
       district.average = values.y;
       district.prettyAverage = Math.round(district.average * 10) / 10;
+      district.currentWords = district.common_emote_words[values.x];
     }
 
+
     this.districtsSubject.next(this.districts);
+    this.districtTimeChanged.next(true);
   }
 
   public setDistrictDataDates(): void {
@@ -134,9 +142,11 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
       district.average = sum / district.values.length;
       district.prettyAverage = Math.round(district.average * 10) / 10;
+      district.currentWords = district.common_emote_words.overall;
     }
 
     this.districtsSubject.next(this.districts);
+    this.districtTimeChanged.next(true);
   }
 
   public highlightEmotiveWords(word, tweet, new_words, new_scores) {
@@ -182,20 +192,24 @@ export abstract class AbstractDataManager implements DataManagerInterface {
       district.last_tweets = district.last_tweets.filter((x) => new Date(x.date) > nowDate);
 
       // Update most common words
-      for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
-        const word = tweet.text_sentiment_words[i];
+      if (district.common_emote_words) {
+        const hourKey = moment().minute(0).second(0).millisecond(0).valueOf();
+        for (let i = 0; i < tweet.text_sentiment_words.length; i++) {
+          const word = tweet.text_sentiment_words[i];
 
-        // If the word exists in the object, add 1
-        if (district.common_emote_words.hasOwnProperty(word)) {
-          district.common_emote_words[word].freq++;
+          // If the word exists in the object, add 1
+          if (district.common_emote_words.hasOwnProperty(hourKey) && district.common_emote_words[hourKey].hasOwnProperty(word)) {
+            district.common_emote_words[hourKey][word].freq++;
 
-        // if the word has a sentiment weight add it to the object
-        } else if (tweet.text_sentiments[i] !== 0 && word.length > 2) {
-          district.common_emote_words[word] = {
-            word: word,
-            freq: 1,
-            score: this.wordScoreToAreaScore(tweet.text_sentiments[i] + 4)
-          };
+            // if the word has a sentiment weight add it to the object
+          } else if (tweet.text_sentiments[i] !== 0 && word.length > 2) {
+            if (!district.common_emote_words.hasOwnProperty(hourKey)) district.common_emote_words[hourKey] = {};
+            district.common_emote_words[hourKey][word] = {
+              word: word,
+              freq: 1,
+              score: this.wordScoreToAreaScore(tweet.text_sentiments[i])
+            };
+          }
         }
       }
 
@@ -295,22 +309,40 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   private fetchCommonWords(ids: string[], period = 3) {
     this.getCommonWords(ids, this.targetDate, period).subscribe(
       results => {
+        const timestamp = moment().minute(0).second(0).millisecond(0).valueOf();
         for (let [key, value] of Object.entries(results)) {
-          value = value.slice(0, 30);
+          // value = value.slice(0, 30);
           key = (key === 'region') ? this.getMapBoundaryId() : key;
           if (this.districts[key]) {
-            const values = {};
-            for (const v of value) {
-              const vs = v.split(', ');
-              const vObj = {
-                word: vs[0],
-                score: this.wordScoreToAreaScore(parseFloat(vs[1])),
-                freq: parseFloat(vs[2])
-              };
+            this.districts[key].common_emote_words = {'overall': {}};
 
-              values[vObj.word] = vObj;
+            for (const [inKey, inValue] of Object.entries(value)) {
+              const values = {};
+              for (const v of inValue) {
+                const vs = v.split(', ');
+                const vObj = {
+                  word: vs[0],
+                  score: this.wordScoreToAreaScore(parseFloat(vs[1])),
+                  freq: parseFloat(vs[2])
+                };
+
+                values[vObj.word] = vObj;
+                if (this.districts[key].common_emote_words.overall.hasOwnProperty(vObj.word)) {
+                  this.districts[key].common_emote_words.overall[vObj.word].freq++;
+                } else {
+                  this.districts[key].common_emote_words.overall[vObj.word] = vObj;
+                }
+              }
+              this.districts[key].common_emote_words[inKey] = values;
             }
-            this.districts[key].common_emote_words = values;
+          }
+        }
+
+        for (const v of Object.values(this.districts)) {
+          if (v.common_emote_words && v.common_emote_words[timestamp]) {
+            v.currentWords = v.common_emote_words[timestamp];
+          } else {
+            v.currentWords = [];
           }
         }
 

@@ -19,6 +19,7 @@ export class WordCloudComponent implements AfterViewInit {
   private svg: any;
   public district: District;
   private districtSubscription: Subscription = new Subscription();
+  private districtTimeSubscription: Subscription = new Subscription();
   private tweetSubscription: Subscription = new Subscription();
   private tweetCount = 10;
 
@@ -61,17 +62,28 @@ export class WordCloudComponent implements AfterViewInit {
 
       this.generateLayout();
     });
+
+    if (!this.districtTimeSubscription.closed) {
+      this.districtTimeSubscription.unsubscribe();
+    }
+    this.districtTimeSubscription = this._dataManager.isDistrictTimeChanged().subscribe(() => {
+      this.generateLayout();
+    });
   }
 
   public generateLayout() {
-    if (this.district.common_emote_words) {
+    if (this.district.currentWords) {
       let max;
       this.layout = wordCloud()
         .size([500, 500])
-        .words(Object.values(this.district.common_emote_words).map(d => {
-          if (max === undefined || d.freq > max) max = d.freq;
-          return {text: d.word, size: d.freq, test: 'haha', value: d.score};
-        }))
+        .words(Object.values(this.district.currentWords)
+          .sort((a, b) => b.freq - a.freq)
+          .slice(0, 30)
+          .map(d => {
+            if (max === undefined || d.freq > max) max = d.freq;
+            return {text: d.word, size: d.freq, value: d.score};
+          })
+        )
         .padding(5)
         .font('Impact')
         .fontSize(d => {
