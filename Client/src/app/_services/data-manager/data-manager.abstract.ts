@@ -114,6 +114,17 @@ export abstract class AbstractDataManager implements DataManagerInterface {
     }
   }
 
+  public setDistrictDataTime(index: number): void {
+    for (const district of Object.values(this.districts)) {
+      const values = district.values[index];
+
+      district.average = values.y;
+      district.prettyAverage = Math.round(district.average * 10) / 10;
+    }
+
+    this.districtsSubject.next(this.districts);
+  }
+
   public highlightEmotiveWords(word, tweet, new_words, new_scores) {
     if (tweet.text_sentiment_words[0] && word.toLowerCase().startsWith(tweet.text_sentiment_words[0])) {
       new_words.push(tweet.text_sentiment_words.shift());
@@ -190,7 +201,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
         district.totals.push(0);
         district.average = 50;
         district.prettyAverage = 50;
-        district.values.push({ x: hourKey, y: 0});
+        district.values.push({ x: hourKey, y: 50});
       }
     }
   }
@@ -233,6 +244,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
               const name = areaNames[id];
               const average = (values.length > 0) ? values[values.length - 1].y : 0;
               const prettyAverage = Math.round(average * 10) / 10;
+              if (wardData.last_tweet) wardData.last_tweet.date = new Date().toISOString();
               const last_tweets: Tweet[] = (wardData.last_tweet) ?
                 [wardData.last_tweet] :
                 [];

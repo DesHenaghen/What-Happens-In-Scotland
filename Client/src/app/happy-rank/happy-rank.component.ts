@@ -1,8 +1,10 @@
 import {
-  Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation
+  Component, DoCheck, Input, KeyValueDiffer, KeyValueDiffers, OnChanges, OnInit, SimpleChanges, ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 import {DataManagerService} from '../_services';
 import {District} from '../_models/District';
+import {Colour} from "../_models/Colour";
 
 /**
  * Component to generate and display a bar chart that shows how happiness ranks between wards
@@ -17,7 +19,7 @@ import {District} from '../_models/District';
   ],
   encapsulation: ViewEncapsulation.None
 })
-export class HappyRankComponent implements OnInit, OnChanges {
+export class HappyRankComponent implements OnInit, OnChanges, DoCheck {
 
   @Input() ward: District;
   @Input() wards: {[id: string]: District};
@@ -26,15 +28,28 @@ export class HappyRankComponent implements OnInit, OnChanges {
   public barOptions: any = {};
   public barData: any[] = [];
 
+  private _differ: any;
   public minValue: number;
   public maxValue: number;
 
-  constructor(private _dataManager: DataManagerService) { }
+  constructor(
+    private _differs: KeyValueDiffers,
+    private _dataManager: DataManagerService
+  ) {
+    this._differ = this._differs.find({}).create();
+  }
 
   public ngOnInit(): void {
     this.setOptions();
   }
 
+  public ngDoCheck(): void {
+    if (this._differ) {
+      if (this._differ.diff(this.wards) || this._differ.diff(this.ward)) {
+        this.setData();
+      }
+    }
+  }
   /**
    * Reacts to any changes to the @Input variables
    * @param {SimpleChanges} changes
@@ -127,15 +142,11 @@ export class HappyRankComponent implements OnInit, OnChanges {
 
   private getBarColour(key, ward) {
     if (this.ward === ward)
-      return '#7CFF6C';
+      return '#8cff7d';
     else if (key === this._dataManager.getMapBoundaryId())
-      return '#48BFFF';
-    else if (ward.average > 65)
-      return 'rgb(135, 141, 210)';
-    else if (ward.average < 40)
-      return 'rgb(195, 132, 132)';
+      return '#14be00';
     else
-      return '#B8B9AC';
+      return Colour.getColour(ward.average);
   }
 
 }

@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78586f3f-c960-45a0-bd0a-d3a16bf4b94b" name="Default" comment="Changed scores to now be 0-100 scale when fetched. Formatted initial last tweet html.">
-      <change beforePath="$PROJECT_DIR$/../Client/src/app/_models/Tweet.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_models/Tweet.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.interface.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_interfaces/data-manager.interface.ts" />
       <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.abstract.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" afterPath="$PROJECT_DIR$/../Client/src/app/_services/data-manager/data-manager.service.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-rank/happy-rank.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-rank/happy-rank.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/happy-timeline/happy-timeline.component.ts" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.ts" afterPath="$PROJECT_DIR$/../Client/src/app/tweet-box/tweet-box.component.ts" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js" />
       <change beforePath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" afterPath="$PROJECT_DIR$/app/server/templates/main.bundle.js.map" />

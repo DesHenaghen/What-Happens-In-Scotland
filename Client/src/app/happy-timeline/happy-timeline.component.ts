@@ -8,7 +8,8 @@ import {
 declare let d3: any;
 import 'nvd3';
 import {District} from '../_models/District';
-import {Colour} from "../_models/Colour";
+import {Colour} from '../_models/Colour';
+import {DataManagerService} from '../_services';
 
 /**
  * Component for the generation of a line chart to show happiness over time for a ward
@@ -32,9 +33,12 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
   public lineData: any[];
 
   private _differ: any;
+  private currentPointIndex: number;
 
   constructor(
-    private _differs: KeyValueDiffers) {
+    private _differs: KeyValueDiffers,
+    private _dataManager: DataManagerService
+  ) {
     this._differ = this._differs.find({}).create();
   }
 
@@ -85,6 +89,15 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
   private setOptions(): void {
     this.lineOptions = {
       chart: {
+        lines: {
+          dispatch: {
+            elementClick: e => {
+              this._dataManager.setDistrictDataTime(e[0].pointIndex);
+              this.currentPointIndex = e[0].pointIndex;
+              this.highlightCurrentPoint();
+            }
+          }
+        },
         type: 'lineChart',
         yDomain: [0, 100],
         height: 250,
@@ -93,6 +106,16 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
           right: 20,
           bottom: 40,
           left: 55
+        },
+        interactiveLayer: {
+          tooltip: {
+            contentGenerator: (d) => {
+              return '<p><b>' + d3.time.format('%b %d, %I %p')(new Date(d.value)) + '</b></p>'
+                + '<p><b>' + d.series[0].key + ':</b> '
+                + d.series[0].value.toFixed(1) + '%</p>'
+                + '<p><b>No. Tweets:</b> ' + this.ward.totals[d.index] + '</p>';
+            }
+          }
         },
         useInteractiveGuideline: true,
         xAxis: {
@@ -107,9 +130,6 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
         }
       }
     };
-
-    if (this.ward.values && this.ward.values.length > 0)
-      this.lineOptions.chart.forceX = [this.ward.values[0].x - 60, this.ward.values[this.ward.values.length - 1].x + 60];
   }
 
   /**
@@ -121,22 +141,35 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
         this.lineOptions.chart.forceX = [this.ward.values[0].x - 3000000, this.ward.values[this.ward.values.length - 1].x + 6000000];
       }
 
+      if (!this.currentPointIndex)
+        this.currentPointIndex = this.ward.values.length - 1;
+
       // Line chart data should be sent as an array of series objects.
       this.lineData = [
         {
           values: this.ward.values,
           key: 'Positivity',
-          color: Colour.getColour(this.ward.values[this.ward.values.length - 1].y),
+          color: Colour.getColour(this.ward.values[this.currentPointIndex].y),
           area: true      // area - set to true if you want this line to turn into a filled area chart.
         }
       ];
 
-      const lastPoint: any = document.querySelector('.nvd3 .nv-groups .nv-point-' + (this.ward.values.length - 1));
-      if (lastPoint) {
-        lastPoint.style.stroke = Colour.getColour((this.ward.values[this.ward.values.length - 1].y >= 50) ? 100 : 0);
-        lastPoint.style['stroke-width'] = '5px';
-      }
+      this.highlightCurrentPoint();
     }
   }
 
+  private highlightCurrentPoint(i?: number): void {
+    const index = i || this.currentPointIndex;
+
+    const points: any = document.querySelectorAll('.nvd3 .nv-groups .nv-point');
+    for (i = 0; i < points.length; ++i) {
+      if (points[i].classList.contains('nv-point-' + index)) {
+        points[i].style.stroke = Colour.getColour((this.ward.values[index].y >= 50) ? 100 : 0);
+        points[i].style['stroke-width'] = '5px';
+      } else {
+        points[i].style.stroke = null;
+        points[i].style['stroke-width'] = null;
+      }
+    }
+  }
 }

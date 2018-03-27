@@ -29,4 +29,5 @@ export interface DataManagerInterface {
   getMapBoundaryId(): string;
   highlightEmotiveWords(word: string, tweet: Tweet, new_words: string[], new_scores: number[]): string;
   setUpdateTweets(bool: boolean): void;
+  setDistrictDataTime(index: number): void;
 }

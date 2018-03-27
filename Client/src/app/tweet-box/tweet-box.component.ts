@@ -36,10 +36,10 @@ export class TweetBoxComponent implements OnInit, OnChanges, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     const tweet = this.ward.last_tweets[0];
-    if (this.mostRecentTweet !== tweet) {
+    if (tweet && this.mostRecentTweet !== tweet) {
       const listBox = document.querySelector('#tweet_box');
       if (listBox.scrollTop !== 0) {
-        const latestTweet: any = document.querySelector('#T' + tweet.user.id + tweet.date.substring(tweet.date.length - 4));
+        const latestTweet: any = document.querySelector('#T' + tweet.user.id + tweet.date.substring(tweet.date.length - 4)).parentElement;
         listBox.scrollTop += latestTweet.offsetHeight;
       }
       this.mostRecentTweet = tweet;

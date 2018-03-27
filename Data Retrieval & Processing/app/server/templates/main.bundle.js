@@ -175,6 +175,14 @@ class AbstractDataManager {
             this.latestTweet.next(tweet);
         }
     }
+    setDistrictDataTime(index) {
+        for (const district of Object.values(this.districts)) {
+            const values = district.values[index];
+            district.average = values.y;
+            district.prettyAverage = Math.round(district.average * 10) / 10;
+        }
+        this.districtsSubject.next(this.districts);
+    }
     highlightEmotiveWords(word, tweet, new_words, new_scores) {
         if (tweet.text_sentiment_words[0] && word.toLowerCase().startsWith(tweet.text_sentiment_words[0])) {
             new_words.push(tweet.text_sentiment_words.shift());
@@ -237,7 +245,7 @@ class AbstractDataManager {
                 district.totals.push(0);
                 district.average = 50;
                 district.prettyAverage = 50;
-                district.values.push({ x: hourKey, y: 0 });
+                district.values.push({ x: hourKey, y: 50 });
             }
         }
     }
@@ -274,6 +282,8 @@ class AbstractDataManager {
                         const name = areaNames[id];
                         const average = (values.length > 0) ? values[values.length - 1].y : 0;
                         const prettyAverage = Math.round(average * 10) / 10;
+                        if (wardData.last_tweet)
+                            wardData.last_tweet.date = new Date().toISOString();
                         const last_tweets = (wardData.last_tweet) ?
                             [wardData.last_tweet] :
                             [];
@@ -521,6 +531,9 @@ let DataManagerService = class DataManagerService {
     }
     setUpdateTweets(bool) {
         this._dataManager.setUpdateTweets(bool);
+    }
+    setDistrictDataTime(index) {
+        this._dataManager.setDistrictDataTime(index);
     }
 };
 DataManagerService = __decorate([
@@ -1081,6 +1094,7 @@ module.exports = "<div id=\"happinessChartContainer\">\n  <nvd3 #rankChart id=\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm2015/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services__ = __webpack_require__("../../../../../src/app/_services/index.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_District__ = __webpack_require__("../../../../../src/app/_models/District.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__models_Colour__ = __webpack_require__("../../../../../src/app/_models/Colour.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1093,17 +1107,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 /**
  * Component to generate and display a bar chart that shows how happiness ranks between wards
  */
 let HappyRankComponent = class HappyRankComponent {
-    constructor(_dataManager) {
+    constructor(_differs, _dataManager) {
+        this._differs = _differs;
         this._dataManager = _dataManager;
         this.barOptions = {};
         this.barData = [];
+        this._differ = this._differs.find({}).create();
     }
     ngOnInit() {
         this.setOptions();
+    }
+    ngDoCheck() {
+        if (this._differ) {
+            if (this._differ.diff(this.wards) || this._differ.diff(this.ward)) {
+                this.setData();
+            }
+        }
     }
     /**
      * Reacts to any changes to the @Input variables
@@ -1192,15 +1216,11 @@ let HappyRankComponent = class HappyRankComponent {
     }
     getBarColour(key, ward) {
         if (this.ward === ward)
-            return '#7CFF6C';
+            return '#8cff7d';
         else if (key === this._dataManager.getMapBoundaryId())
-            return '#48BFFF';
-        else if (ward.average > 65)
-            return 'rgb(135, 141, 210)';
-        else if (ward.average < 40)
-            return 'rgb(195, 132, 132)';
+            return '#14be00';
         else
-            return '#B8B9AC';
+            return __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour(ward.average);
     }
 };
 __decorate([
@@ -1222,7 +1242,8 @@ HappyRankComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/happy-rank/happy-rank.component.css"), __webpack_require__("../../../../nvd3/build/nv.d3.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__services__["a" /* DataManagerService */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["KeyValueDiffers"],
+        __WEBPACK_IMPORTED_MODULE_1__services__["a" /* DataManagerService */]])
 ], HappyRankComponent);
 
 
@@ -1264,6 +1285,7 @@ module.exports = "<div id=\"happinessChartContainer\">\n  <nvd3 #timelineChart i
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nvd3___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_nvd3__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_District__ = __webpack_require__("../../../../../src/app/_models/District.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__models_Colour__ = __webpack_require__("../../../../../src/app/_models/Colour.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services__ = __webpack_require__("../../../../../src/app/_services/index.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1277,12 +1299,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 /**
  * Component for the generation of a line chart to show happiness over time for a ward
  */
 let HappyTimelineComponent = class HappyTimelineComponent {
-    constructor(_differs) {
+    constructor(_differs, _dataManager) {
         this._differs = _differs;
+        this._dataManager = _dataManager;
         this._differ = this._differs.find({}).create();
     }
     ngOnInit() {
@@ -1328,6 +1352,15 @@ let HappyTimelineComponent = class HappyTimelineComponent {
     setOptions() {
         this.lineOptions = {
             chart: {
+                lines: {
+                    dispatch: {
+                        elementClick: e => {
+                            this._dataManager.setDistrictDataTime(e[0].pointIndex);
+                            this.currentPointIndex = e[0].pointIndex;
+                            this.highlightCurrentPoint();
+                        }
+                    }
+                },
                 type: 'lineChart',
                 yDomain: [0, 100],
                 height: 250,
@@ -1336,6 +1369,16 @@ let HappyTimelineComponent = class HappyTimelineComponent {
                     right: 20,
                     bottom: 40,
                     left: 55
+                },
+                interactiveLayer: {
+                    tooltip: {
+                        contentGenerator: (d) => {
+                            return '<p><b>' + d3.time.format('%b %d, %I %p')(new Date(d.value)) + '</b></p>'
+                                + '<p><b>' + d.series[0].key + ':</b> '
+                                + d.series[0].value.toFixed(1) + '%</p>'
+                                + '<p><b>No. Tweets:</b> ' + this.ward.totals[d.index] + '</p>';
+                        }
+                    }
                 },
                 useInteractiveGuideline: true,
                 xAxis: {
@@ -1350,8 +1393,6 @@ let HappyTimelineComponent = class HappyTimelineComponent {
                 }
             }
         };
-        if (this.ward.values && this.ward.values.length > 0)
-            this.lineOptions.chart.forceX = [this.ward.values[0].x - 60, this.ward.values[this.ward.values.length - 1].x + 60];
     }
     /**
      * Sets the data for the happy timeline line chart
@@ -1361,19 +1402,31 @@ let HappyTimelineComponent = class HappyTimelineComponent {
             if (this.lineOptions) {
                 this.lineOptions.chart.forceX = [this.ward.values[0].x - 3000000, this.ward.values[this.ward.values.length - 1].x + 6000000];
             }
+            if (!this.currentPointIndex)
+                this.currentPointIndex = this.ward.values.length - 1;
             // Line chart data should be sent as an array of series objects.
             this.lineData = [
                 {
                     values: this.ward.values,
                     key: 'Positivity',
-                    color: __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour(this.ward.values[this.ward.values.length - 1].y),
+                    color: __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour(this.ward.values[this.currentPointIndex].y),
                     area: true // area - set to true if you want this line to turn into a filled area chart.
                 }
             ];
-            const lastPoint = document.querySelector('.nvd3 .nv-groups .nv-point-' + (this.ward.values.length - 1));
-            if (lastPoint) {
-                lastPoint.style.stroke = __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour((this.ward.values[this.ward.values.length - 1].y >= 50) ? 100 : 0);
-                lastPoint.style['stroke-width'] = '5px';
+            this.highlightCurrentPoint();
+        }
+    }
+    highlightCurrentPoint(i) {
+        const index = i || this.currentPointIndex;
+        const points = document.querySelectorAll('.nvd3 .nv-groups .nv-point');
+        for (i = 0; i < points.length; ++i) {
+            if (points[i].classList.contains('nv-point-' + index)) {
+                points[i].style.stroke = __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour((this.ward.values[index].y >= 50) ? 100 : 0);
+                points[i].style['stroke-width'] = '5px';
+            }
+            else {
+                points[i].style.stroke = null;
+                points[i].style['stroke-width'] = null;
             }
         }
     }
@@ -1393,7 +1446,8 @@ HappyTimelineComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/happy-timeline/happy-timeline.component.css"), __webpack_require__("../../../../nvd3/build/nv.d3.css")],
         encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["KeyValueDiffers"]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["KeyValueDiffers"],
+        __WEBPACK_IMPORTED_MODULE_4__services__["a" /* DataManagerService */]])
 ], HappyTimelineComponent);
 
 
@@ -2233,10 +2287,10 @@ let TweetBoxComponent = class TweetBoxComponent {
     }
     ngAfterViewChecked() {
         const tweet = this.ward.last_tweets[0];
-        if (this.mostRecentTweet !== tweet) {
+        if (tweet && this.mostRecentTweet !== tweet) {
             const listBox = document.querySelector('#tweet_box');
             if (listBox.scrollTop !== 0) {
-                const latestTweet = document.querySelector('#T' + tweet.user.id + tweet.date.substring(tweet.date.length - 4));
+                const latestTweet = document.querySelector('#T' + tweet.user.id + tweet.date.substring(tweet.date.length - 4)).parentElement;
                 listBox.scrollTop += latestTweet.offsetHeight;
             }
             this.mostRecentTweet = tweet;

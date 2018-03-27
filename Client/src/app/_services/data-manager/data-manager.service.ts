@@ -118,4 +118,8 @@ export class DataManagerService implements DataManagerInterface {
   public setUpdateTweets(bool: boolean) {
     this._dataManager.setUpdateTweets(bool);
   }
+
+  setDistrictDataTime(index: number): void {
+    this._dataManager.setDistrictDataTime(index);
+  }
 }
