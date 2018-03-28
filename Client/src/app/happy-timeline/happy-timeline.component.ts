@@ -151,7 +151,7 @@ export class HappyTimelineComponent implements OnInit, OnChanges, DoCheck {
         {
           values: this.ward.values,
           key: 'Positivity',
-          color: Colour.getColour(this.ward.values[this.currentPointIndex].y),
+          color: Colour.getColour((this.ward.values[this.currentPointIndex]) ? this.ward.values[this.currentPointIndex].y : 50),
           area: true      // area - set to true if you want this line to turn into a filled area chart.
         }
       ];

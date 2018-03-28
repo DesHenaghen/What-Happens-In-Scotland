@@ -161,7 +161,7 @@ def save_scotland_tweet(tweet):
         ward_id=ward_id
     ).returning(__scotland_tweets.c.id)
 
-    return __engine.execute(statement)
+    # return __engine.execute(statement)
 
     # logger.info(json.dumps(tweet, indent=4, sort_keys=True))
     # log.logger.info("added to scotland_tweets")

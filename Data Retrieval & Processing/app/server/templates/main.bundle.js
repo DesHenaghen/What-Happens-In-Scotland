@@ -182,23 +182,39 @@ class AbstractDataManager {
     }
     setDistrictDataTime(index) {
         for (const district of Object.values(this.districts)) {
-            const values = district.values[index];
-            district.average = values.y;
-            district.prettyAverage = Math.round(district.average * 10) / 10;
-            district.currentWords = district.common_emote_words[values.x];
+            if (district) {
+                const values = district.values[index];
+                if (values) {
+                    district.average = values.y;
+                    district.prettyAverage = Math.round(district.average * 10) / 10;
+                    if (!district.common_emote_words)
+                        district.common_emote_words = {};
+                    if (district.common_emote_words.hasOwnProperty(values.x))
+                        district.currentWords = district.common_emote_words[values.x];
+                    else
+                        district.currentWords = [];
+                }
+            }
         }
         this.districtsSubject.next(this.districts);
         this.districtTimeChanged.next(true);
     }
     setDistrictDataDates() {
         for (const district of Object.values(this.districts)) {
-            let sum = 0;
-            for (const v of district.values) {
-                sum += v.y;
+            if (district) {
+                let sum = 0;
+                for (const v of district.values) {
+                    sum += v.y;
+                }
+                district.average = sum / district.values.length;
+                district.prettyAverage = Math.round(district.average * 10) / 10;
+                if (!district.common_emote_words)
+                    district.common_emote_words = {};
+                if (district.common_emote_words.hasOwnProperty('overall'))
+                    district.currentWords = district.common_emote_words['overall'];
+                else
+                    district.currentWords = [];
             }
-            district.average = sum / district.values.length;
-            district.prettyAverage = Math.round(district.average * 10) / 10;
-            district.currentWords = district.common_emote_words.overall;
         }
         this.districtsSubject.next(this.districts);
         this.districtTimeChanged.next(true);
@@ -220,8 +236,9 @@ class AbstractDataManager {
     updateDistrict(district, tweet) {
         if (this.updateTweets && new Date(district.values[district.values.length - 1].x).toDateString() === new Date().toDateString()) {
             // Check if a new hour has started, in which case update all stats to be for this hour
-            if (__WEBPACK_IMPORTED_MODULE_5_moment__(tweet.date).hour() !== __WEBPACK_IMPORTED_MODULE_5_moment__(district.values[district.values.length - 1].x).hour())
+            if (__WEBPACK_IMPORTED_MODULE_5_moment__(tweet.date).hour() !== __WEBPACK_IMPORTED_MODULE_5_moment__(district.values[district.values.length - 1].x).hour()) {
                 this.addNewHourData();
+            }
             tweet.name = tweet.user.name;
             let sum = district.average * district.totals[district.totals.length - 1];
             sum = (!isNaN(sum)) ? sum + tweet.score : tweet.score;
@@ -407,6 +424,8 @@ class AbstractDataManager {
                 const name = areaNames[id];
                 const average = (values.length > 0) ? values[values.length - 1].y : 0;
                 const prettyAverage = Math.round(average * 10) / 10;
+                if (wardData.last_tweet)
+                    wardData.last_tweet.date = new Date().toISOString();
                 const last_tweets = (wardData.last_tweet) ?
                     [wardData.last_tweet] :
                     [];
@@ -1460,7 +1479,7 @@ let HappyTimelineComponent = class HappyTimelineComponent {
                 {
                     values: this.ward.values,
                     key: 'Positivity',
-                    color: __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour(this.ward.values[this.currentPointIndex].y),
+                    color: __WEBPACK_IMPORTED_MODULE_3__models_Colour__["a" /* Colour */].getColour((this.ward.values[this.currentPointIndex]) ? this.ward.values[this.currentPointIndex].y : 50),
                     area: true // area - set to true if you want this line to turn into a filled area chart.
                 }
             ];
@@ -2289,7 +2308,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "#tweet_box {\r\n  top: 2%;\r\n  right: 1%;\r\n  /*border: black solid;*/\r\n  background-color: white;\r\n  max-height: 85vh;\r\n  width: 100%;\r\n  overflow-y: auto;\r\n  /*right: 0;*/\r\n  position: absolute;\r\n  /*top: 10px;*/\r\n  /*border-radius: 2vh;*/\r\n  color: #14171a;\r\n  font-family: 'Segoe UI',Arial,sans-serif;\r\n}\r\n\r\n#infoBox {\r\n  padding-right: 0;\r\n}\r\n\r\n#tweet_box {\r\n  padding: 10px 15px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweet_box {\r\n    margin: 0 4%;\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n.tweet_mark {\r\n  position: initial;\r\n}\r\n\r\n#tweet_box .header {\r\n  font-size: 1.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#tweet_box p {\r\n  font-size: 1rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n.good_word {\r\n  color: #3e3e86;\r\n  -webkit-filter: drop-shadow(0 0 3px dodgerblue);\r\n          filter: drop-shadow(0 0 3px dodgerblue);\r\n}\r\n\r\n.bad_word {\r\n  color: #bf4545;\r\n  -webkit-filter: drop-shadow(0 0 3px salmon);\r\n          filter: drop-shadow(0 0 3px salmon);\r\n}\r\n\r\n.pause-tweets {\r\n  margin-bottom: 30px;\r\n  height: 30px;\r\n  line-height: 18px;\r\n}\r\n", ""]);
+exports.push([module.i, "#tweet_box {\r\n  top: 2%;\r\n  right: 1%;\r\n  /*border: black solid;*/\r\n  background-color: white;\r\n  max-height: 90vh;\r\n  width: 100%;\r\n  overflow-y: auto;\r\n  /*right: 0;*/\r\n  position: absolute;\r\n  /*top: 10px;*/\r\n  /*border-radius: 2vh;*/\r\n  color: #14171a;\r\n  font-family: 'Segoe UI',Arial,sans-serif;\r\n}\r\n\r\n#infoBox {\r\n  padding-right: 0;\r\n}\r\n\r\n#tweet_box {\r\n  padding: 10px 15px;\r\n}\r\n\r\n@media (max-width: 767px) {\r\n  #tweet_box {\r\n    margin: 0 4%;\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n.tweet_mark {\r\n  position: initial;\r\n}\r\n\r\n#tweet_box .header {\r\n  font-size: 1.5rem;\r\n  display: inline-block;\r\n}\r\n\r\n#tweet_box p {\r\n  font-size: 1rem;\r\n  display: inline-block;\r\n  margin-left: 10px;\r\n}\r\n\r\n.good_word {\r\n  color: #3e3e86;\r\n  -webkit-filter: drop-shadow(0 0 3px dodgerblue);\r\n          filter: drop-shadow(0 0 3px dodgerblue);\r\n}\r\n\r\n.bad_word {\r\n  color: #bf4545;\r\n  -webkit-filter: drop-shadow(0 0 3px salmon);\r\n          filter: drop-shadow(0 0 3px salmon);\r\n}\r\n\r\n.pause-tweets {\r\n  margin-bottom: 30px;\r\n  height: 30px;\r\n  line-height: 18px;\r\n}\r\n", ""]);
 
 // exports
 

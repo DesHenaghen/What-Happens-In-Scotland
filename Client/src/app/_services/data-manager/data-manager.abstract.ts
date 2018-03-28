@@ -121,28 +121,49 @@ export abstract class AbstractDataManager implements DataManagerInterface {
 
   public setDistrictDataTime(index: number): void {
     for (const district of Object.values(this.districts)) {
-      const values = district.values[index];
+      if (district) {
+        const values = district.values[index];
 
-      district.average = values.y;
-      district.prettyAverage = Math.round(district.average * 10) / 10;
-      district.currentWords = district.common_emote_words[values.x];
+        if (values) {
+          district.average = values.y;
+          district.prettyAverage = Math.round(district.average * 10) / 10;
+
+          if (!district.common_emote_words)
+            district.common_emote_words = {};
+
+          if (district.common_emote_words.hasOwnProperty(values.x))
+            district.currentWords = district.common_emote_words[values.x];
+          else
+            district.currentWords = [];
+        }
+      }
     }
 
 
     this.districtsSubject.next(this.districts);
     this.districtTimeChanged.next(true);
+
   }
 
   public setDistrictDataDates(): void {
     for (const district of Object.values(this.districts)) {
-      let sum = 0;
-      for (const v of district.values) {
-        sum += v.y;
-      }
+      if (district) {
+        let sum = 0;
+        for (const v of district.values) {
+          sum += v.y;
+        }
 
-      district.average = sum / district.values.length;
-      district.prettyAverage = Math.round(district.average * 10) / 10;
-      district.currentWords = district.common_emote_words.overall;
+        district.average = sum / district.values.length;
+        district.prettyAverage = Math.round(district.average * 10) / 10;
+
+        if (!district.common_emote_words)
+          district.common_emote_words = {};
+
+        if (district.common_emote_words.hasOwnProperty('overall'))
+          district.currentWords = district.common_emote_words['overall'];
+        else
+          district.currentWords = [];
+      }
     }
 
     this.districtsSubject.next(this.districts);
@@ -169,9 +190,9 @@ export abstract class AbstractDataManager implements DataManagerInterface {
   private updateDistrict(district: District, tweet: Tweet): District {
     if (this.updateTweets && new Date(district.values[district.values.length - 1].x).toDateString() === new Date().toDateString()) {
       // Check if a new hour has started, in which case update all stats to be for this hour
-      if (moment(tweet.date).hour() !== moment(district.values[district.values.length - 1].x).hour())
+      if (moment(tweet.date).hour() !== moment(district.values[district.values.length - 1].x).hour()) {
         this.addNewHourData();
-
+      }
       tweet.name = tweet.user.name;
 
       let sum = district.average * district.totals[district.totals.length - 1];
@@ -388,6 +409,7 @@ export abstract class AbstractDataManager implements DataManagerInterface {
           const name = areaNames[id];
           const average = (values.length > 0) ? values[values.length - 1].y : 0;
           const prettyAverage = Math.round(average * 10) / 10;
+          if (wardData.last_tweet) wardData.last_tweet.date = new Date().toISOString();
           const last_tweets: Tweet[] = (wardData.last_tweet) ?
             [wardData.last_tweet] :
             [];

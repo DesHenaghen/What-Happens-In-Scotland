@@ -16,9 +16,9 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 
-    PSQL_USERNAME = 'postgres'
-    PSQL_PASSWORD = 'postgres'
-    PSQL_HOSTNAME = 'localhost'
+    PSQL_USERNAME = 'whig'
+    PSQL_PASSWORD = '382FkjBoQPfk'
+    PSQL_HOSTNAME = 'whathappensinglasgow.cszk7qzakguv.eu-west-2.rds.amazonaws.com'
     PSQL_PORT = '5432'
     PSQL_DATABASE = 'tweets'
 

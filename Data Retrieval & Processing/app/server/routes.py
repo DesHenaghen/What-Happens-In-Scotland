@@ -4,6 +4,7 @@ import string
 import decimal
 
 from sqlalchemy.exc import OperationalError
+from pytz import timezone
 
 from server import get_app_instance, get_socketio_instance
 from flask import render_template, send_from_directory, jsonify, request, Blueprint
@@ -80,8 +81,8 @@ def parse_twitter_data(tweets, date, period):
     totals = {}
     values = {}
     while start_date <= datetime.datetime.strptime(date, '%Y-%m-%d %H'):
-        values[start_date.strftime('%Y-%m-%d %H')] = {'x': start_date.timestamp() * 1000, 'y': 50}
-        totals[start_date.strftime('%Y-%m-%d %H')] = 0
+        values[start_date.astimezone(timezone('UTC')).strftime('%Y-%m-%d %H')] = {'x': start_date.astimezone(timezone('UTC')).timestamp() * 1000, 'y': 50}
+        totals[start_date.astimezone(timezone('UTC')).strftime('%Y-%m-%d %H')] = 0
         start_date += datetime.timedelta(hours=1)
 
     total = 0
@@ -92,13 +93,13 @@ def parse_twitter_data(tweets, date, period):
     last_tweet_score = convert_score_to_percentage(tweets[-1].compound_sent) if (len(tweets) > 0 and tweets[-1].compound_sent is not None) else 50
 
     for i, tweet in enumerate(tweets):
-        values[tweet.day.strftime('%Y-%m-%d %H')] = {
-            'x': tweet.day.timestamp() * 1000,
+        values[tweet.day.astimezone(timezone('UTC')).strftime('%Y-%m-%d %H')] = {
+            'x': tweet.day.astimezone(timezone('UTC')).timestamp() * 1000,
             'y': convert_score_to_percentage(tweet.avg_compound)
         }
 
         total += int(tweet.total)
-        totals[tweet.day.strftime('%Y-%m-%d %H')] = int(tweet.total)
+        totals[tweet.day.astimezone(timezone('UTC')).strftime('%Y-%m-%d %H')] = int(tweet.total)
 
     return {
         'values': [v for k, v in values.items()],
@@ -214,8 +215,7 @@ def get_common_words():
     region = request.args.get('region')
     region_id = request.args.getlist('region_id')
 
-    ids_dict = {}
-    ids_dict['region'] = {}
+    ids_dict = {'region': {}}
 
     try:
         rawData = dbMan.get_scotland_district_common_words(area_ids, group, date, period).fetchall()
@@ -240,7 +240,6 @@ def get_common_words():
 
     try:
         for row in rawData:
-            print(row.group_id, row.hour)
             if row.group_id not in ids_dict:
                 ids_dict[row.group_id] = {}
 
