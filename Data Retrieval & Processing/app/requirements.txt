@@ -20,7 +20,7 @@ Jinja2==2.10
 many-stop-words==0.2.2
 MarkupSafe==1.0
 multidict==4.0.0
-nltk==3.2.5
+nltk==3.4.5
 oauthlib==2.0.6
 psycopg2==2.7.3.2
 pyenchant==1.6.6
