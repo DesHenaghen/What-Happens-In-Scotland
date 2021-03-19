@@ -16,7 +16,7 @@ gevent-websocket==0.10.1
 greenlet==0.4.12
 idna==2.6
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.11.3
 many-stop-words==0.2.2
 MarkupSafe==1.0
 multidict==4.0.0
